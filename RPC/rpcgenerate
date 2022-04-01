@@ -1,0 +1,9 @@
+#!/bin/env python3
+
+from idl_to_json import idl_to_json
+
+def main():
+    print(idl_to_json("../arithmetic.idl"))
+
+if __name__ == "__main__":
+	main()
