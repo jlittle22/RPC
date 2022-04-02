@@ -3,7 +3,7 @@
 from idl_to_json import idl_to_json
 
 def main():
-    print(idl_to_json("../arithmetic.idl"))
+    print(idl_to_json("../structwitharray.idl"))
 
 if __name__ == "__main__":
 	main()

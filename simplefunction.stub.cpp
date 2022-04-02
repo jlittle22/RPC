@@ -179,6 +179,10 @@ void dispatchFunction() {
   // The stub will invoke the function and send response.
   //
 
+  // signaturecompare()
+  // then create a big switch statement thing to check the incoming signature 
+  // against each of the signatures we read from the idl_to_json...
+
   if (!RPCSTUBSOCKET-> eof()) {
     if (strcmp(functionNameBuffer,"func1") == 0)
       __func1();
@@ -190,6 +194,13 @@ void dispatchFunction() {
       __badFunction(functionNameBuffer);
   }
 }
+
+// if name is makeStruct
+    // if return typs 
+    // else return type
+
+// if it's return type <--- idl_to_json
+   // call func 
 
  
 //

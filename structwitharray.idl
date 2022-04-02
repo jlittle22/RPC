@@ -3,3 +3,8 @@ struct s {
   int m2[4][10];
   int m3[4][10][100];
 };
+
+// s makeStruct(int x, s other);
+// int makeStruct(int x, s other);
+
+// "makeStruct", "s", "int", "s"
