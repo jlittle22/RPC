@@ -4,62 +4,30 @@
 
 #include <cstdio>
 #include <cstring>
+#include <string>
 #include "c150debug.h"
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
 
 
-// from https://www.delftstack.com/howto/cpp/how-to-convert-float-to-string-in-cpp/#use-stdstringstream-class-and-str-method-to-convert-a-float-to-a-string-in-c%2b%2b
+template <typename T>
+string serialize(T item) {
+  stringstream sstream;
 
-string serialize(float x) {
+  const char* ptr = reinterpret_cast<char*>(&item);
+  sstream.write(ptr, sizeof(T));
 
-    std::stringstream sstream;
-
-    sstream << x;
-    string num_str = sstream.str();
-    //auto *ptr = sstream.str().c_str(); // RESULTS in dangling pointer
-    // num_str.empty() ? cout << "empty\n" : 
-    // cout << num_str << endl;
-    return num_str;
+  return sstream.str();
 }
 
-//   return result;
-// }
+template <typename T>
+T deserialize(string x) {
+    T new_item;
+    stringstream ss(x);
+    ss.read(reinterpret_cast<char*>(&new_item), sizeof(T));
 
-float deserialize(string x) {
-
-     std::stringstream sstream(x);
-     float num;
-     sstream >> num;
-
-     // cout << "num: " << num << endl;
-
-     // cout << "divide: " << num / 5.0 << endl;
-
-     return num;
-
+    return new_item;
 }
-
-/*
-float add(float x, float y) {
-  return x+y;
-}
-
-float subtract(float x, float y) {
-  return x-y;
-}
-
-float multiply(float x, float y) {
-  return x*y;
-}
-
-float divide(float x, float y) {
-  return x/y;
-}
-
-
-
-*/
 
 float add(float x, float y) {
   char readBuffer[sizeof(float)];  // to read magic value DONE + null
@@ -68,7 +36,7 @@ float add(float x, float y) {
   // Send the Remote Call
   //
 
-  string data = "add,float,float," + serialize(x) + ",float," + serialize(y);
+  string data = "add,float(4),float(4),float(4)|" + serialize<float>(x) + serialize<float>(y);
 
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) invoked");
   RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
