@@ -2,52 +2,10 @@
 #include <inttypes.h>
 #include <sstream>
 
+#include "utility.h"
+
 using namespace std;
 
-
-// Memcopy in and out of string --> https://stackoverflow.com/questions/21005845/how-to-get-float-in-bytes
-// string serialize(float x) {
-//   string result = "";
-//   for (int i = sizeof(float) - 1; i >= 0; i--) {
-//     char curr = (char)(x >> (i * 8));  
-//     result += curr;
-//   }
-
-//   return result;
-// }
-
-template <typename T>
-string serialize(T item) {
-  stringstream sstream;
-
-  const char* ptr = reinterpret_cast<char*>(&item);
-  sstream.write(ptr, sizeof(T));
-
-  return sstream.str();
-}
-
-template <typename T>
-T deserialize(string x) {
-    T new_item;
-    stringstream ss(x);
-    ss.read(reinterpret_cast<char*>(&new_item), sizeof(T));
-
-    return new_item;
-}
-
-int sigcmp(string sig1, string sig2) {
-  
-}
-
-// concerned about what happens if a string has a leading 0 bytes
-// does that get misinterpretted as null character???
-// float deserialize(string x) {
-//   float result = 0;
-//   for (int i = x.length() - 1; i >= 0; i--) {
-//     result += uint8_t(x[i]) << ((x.length() - i - 1) * 8);
-//   }
-//   return result;
-// }
 
 struct test {
   int a;
@@ -86,13 +44,15 @@ int main() {
     cout << i << " : " << other.e[i] << endl;
   }
 
-  cout << " 3.1415 : " << deserialize<float>(serialize<float>(0.0)) << endl;
+  cout << " 3.1415 : " << deserialize<float>(serialize<float>(3.1415f)) << endl;
 
+  NetworkFormatter f = NetworkFormatter("name,returnType(5),argTypeWithAlongerName(4),data,otherArgType(6),sixxxx,finalArgType(1),1");
+  cout << "MANDATORY DATA: " << f.getFunctionName() << " " << get<0>(f.getFunctionRetType()) << " " << get<1>(f.getFunctionRetType()) << endl;
+  for (int i = 0; i < f.getNumArgs(); i++) {
+    cout << "ARG " << i << ": " << get<0>(f.getArgAtIndex(i)) << " " << get<1>(f.getArgAtIndex(i)) << " " << get<2>(f.getArgAtIndex(i)) << endl;
+  }
 
-  // for (float i = 1; i < 10000000000; i *= 1.01) {
-  //   cout << i << " : " << deserialize<float>(serialize(i)) << endl;
-  // }
-
+  cout << "NETOWRK FORM: " << f.networkForm() << endl;
 
 	return 0;
 }
