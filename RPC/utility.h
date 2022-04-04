@@ -27,8 +27,8 @@ T deserialize(std::string x) {
 
 class NetworkFormatter {
 public:
-	NetworkFormatter();
-	NetworkFormatter(std::string offTheWire);
+	NetworkFormatter();                        // ... for WRITING to the network
+	NetworkFormatter(std::string offTheWire);  // ... for READING from the network
 	~NetworkFormatter();
 
 	void setFunctionName(std::string name);
@@ -37,7 +37,7 @@ public:
 	void setFunctionRetType(std::string type, int typeSize);
 	std::tuple<std::string, int> getFunctionRetType();
 
-	void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
+    void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
     std::tuple<std::string, int, std::string> getArgAtIndex(int index);
     int getNumArgs();
 

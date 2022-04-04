@@ -42,7 +42,7 @@ void func1() {
   // Send the Remote Call
   //
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func1() invoked");
-  RPCPROXYSOCKET->write("func1", strlen("func1")+1); // write function name including null\
+  RPCPROXYSOCKET->write("func1", strlen("func1")+1); // write function name including null
 
   // name, return type, arg types, send the args...
   // 

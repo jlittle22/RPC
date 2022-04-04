@@ -6,10 +6,11 @@
 #include <cstdio>
 #include <cstring>
 #include "c150debug.h"
+#include "./RPC/utility.h"
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
 
-void getFunctionNamefromStream();
+void getFunctionCallFromStream();
 
 // ======================================================================
 //                             STUBS
@@ -124,14 +125,28 @@ void getFunctionNameFromStream(char *buffer, unsigned int bufSize); // @BELLA: f
 void dispatchFunction() {
 
 
-  char functionNameBuffer[50];
+  char functionCallBuffer[500];
 
   //
   // Read the function name from the stream -- note
   // REPLACE THIS WITH YOUR OWN LOGIC DEPENDING ON THE 
   // WIRE FORMAT YOU USE
   //
-  getFunctionNameFromStream(functionNameBuffer,sizeof(functionNameBuffer));
+
+  
+  getFunctionCallFromStream(functionNameBuffer,sizeof(functionCallBuffer));
+ 
+  string offTheWire(functionNameBuffer, 500);
+
+  NetworkFormatter f = NetworkFormatter(offTheWire);
+  string functionName = f.getFunctionName();
+  auto [ returnTypeName, returnTypeSize ] = f.getFunctionRetType();
+
+  for (int i = 0; i < f.getNumArgs(); i++) {
+      auto [ argTypeName, argTypeSize, dataString ] = f.getArgAtIndex(i);
+  }
+
+
 
   //
   // We've read the function name, call the stub for the right one
@@ -143,17 +158,17 @@ void dispatchFunction() {
   // against each of the signatures we read from the idl_to_json...
 
   if (!RPCSTUBSOCKET-> eof()) {
-    if (strcmp(functionNameBuffer,"add,float(4),float(4),float(4)") == 0)
+    if (strcmp(functionCallBuffer,"add,float(4),float(4),float(4)") == 0)
       float x;
       float y;
       whateverFunctionJakeWrites(&x, &y);
       __func1(); // __add(x, y)
-    else   if (strcmp(functionNameBuffer,"func2") == 0)
+    else   if (strcmp(functionCallBuffer,"func2") == 0)
       __func2();
-    else   if (strcmp(functionNameBuffer,"func3") == 0)
+    else   if (strcmp(functionCallBuffer,"func3") == 0)
       __func3();
     else
-      __badFunction(functionNameBuffer);
+      __badFunction(functionCallBuffer);
   }
 }
 
@@ -166,7 +181,7 @@ void dispatchFunction() {
 
  
 //
-//                   getFunctionNamefromStream
+//                   getFunctionCallFromStream
 //
 //   Helper routine to read function name from the stream. 
 //   Note that this code is the same for all stubs, so can be generated
@@ -175,7 +190,7 @@ void dispatchFunction() {
 //   Important: this routine must leave the sock open but at EOF
 //   when eof is read from client.
 //
-void getFunctionNameFromStream(char *buffer, unsigned int bufSize) {
+void getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   unsigned int i;
   char *bufp;    // next char to read
   bool readnull;

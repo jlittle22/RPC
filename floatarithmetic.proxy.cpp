@@ -1,6 +1,7 @@
  #include "floatarithmetic.idl"
 
 #include "rpcproxyhelper.h"
+#include "./RPC/utility.h"
 
 #include <cstdio>
 #include <cstring>
@@ -9,52 +10,29 @@
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
 
-
-template <typename T>
-string serialize(T item) {
-  stringstream sstream;
-
-  const char* ptr = reinterpret_cast<char*>(&item);
-  sstream.write(ptr, sizeof(T));
-
-  return sstream.str();
-}
-
-template <typename T>
-T deserialize(string x) {
-    T new_item;
-    stringstream ss(x);
-    ss.read(reinterpret_cast<char*>(&new_item), sizeof(T));
-
-    return new_item;
-}
-
 float add(float x, float y) {
-  char readBuffer[sizeof(float)];  // to read magic value DONE + null
+  char readBuffer[sizeof(float)];
 
-  //
-  // Send the Remote Call
-  //
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("add");
+  f.setReturnType("float", sizeof(float));
+  f.appendArg("float", sizeof(float), serialize<float>(x));
+  f.appendArg("float", sizeof(float), serialize<float>(y));
 
-  string data = "add,float(4),float(4),float(4)|" + serialize<float>(x) + serialize<float>(y);
+  string data = f.networkForm();
 
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) invoked");
-  RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
-
-  // name, return type, arg types, send the args...
+  RPCPROXYSOCKET->write(data, data.length()+1);
 
   //
   // Read the response
   //
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) invocation sent, waiting for response");
-  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer)); // only legal response is DONE
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  //
-  // Check the response
-  //
-  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {
-    throw C150Exception("floatarithmetic.proxy.cpp: float add(float, float) received invalid response from the server");
-  }
+  float result = *(reinterpret_cast<float*>(readBuffer));
+  cerr << "Got Result: " << result << endl;
+
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) successful return from remote call");
 
 }
