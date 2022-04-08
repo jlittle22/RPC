@@ -26,90 +26,80 @@ void getFunctionCallFromStream();
 //
 // ======================================================================
   
-  // read args from stream
-// call function 1
-// sends done 
 
-float __add(float x, float y) {
+int __add(int x, int y) {
   char doneBuffer[5] = "DONE";  // to write magic value DONE + null
 
   //
   // Time to actually call the function 
   //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __add()");
-  float res = add(x, y);
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: invoking __add()");
+  int res = add(x, y);
 
   //
   // Send the response to the client
   //
-  // If add returned something other than void, this is
+  // If __add returned something other than void, this is
   // where we'd send the return value back.
   //
-
-  // check if void
-  // send return value back?? 
-  // am confused - do you send result or the done?
-  // should we not read into a read buffer?
-
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __add() -- responding to client");
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: returned from  __add() -- responding to client");
   RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
 }
 
-void __subtract(float x, float y) {
+void __subtract(int x, int y) {
   char doneBuffer[5] = "DONE";  // to write magic value DONE + null
 
   //
   // Time to actually call the function 
   //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __subtract()");
-  float res = subtract(x, y);
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: invoking __subtract()");
+  int res = subtract(x, y);
 
   //
   // Send the response to the client
   //
-  // If subtract returned something other than void, this is
+  // If __subtract returned something other than void, this is
   // where we'd send the return value back.
   //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __subtract() -- responding to client");
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: returned from  __subtract() -- responding to client");
   RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
 }
 
-void __multiply(float x, float y) {
+int __multiply(int x, int y) {
   char doneBuffer[5] = "DONE";  // to write magic value DONE + null
 
   //
   // Time to actually call the function 
   //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __multiply()");
-  float res = multiply(x, y);
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: invoking __multiply()");
+  int res = multiply(x, y);
 
   //
   // Send the response to the client
   //
-  // If multiply returned something other than void, this is
+  // If __multiply returned something other than void, this is
   // where we'd send the return value back.
   //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __multiply() -- responding to client");
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: returned from  __multiply() -- responding to client");
   RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
 }
 
-
-void __divide(float x, float y) {
+int __divide(int x, int y) {
   char doneBuffer[5] = "DONE";  // to write magic value DONE + null
 
   //
   // Time to actually call the function 
   //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __divide()");
-  float res = divide(x, y);
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: invoking __divide()");
+  int res = divide(x, y);
 
   //
   // Send the response to the client
   //
-  // If divide returned something other than void, this is
+  // If __multiply returned something other than void, this is
   // where we'd send the return value back.
   //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __divide() -- responding to client");
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: returned from  __divide() -- responding to client");
   RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
 }
 
@@ -129,7 +119,7 @@ void __badFunction(char *functionName) {
   // Send the response to the client indicating bad function
   //
 
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: received call for nonexistent function %s()",functionName);
+  c150debug->printf(C150RPCDEBUG,"arithmetic.stub.cpp: received call for nonexistent function %s()",functionName);
   RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
 }
 
@@ -176,7 +166,13 @@ void dispatchFunction() {
       auto [ argTypeName, argTypeSize, dataString ] = f.getArgAtIndex(i);
   }
 
+
   // should we be using this?? to get the first one?
+
+  //
+  // We've read the function name, call the stub for the right one
+  // The stub will invoke the function and send response.
+  //
 
   //
   // We've read the function name, call the stub for the right one
@@ -187,25 +183,26 @@ void dispatchFunction() {
   // then create a big switch statement thing to check the incoming signature 
   // against each of the signatures we read from the idl_to_json...
 
+
   if (!RPCSTUBSOCKET-> eof()) {
-    if (strcmp(functionCallBuffer,"add,float(4),float(4),float(4)") == 0)
-      float x = f.getArgAtIndex(0);
-      float y = f.getArgAtIndex(1); // wrong???
+    if (strcmp(functionCallBuffer,"add,int(4),int(4),int(4)") == 0)
+      int x = f.getArgAtIndex(0);
+      int y = f.getArgAtIndex(1); // wrong???
       // whateverFunctionJakeWrites(&x, &y);
       __add(x,y); // __add(x, y)
-    else   if (strcmp(functionCallBuffer,"subtract,float(4),float(4),float(4)") == 0)
-      float x = f.getArgAtIndex(0);
-      float y = f.getArgAtIndex(1);
+    else   if (strcmp(functionCallBuffer,"subtract,int(4),int(4),int(4)") == 0)
+      int x = f.getArgAtIndex(0);
+      int y = f.getArgAtIndex(1);
       // whateverFunctionJakeWrites(&x, &y);
       __subtract(x,y); // __add(x, y)
-    else   if (strcmp(functionCallBuffer,"multiply,float(4),float(4),float(4)") == 0)
+    else   if (strcmp(functionCallBuffer,"multiply,int(4),int(4),int(4)") == 0)
       float x = f.getArgAtIndex(0);
-      float y = f.getArgAtIndex(1);
+      int y = f.getArgAtIndex(1);
       // whateverFunctionJakeWrites(&x, &y);
       __multiply(x,y); // __add(x, y)
-    else if (strcmp(functionCallBuffer,"divide,float(4),float(4),float(4)") == 0)
-      float x = f.getArgAtIndex(0);
-      float y = f.getArgAtIndex(1);
+    else if (strcmp(functionCallBuffer,"divide,int(4),int(4),int(4)") == 0)
+      int x = f.getArgAtIndex(0);
+      int y = f.getArgAtIndex(1);
       // whateverFunctionJakeWrites(&x, &y);
       __divide(x,y); // __add(x, y)
     else
@@ -262,12 +259,12 @@ void getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   // or EOF
   //
   if (readlen == 0) {
-    c150debug->printf(C150RPCDEBUG,"simplefunction.stub: read zero length message, checking EOF");
+    c150debug->printf(C150RPCDEBUG,"arithmetic.stub: read zero length message, checking EOF");
     if (RPCSTUBSOCKET-> eof()) {
-      c150debug->printf(C150RPCDEBUG,"simplefunction.stub: EOF signaled on input");
+      c150debug->printf(C150RPCDEBUG,"arithmetic.stub: EOF signaled on input");
 
     } else {
-      throw C150Exception("simplefunction.stub: unexpected zero length read without eof");
+      throw C150Exception("arithmetic.stub: unexpected zero length read without eof");
     }
   }
 
@@ -275,7 +272,7 @@ void getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   // If we didn't get a null, input message was poorly formatted
   //
   else if(!readnull) 
-    throw C150Exception("simplefunction.stub: method name not null terminated or too long");
+    throw C150Exception("arithmetic.stub: method name not null terminated or too long");
 
   
   //
