@@ -7,9 +7,13 @@ using namespace std;
 NetworkFormatter::NetworkFormatter() {
 	functionName = "";
 	returnType = make_tuple("", 0);
+    networkFormLength = 0;
 }
 
 NetworkFormatter::NetworkFormatter(string offTheWire) {
+    int numBytes = (*reinterpret_cast<const int*>(offTheWire.c_str()));
+
+    offTheWire = offTheWire.substr(sizeof(int), numBytes + sizeof(int));
 
 	//////
 	// Find the first occurrence of ','... this character indicates the end of the function name
@@ -75,7 +79,6 @@ NetworkFormatter::NetworkFormatter(string offTheWire) {
 
 	    // Read the next argTypeSize as the data representing the argument...
 	    string argData = offTheWire.substr(endOfArgSizeIndex + 2, argTypeSize);
-
 	    args.emplace_back(make_tuple(argTypeName, argTypeSize, argData));
 	    // Add the argument as a tuple to our vector.
 	    //////
@@ -119,7 +122,15 @@ int NetworkFormatter::getNumArgs() {
 
 // TODO @Jake: Still figuring out how / if this will be used. Ignore for now.
 std::string NetworkFormatter::getFunctionSignature() {
-    return "";
+    string sig = functionName + "," + get<0>(returnType) + "(" + to_string(get<1>(returnType)) + ")";
+
+    // For each argument in our vector...
+    for (auto it : args) {
+        // Add a component of the form: {,<argType>(<size>)}
+        sig += "," + get<0>(it) + "(" + to_string(get<1>(it)) + ")";
+    }
+
+    return sig;
 }
 
 //////
@@ -161,6 +172,8 @@ string NetworkFormatter::networkForm() {
     	// Add a component of the form: {,<argType>(<size>),<argData>}
         res += "," + get<0>(it) + "(" + to_string(get<1>(it)) + ")," + get<2>(it);
     }
+
+    res = serialize((int)res.length()) + res;
 
     return res;
 }

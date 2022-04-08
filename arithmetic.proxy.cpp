@@ -5,129 +5,103 @@
 #include <cstdio>
 #include <cstring>
 #include "c150debug.h"
+#include "./RPC/utility.h"
+
+#include <iostream>
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
 
-string serialize(int x) {
-  string result = "";
-  for (int i = sizeof(int) - 1; i >= 0; i--) {
-    char curr = (char)(x >> (i * 8));  
-    result += curr;
-  }
-
-  return result;
-}
-
-int deserialize(string x) {
-  int result = 0;
-  for (int i = x.length() - 1; i >= 0; i--) {
-    result += uint8_t(x[i]) << ((x.length() - i - 1) * 8);
-  }
-  return result;
-}
-
-
 int add(int x, int y) {
-  char readBuffer[sizeof(int)];  // to read magic value DONE + null
+  char readBuffer[sizeof(int)];
 
-  //
-  // Send the Remote Call
-  //
-
-  string data = "add,int,int," + serialize(x) + ",int," + serialize(y);
-
-  c150debug->printf(C150RPCDEBUG,"arithmetic.proxy.cpp: int add(int, int) invoked");
-  RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
-
-  // name, return type, arg types, send the args...
-  // 
-
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("add");
+  f.setFunctionRetType("int", sizeof(int));
+  f.appendArg("int", sizeof(int), serialize(x));
+  f.appendArg("int", sizeof(int), serialize(y));
  
+  string data = f.networkForm();
+  c150debug->printf(C150RPCDEBUG,"arithmetic.proxy.cpp: int add(int, int) invoked");
 
-  //
-  // Read the response
-  //
+  RPCPROXYSOCKET->write(data.c_str(), data.length()); 
+
   c150debug->printf(C150RPCDEBUG,"arithmetic.proxy.cpp: int add(int, int) invocation sent, waiting for response");
-  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer)); // only legal response is DONE
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  //
-  // Check the response
-  //
-  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {
-    throw C150Exception("arithmetic.proxy.cpp: int add(int, int) received invalid response from the server");
-  }
+  int result = (*(reinterpret_cast<int*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"arithmetic.proxy.cpp: int add(int, int) successful return from remote call");
 
+  return result;
 }
 
 
 int subtract(int x, int y) {
-  char readBuffer[5];  // to read magic value DONE + null
-  //
-  // Send the Remote Call
-  //
-  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func2() invoked");
-  RPCPROXYSOCKET->write("func2", strlen("func2")+1); // write function name including null
-  //
-  // Read the response
-  //
-  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func2() invocation sent, waiting for response");
-  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer)); // only legal response is DONE
+  char readBuffer[sizeof(int)];
 
-  //
-  // Check the response
-  //
-  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {
-    throw C150Exception("simplefunction.proxy: func2() received invalid response from the server");
-  }
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("subtract");
+  f.setFunctionRetType("int", sizeof(int));
+  f.appendArg("int", sizeof(int), serialize(x));
+  f.appendArg("int", sizeof(int), serialize(y));
+  string data = f.networkForm();
+
+  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func2() invoked");
+  RPCPROXYSOCKET->write(data.c_str(), data.length());
+
+  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func2() invocation sent, waiting for response");
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
+
+  int result = (*(reinterpret_cast<int*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func2() successful return from remote call");
+
+  return result;
 
 }
 
 
 int multiply(int x, int y) {
-  char readBuffer[5];  // to read magic value DONE + null
-  //
-  // Send the Remote Call
-  //
-  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invoked");
-  RPCPROXYSOCKET->write("func3", strlen("func3")+1); // write function name including null
-  //
-  // Read the response
-  //
-  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invocation sent, waiting for response");
-  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer)); // only legal response is DONE
+  char readBuffer[sizeof(int)];
 
-  //
-  // Check the response
-  //
-  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {
-    throw C150Exception("simplefunction.proxy: func3() received invalid response from the server");
-  }
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("multiply");
+  f.setFunctionRetType("int", sizeof(int));
+  f.appendArg("int", sizeof(int), serialize(x));
+  f.appendArg("int", sizeof(int), serialize(y));
+  string data = f.networkForm();
+  
+  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invoked");
+  RPCPROXYSOCKET->write(data.c_str(), data.length());
+  
+  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invocation sent, waiting for response");
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
+
+  int result = (*(reinterpret_cast<int*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() successful return from remote call");
+  
+  return result;
 
 }
 
 int divide(int x, int y) {
-  char readBuffer[5];  // to read magic value DONE + null
-  //
-  // Send the Remote Call
-  //
-  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invoked");
-  RPCPROXYSOCKET->write("func3", strlen("func3")+1); // write function name including null
-  //
-  // Read the response
-  //
-  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invocation sent, waiting for response");
-  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer)); // only legal response is DONE
+  char readBuffer[sizeof(int)];
 
-  //
-  // Check the response
-  //
-  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {
-    throw C150Exception("simplefunction.proxy: func3() received invalid response from the server");
-  }
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("divide");
+  f.setFunctionRetType("int", sizeof(int));
+  f.appendArg("int", sizeof(int), serialize(x));
+  f.appendArg("int", sizeof(int), serialize(y));
+  string data = f.networkForm();
+
+  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invoked");
+  RPCPROXYSOCKET->write(data.c_str(), data.length());
+
+  c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invocation sent, waiting for response");
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
+
+  int result = (*(reinterpret_cast<int*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() successful return from remote call");
+  
+  return result;
 
 }
 

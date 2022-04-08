@@ -43,11 +43,15 @@ public:
 
 	std::string getFunctionSignature();
 
+
+
 	std::string networkForm();
+
 
 private:
     std::vector<std::tuple<std::string, int, std::string>> args;  // type name, size, data
     std::string functionName;
+    int networkFormLength;
     std::tuple<std::string, int> returnType;
 };
 
