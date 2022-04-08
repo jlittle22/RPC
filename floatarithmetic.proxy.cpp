@@ -1,12 +1,13 @@
- #include "floatarithmetic.idl"
+#include "floatarithmetic.idl"
 
 #include "rpcproxyhelper.h"
-#include "./RPC/utility.h"
 
 #include <cstdio>
 #include <cstring>
-#include <string>
 #include "c150debug.h"
+#include "./RPC/utility.h"
+
+#include <iostream>
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
 
@@ -15,107 +16,92 @@ float add(float x, float y) {
 
   NetworkFormatter f = NetworkFormatter();
   f.setFunctionName("add");
-  f.setReturnType("float", sizeof(float));
-  f.appendArg("float", sizeof(float), serialize<float>(x));
-  f.appendArg("float", sizeof(float), serialize<float>(y));
-
+  f.setFunctionRetType("float", sizeof(float));
+  f.appendArg("float", sizeof(float), serialize(x));
+  f.appendArg("float", sizeof(float), serialize(y));
+ 
   string data = f.networkForm();
-
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) invoked");
-  RPCPROXYSOCKET->write(data, data.length()+1);
 
-  //
-  // Read the response
-  //
+  RPCPROXYSOCKET->write(data.c_str(), data.length()); 
+
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  float result = *(reinterpret_cast<float*>(readBuffer));
-  cerr << "Got Result: " << result << endl;
-
+  float result = (*(reinterpret_cast<float*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) successful return from remote call");
 
+  return result;
 }
 
 
 float subtract(float x, float y) {
-  char readBuffer[sizeof(float)];  // to read magic value DONE + null
-  //
-  // Send the Remote Call
-  //
+  char readBuffer[sizeof(float)];
 
-  string data = "subtract,float,float," + serialize(x) + ",float," + serialize(y);
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("subtract");
+  f.setFunctionRetType("float", sizeof(float));
+  f.appendArg("float", sizeof(float), serialize(x));
+  f.appendArg("float", sizeof(float), serialize(y));
+  string data = f.networkForm();
 
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float subtract(float, float) invoked");
-  RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
+  RPCPROXYSOCKET->write(data.c_str(), data.length());
 
-  //
-  // Read the response
-  //
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float subtract(float, float) invocation sent, waiting for response");
-  RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  //
-  // Check the response
-  //
-  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {
-    throw C150Exception("floatarithmetic.proxy.cpp: float subtract(float, float) received invalid response from the server");
-  }
+  float result = (*(reinterpret_cast<float*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float subtract(float, float) successful return from remote call");
+
+  return result;
 
 }
 
 
 float multiply(float x, float y) {
-  char readBuffer[sizeof(float)];  // to read magic value DONE + null
-  //
-  // Send the Remote Call
-  //
+  char readBuffer[sizeof(float)];
 
-  string data = "multiply,float,float," + serialize(x) + ",float," + serialize(y);
-
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("multiply");
+  f.setFunctionRetType("float", sizeof(float));
+  f.appendArg("float", sizeof(float), serialize(x));
+  f.appendArg("float", sizeof(float), serialize(y));
+  string data = f.networkForm();
+  
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float multiply(float, float) invoked");
-  RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
-
-  //
-  // Read the response
-  //
+  RPCPROXYSOCKET->write(data.c_str(), data.length());
+  
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float multiply(float, float) invocation sent, waiting for response");
-  RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  //
-  // Check the response
-  //
-  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {
-    throw C150Exception("floatarithmetic.proxy.cpp: float multiply(float, float) received invalid response from the server");
-  }
+  float result = (*(reinterpret_cast<float*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float multiply(float, float) successful return from remote call");
+  
+  return result;
+
 }
 
 float divide(float x, float y) {
-  char readBuffer[sizeof(float)];  // to read magic value DONE + null
-  //
-  // Send the Remote Call
-  //
+  char readBuffer[sizeof(float)];
 
-  string data = "divide,float,float," + serialize(x) + ",float," + serialize(y);
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("divide");
+  f.setFunctionRetType("float", sizeof(float));
+  f.appendArg("float", sizeof(float), serialize(x));
+  f.appendArg("float", sizeof(float), serialize(y));
+  string data = f.networkForm();
 
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float divide(float, float) invoked");
-  RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
+  RPCPROXYSOCKET->write(data.c_str(), data.length());
 
-  //
-  // Read the response
-  //
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float divide(float, float) invocation sent, waiting for response");
-  RPCPROXYSOCKET->write(data, data.length()+1); // write function name including null\
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  //
-  // Check the response
-  //
-  if (strncmp(readBuffer,"DONE", sizeof(readBuffer))!=0) {
-    throw C150Exception("floatarithmetic.proxy.cpp: float divide(float, float) received invalid response from the server");
-  }
+  float result = (*(reinterpret_cast<float*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float divide(float, float) successful return from remote call");
+  
+  return result;
 
 }
 

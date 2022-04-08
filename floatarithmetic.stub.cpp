@@ -7,10 +7,12 @@
 #include <cstring>
 #include "c150debug.h"
 #include "./RPC/utility.h"
+#include <ctype.h>
+
+
+#include <iostream>
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
-
-void getFunctionCallFromStream();
 
 // ======================================================================
 //                             STUBS
@@ -26,12 +28,8 @@ void getFunctionCallFromStream();
 //
 // ======================================================================
   
-  // read args from stream
-// call function 1
-// sends done 
 
-float __add(float x, float y) {
-  char doneBuffer[5] = "DONE";  // to write magic value DONE + null
+void __add(float x, float y) {
 
   //
   // Time to actually call the function 
@@ -39,25 +37,11 @@ float __add(float x, float y) {
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __add()");
   float res = add(x, y);
 
-  //
-  // Send the response to the client
-  //
-  // If add returned something other than void, this is
-  // where we'd send the return value back.
-  //
-
-  // check if void
-  // send return value back?? 
-  // am confused - do you send result or the done?
-  // should we not read into a read buffer?
-
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __add() -- responding to client");
-  RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
+  RPCSTUBSOCKET->write(serialize(res).c_str(), sizeof(res));
 }
 
 void __subtract(float x, float y) {
-  char doneBuffer[5] = "DONE";  // to write magic value DONE + null
-
   //
   // Time to actually call the function 
   //
@@ -67,16 +51,14 @@ void __subtract(float x, float y) {
   //
   // Send the response to the client
   //
-  // If subtract returned something other than void, this is
+  // If __subtract returned something other than void, this is
   // where we'd send the return value back.
   //
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __subtract() -- responding to client");
-  RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
+  RPCSTUBSOCKET->write(serialize(res).c_str(), sizeof(res));
 }
 
 void __multiply(float x, float y) {
-  char doneBuffer[5] = "DONE";  // to write magic value DONE + null
-
   //
   // Time to actually call the function 
   //
@@ -86,17 +68,14 @@ void __multiply(float x, float y) {
   //
   // Send the response to the client
   //
-  // If multiply returned something other than void, this is
+  // If __multiply returned something other than void, this is
   // where we'd send the return value back.
   //
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __multiply() -- responding to client");
-  RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
+  RPCSTUBSOCKET->write(serialize(res).c_str(), sizeof(res));
 }
 
-
 void __divide(float x, float y) {
-  char doneBuffer[5] = "DONE";  // to write magic value DONE + null
-
   //
   // Time to actually call the function 
   //
@@ -106,11 +85,11 @@ void __divide(float x, float y) {
   //
   // Send the response to the client
   //
-  // If divide returned something other than void, this is
+  // If __multiply returned something other than void, this is
   // where we'd send the return value back.
   //
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __divide() -- responding to client");
-  RPCSTUBSOCKET->write(doneBuffer, strlen(doneBuffer)+1);
+  RPCSTUBSOCKET->write(serialize(res).c_str(), sizeof(res));
 }
 
 
@@ -142,8 +121,7 @@ void __badFunction(char *functionName) {
 // ======================================================================
 
 // forward declaration
-void getFunctionNameFromStream(char *buffer, unsigned int bufSize); // @BELLA: function call subject to change
-
+int getFunctionCallFromStream(char *buffer, unsigned int bufSize);
 
 
 //
@@ -154,7 +132,6 @@ void getFunctionNameFromStream(char *buffer, unsigned int bufSize); // @BELLA: f
 
 void dispatchFunction() {
 
-
   char functionCallBuffer[500];
 
   //
@@ -164,52 +141,36 @@ void dispatchFunction() {
   //
 
   
-  getFunctionCallFromStream(functionNameBuffer,sizeof(functionCallBuffer));
- 
-  string offTheWire(functionNameBuffer, 500);
+  int numBytes = getFunctionCallFromStream(functionCallBuffer,sizeof(functionCallBuffer));
+
+  string offTheWire(functionCallBuffer, numBytes);
 
   NetworkFormatter f = NetworkFormatter(offTheWire);
-  string functionName = f.getFunctionName();
-  auto [ returnTypeName, returnTypeSize ] = f.getFunctionRetType();
-
-  for (int i = 0; i < f.getNumArgs(); i++) {
-      auto [ argTypeName, argTypeSize, dataString ] = f.getArgAtIndex(i);
-  }
-
-  // should we be using this?? to get the first one?
-
-  //
-  // We've read the function name, call the stub for the right one
-  // The stub will invoke the function and send response.
-  //
-
-  // signaturecompare()
-  // then create a big switch statement thing to check the incoming signature 
-  // against each of the signatures we read from the idl_to_json...
 
   if (!RPCSTUBSOCKET-> eof()) {
-    if (strcmp(functionCallBuffer,"add,float(4),float(4),float(4)") == 0)
-      float x = f.getArgAtIndex(0);
-      float y = f.getArgAtIndex(1); // wrong???
-      // whateverFunctionJakeWrites(&x, &y);
-      __add(x,y); // __add(x, y)
-    else   if (strcmp(functionCallBuffer,"subtract,float(4),float(4),float(4)") == 0)
-      float x = f.getArgAtIndex(0);
-      float y = f.getArgAtIndex(1);
-      // whateverFunctionJakeWrites(&x, &y);
-      __subtract(x,y); // __add(x, y)
-    else   if (strcmp(functionCallBuffer,"multiply,float(4),float(4),float(4)") == 0)
-      float x = f.getArgAtIndex(0);
-      float y = f.getArgAtIndex(1);
-      // whateverFunctionJakeWrites(&x, &y);
-      __multiply(x,y); // __add(x, y)
-    else if (strcmp(functionCallBuffer,"divide,float(4),float(4),float(4)") == 0)
-      float x = f.getArgAtIndex(0);
-      float y = f.getArgAtIndex(1);
-      // whateverFunctionJakeWrites(&x, &y);
-      __divide(x,y); // __add(x, y)
-    else
+    if (f.getFunctionSignature() == "add,float(4),float(4),float(4)") {
+      string argDataStr1 = get<2>(f.getArgAtIndex(0));
+      string argDataStr2 = get<2>(f.getArgAtIndex(1));
+
+      __add(deserialize<float>(argDataStr1), deserialize<float>(argDataStr2));
+    } else if (f.getFunctionSignature() == "subtract,float(4),float(4),float(4)") {
+      string argDataStr1 = get<2>(f.getArgAtIndex(0));
+      string argDataStr2 = get<2>(f.getArgAtIndex(1));
+
+      __subtract(deserialize<float>(argDataStr1), deserialize<float>(argDataStr2));
+    } else if (f.getFunctionSignature() == "multiply,float(4),float(4),float(4)") {
+      string argDataStr1 = get<2>(f.getArgAtIndex(0));
+      string argDataStr2 = get<2>(f.getArgAtIndex(1));
+
+      __multiply(deserialize<float>(argDataStr1), deserialize<float>(argDataStr2));
+    } else if (f.getFunctionSignature() == "divide,float(4),float(4),float(4)") {
+      string argDataStr1 = get<2>(f.getArgAtIndex(0));
+      string argDataStr2 = get<2>(f.getArgAtIndex(1));
+
+      __divide(deserialize<float>(argDataStr1), deserialize<float>(argDataStr2));
+    } else {
       __badFunction(functionCallBuffer);
+    }
   }
 }
 
@@ -231,56 +192,50 @@ void dispatchFunction() {
 //   Important: this routine must leave the sock open but at EOF
 //   when eof is read from client.
 //
-void getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
+int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   unsigned int i;
-  char *bufp;    // next char to read
-  bool readnull;
-  ssize_t readlen;             // amount of data read from socket
-  
-  //
-  // Read a message from the stream
-  // -1 in size below is to leave room for null
-  //
-  readnull = false;
+  char *bufp;
+  ssize_t readlen;
+  unsigned int numBytes;
+
   bufp = buffer;
-  for (i=0; i< bufSize; i++) {
+
+  for (i = 0; i < sizeof(numBytes); i++) {
     readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte
-    // check for eof or error
     if (readlen == 0) {
       break;
     }
-    // check for null and bump buffer pointer
-    if (*bufp++ == '\0') {
-      readnull = true;
+
+    bufp++;
+  }
+
+  numBytes = (*(reinterpret_cast<unsigned int*>(buffer)));
+
+  for (i = 0; i < bufSize && i < numBytes; i++) {
+    readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte
+
+    if (readlen == 0) {
       break;
     }
+
+    bufp++;
   }
   
-  //
-  // With TCP streams, we should never get a 0 length read
-  // except with timeouts (which we're not setting in pingstreamserver)
-  // or EOF
-  //
   if (readlen == 0) {
-    c150debug->printf(C150RPCDEBUG,"simplefunction.stub: read zero length message, checking EOF");
+    c150debug->printf(C150RPCDEBUG,"arithmetic.stub: read zero length message, checking EOF");
     if (RPCSTUBSOCKET-> eof()) {
-      c150debug->printf(C150RPCDEBUG,"simplefunction.stub: EOF signaled on input");
+      c150debug->printf(C150RPCDEBUG,"arithmetic.stub: EOF signaled on input");
 
     } else {
-      throw C150Exception("simplefunction.stub: unexpected zero length read without eof");
+      throw C150Exception("arithmetic.stub: unexpected zero length read without eof");
     }
   }
 
-  //
-  // If we didn't get a null, input message was poorly formatted
-  //
-  else if(!readnull) 
-    throw C150Exception("simplefunction.stub: method name not null terminated or too long");
+  if (i < numBytes && i >= bufSize) {
+    throw C150Exception("arithmetic.stub: Incoming message was larger than bufSize");
+  }
 
-  
-  //
-  // Note that eof may be set here for our caller to check
-  //
+  return numBytes + sizeof(numBytes);
 
 }
 
