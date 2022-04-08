@@ -56,7 +56,7 @@ all: utility pingstreamclient pingstreamserver idldeclarationtst simplefunctionc
 ########################################################################
 
 utility:
-	$(CPP) -c $(UTILITY_PATH)/utility.cpp
+	$(CPP) -c $(UTILITY_PATH)utility.cpp
 
 pingstreamclient: pingstreamclient.o  $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 	$(CPP) -o pingstreamclient pingstreamclient.o $(C150AR) $(C150IDSRPCAR) 
