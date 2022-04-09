@@ -13,6 +13,8 @@ struct StructWithArrays {
   Person people[10];
 };
 
+Person findOtherPerson(StructWithArrays x);
+
 struct rectangle {int x; int y;};
 
 int area(rectangle r);

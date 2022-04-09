@@ -43,9 +43,9 @@ CPPFLAGS = -g -Wall -std=c++17 -I$(C150IDSRPC) -I$(C150LIB)
 UTILITY_PATH = ./RPC/
 
 LDFLAGS = 
-INCLUDES = $(C150LIB)c150streamsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h $(C150LIB)c150grading.h $(C150IDSRPC)IDLToken.h $(C150IDSRPC)tokenizeddeclarations.h  $(C150IDSRPC)tokenizeddeclaration.h $(C150IDSRPC)declarations.h $(C150IDSRPC)declaration.h $(C150IDSRPC)functiondeclaration.h $(C150IDSRPC)typedeclaration.h $(C150IDSRPC)arg_or_member_declaration.h rpcproxyhelper.h rpcstubhelper.h simplefunction.idl arithmetic.idl floatarithmetic.idl 
+INCLUDES = $(C150LIB)c150streamsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h $(C150LIB)c150grading.h $(C150IDSRPC)IDLToken.h $(C150IDSRPC)tokenizeddeclarations.h  $(C150IDSRPC)tokenizeddeclaration.h $(C150IDSRPC)declarations.h $(C150IDSRPC)declaration.h $(C150IDSRPC)functiondeclaration.h $(C150IDSRPC)typedeclaration.h $(C150IDSRPC)arg_or_member_declaration.h rpcproxyhelper.h rpcstubhelper.h simplefunction.idl arithmetic.idl floatarithmetic.idl structs.idl
 
-all: utility pingstreamclient pingstreamserver idldeclarationtst simplefunctionclient simplefunctionserver idl_to_json arithmeticclient arithmeticserver floatarithmeticclient floatarithmeticserver
+all: pingstreamclient pingstreamserver idldeclarationtst simplefunctionclient simplefunctionserver idl_to_json arithmeticclient arithmeticserver floatarithmeticclient floatarithmeticserver structsclient structsserver
 
 ########################################################################
 #
@@ -56,7 +56,7 @@ all: utility pingstreamclient pingstreamserver idldeclarationtst simplefunctionc
 ########################################################################
 
 utility:
-	$(CPP) -c $(UTILITY_PATH)utility.cpp
+	$(CPP) -c $(UTILITY_PATH)utility.cpp serialize.o
 
 pingstreamclient: pingstreamclient.o  $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 	$(CPP) -o pingstreamclient pingstreamclient.o $(C150AR) $(C150IDSRPCAR) 
@@ -81,17 +81,23 @@ pingstreamserver: pingstreamserver.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
 #
 ########################################################################
 
-arithmeticclient: arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o arithmeticclient arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o  $(C150AR) $(C150IDSRPCAR) 
+structsclient: structsclient.o rpcproxyhelper.o structs.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+	$(CPP) -o structsclient structsclient.o rpcproxyhelper.o structs.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
 
-arithmeticserver: arithmetic.stub.o rpcserver.o rpcstubhelper.o arithmetic.o utility.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o arithmeticserver rpcserver.o arithmetic.stub.o arithmetic.o rpcstubhelper.o utility.o $(C150AR) $(C150IDSRPCAR) 
+structsserver: structs.stub.o rpcserver.o rpcstubhelper.o structs.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+	$(CPP) -o structsserver rpcserver.o structs.stub.o structs.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
 
-floatarithmeticclient: floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o floatarithmeticclient floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o  $(C150AR) $(C150IDSRPCAR) 
+arithmeticclient: arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+	$(CPP) -o arithmeticclient arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o serialize.o  $(C150AR) $(C150IDSRPCAR) 
 
-floatarithmeticserver: floatarithmetic.stub.o rpcserver.o rpcstubhelper.o floatarithmetic.o utility.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o floatarithmeticserver rpcserver.o floatarithmetic.stub.o floatarithmetic.o rpcstubhelper.o utility.o $(C150AR) $(C150IDSRPCAR) 
+arithmeticserver: arithmetic.stub.o rpcserver.o rpcstubhelper.o arithmetic.o utility.o serialize.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+	$(CPP) -o arithmeticserver rpcserver.o arithmetic.stub.o arithmetic.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
+
+floatarithmeticclient: floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+	$(CPP) -o floatarithmeticclient floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
+
+floatarithmeticserver: floatarithmetic.stub.o rpcserver.o rpcstubhelper.o floatarithmetic.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+	$(CPP) -o floatarithmeticserver rpcserver.o floatarithmetic.stub.o floatarithmetic.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
 
 simplefunctionclient: simplefunctionclient.o rpcproxyhelper.o simplefunction.proxy.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
 	$(CPP) -o simplefunctionclient simplefunctionclient.o rpcproxyhelper.o simplefunction.proxy.o  $(C150AR) $(C150IDSRPCAR) 

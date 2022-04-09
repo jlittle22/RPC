@@ -1,8 +1,20 @@
 #include "utility.h"
 #include <stdexcept>
 #include <iostream>
-
 using namespace std;
+
+#include "../serialize.h"
+
+// generate this function using the idl_to_json results in the python script
+// static bool is_hard(string type_name) {
+//     if (type_name == "int") {
+//         return TRUE;
+//     } else if (type_name == "float") {
+//         return TRUE;
+//     } else if (type_name == "void") {
+
+//     }
+// }
 
 NetworkFormatter::NetworkFormatter() {
 	functionName = "";

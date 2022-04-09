@@ -9,6 +9,7 @@
 #include "./RPC/utility.h"
 #include <ctype.h>
 
+#include "serialize.h"
 
 #include <iostream>
 
@@ -131,6 +132,7 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize);
 //
 
 void dispatchFunction() {
+  cout << "Here" << endl;
 
   char functionCallBuffer[500];
 
@@ -139,7 +141,6 @@ void dispatchFunction() {
   // REPLACE THIS WITH YOUR OWN LOGIC DEPENDING ON THE 
   // WIRE FORMAT YOU USE
   //
-
   
   int numBytes = getFunctionCallFromStream(functionCallBuffer,sizeof(functionCallBuffer));
 
@@ -147,27 +148,29 @@ void dispatchFunction() {
 
   NetworkFormatter f = NetworkFormatter(offTheWire);
 
+  cout << "Matcbing: " << f.getFunctionSignature() << endl;
+
   if (!RPCSTUBSOCKET-> eof()) {
     if (f.getFunctionSignature() == "add,int(4),int(4),int(4)") {
       string argDataStr1 = get<2>(f.getArgAtIndex(0));
       string argDataStr2 = get<2>(f.getArgAtIndex(1));
 
-      __add(deserialize<int>(argDataStr1), deserialize<int>(argDataStr2));
+      __add(deserialize_int(argDataStr1), deserialize_int(argDataStr2));
     } else if (f.getFunctionSignature() == "subtract,int(4),int(4),int(4)") {
       string argDataStr1 = get<2>(f.getArgAtIndex(0));
       string argDataStr2 = get<2>(f.getArgAtIndex(1));
 
-      __subtract(deserialize<int>(argDataStr1), deserialize<int>(argDataStr2));
+      __subtract(deserialize_int(argDataStr1), deserialize_int(argDataStr2));
     } else if (f.getFunctionSignature() == "multiply,int(4),int(4),int(4)") {
       string argDataStr1 = get<2>(f.getArgAtIndex(0));
       string argDataStr2 = get<2>(f.getArgAtIndex(1));
 
-      __multiply(deserialize<int>(argDataStr1), deserialize<int>(argDataStr2));
+      __multiply(deserialize_int(argDataStr1), deserialize_int(argDataStr2));
     } else if (f.getFunctionSignature() == "divide,int(4),int(4),int(4)") {
       string argDataStr1 = get<2>(f.getArgAtIndex(0));
       string argDataStr2 = get<2>(f.getArgAtIndex(1));
 
-      __divide(deserialize<int>(argDataStr1), deserialize<int>(argDataStr2));
+      __divide(deserialize_int(argDataStr1), deserialize_int(argDataStr2));
     } else {
       __badFunction(functionCallBuffer);
     }
@@ -199,6 +202,7 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   unsigned int numBytes;
 
   bufp = buffer;
+  cout << "top of GFCFS" << endl;
 
   for (i = 0; i < sizeof(numBytes); i++) {
     readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte
@@ -209,7 +213,10 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
     bufp++;
   }
 
-  numBytes = (*(reinterpret_cast<unsigned int*>(buffer)));
+  string numBytesStr(buffer, sizeof(numBytes));
+  numBytes = deserialize_int(numBytesStr);
+
+  cout << "Numvytes : " << numBytes << endl;
 
   for (i = 0; i < bufSize && i < numBytes; i++) {
     readlen = RPCSTUBSOCKET-> read(bufp, 1);  // read a byte
@@ -238,5 +245,8 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   return numBytes + sizeof(numBytes);
 
 }
+
+
+
 
 

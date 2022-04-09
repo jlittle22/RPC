@@ -5,25 +5,63 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <arpa/inet.h>
+#include <inttypes.h>
 
-template <typename T>
-std::string serialize(T item) {
-  std::stringstream sstream;
+// void, int, float, string
+// 
 
-  const char* ptr = reinterpret_cast<char*>(&item);
-  sstream.write(ptr, sizeof(T));
+// string x = "this is a long strng that has lots of data";
 
-  return sstream.str();
-}
+// -> string(43),this is a long string that has lots of data
 
-template <typename T>
-T deserialize(std::string x) {
-    T new_item;
-    std::stringstream ss(x);
-    ss.read(reinterpret_cast<char*>(&new_item), sizeof(T));
+// Need more sophisticated method of serializing and deserializing for 
+// string and string-based custom types.
 
-    return new_item;
-}
+// Need helper method used to get size of variable in bytes
+// regardless of POD or variable-length... used in serialization
+// and in the network form (length of args)
+
+// getsizeof(x) --> 32 --> 12. <-- needs to work for structs and such... ??
+// 
+// Person {
+//   string name; -> "jake little"
+//   string age;  -> "twenty two"
+// } 
+///
+
+// seriali
+
+//. serialize(Person x)...
+//.     res = serialize(x.name) + serialize(x.age)
+//.     return res. 
+//
+//.   x -->  Person(22),jake little\0 twenty two\0
+//
+
+// deserialize (string x)...
+// 
+//    
+
+// Person incoming = reinterpret_cast<Person*>(char_ptr);
+
+// If we can figure out how to do those two things, then the 
+// network formatter can stay the same and the stubs 
+// will also basically be the same (I think?)... need to investigate how 
+// string deserialization will work...
+
+// Also endianness being the same is no guaranteed so we need to address
+// that:
+
+// convert all integer and float values to big endian for network
+
+// 1234 --> "1234"
+// 2.12354456363 --> ""
+
+// Struct offsets not necessarily the same on all machines
+
+// hard-coded serialize / deserialize for each struct in our type system..
+
 
 class NetworkFormatter {
 public:

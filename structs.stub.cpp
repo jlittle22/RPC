@@ -1,5 +1,10 @@
+#include <string>
+using namespace std;          // for C++ std library
 
-#include "floatarithmetic.idl"
+#ifndef STRUCTS_IDL
+#define STRUCTS_IDL
+#include "structs.idl"
+#endif
 
 #include "rpcstubhelper.h"
 
@@ -8,8 +13,8 @@
 #include "c150debug.h"
 #include "./RPC/utility.h"
 #include <ctype.h>
-
 #include "serialize.h"
+
 
 #include <iostream>
 
@@ -29,72 +34,41 @@ using namespace C150NETWORK;  // for all the comp150 utilities
 //
 // ======================================================================
   
+void __findOtherPerson(StructWithArrays x) {
+  Person res = findOtherPerson(x);
 
-void __add(float x, float y) {
+  string forTheWire = serialize(res);
 
-  //
-  // Time to actually call the function 
-  //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __add()");
-  float res = add(x, y);
-
-  cout << "RES add : " << res << endl;
-
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __add() -- responding to client");
-  RPCSTUBSOCKET->write(serialize(res).c_str(), sizeof(res));
+  RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
-void __subtract(float x, float y) {
-  //
-  // Time to actually call the function 
-  //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __subtract()");
-  float res = subtract(x, y);
 
-  //
-  // Send the response to the client
-  //
-  // If __subtract returned something other than void, this is
-  // where we'd send the return value back.
-  //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __subtract() -- responding to client");
-  RPCSTUBSOCKET->write(serialize(res).c_str(), sizeof(res));
+void __findPerson(ThreePeople tp) {
+  c150debug->printf(C150RPCDEBUG, "structs.stubs.cpp: invoking __findPerson(ThreePeople)");
+  Person res = findPerson(tp);
+
+  string forTheWire = serialize(res);
+
+  c150debug->printf(C150RPCDEBUG, "structs.stubs.cpp: returned from  __findPerson(ThreePeople) -- responding to client");
+  RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
-void __multiply(float x, float y) {
-  //
-  // Time to actually call the function 
-  //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __multiply()");
-  float res = multiply(x, y);
+void __area(rectangle r) {
+  c150debug->printf(C150RPCDEBUG, "structs.stubs.cpp: invoking __area(rectangle)");
+  int res = area(r);
 
-  //
-  // Send the response to the client
-  //
-  // If __multiply returned something other than void, this is
-  // where we'd send the return value back.
-  //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __multiply() -- responding to client");
-  RPCSTUBSOCKET->write(serialize(res).c_str(), sizeof(res));
+  cout << "Area Res (no serialization): " << res << endl;
+
+  const char * resStr = serialize(res).c_str();
+  for (int i = 0; i < 4; i++) {
+    cout << i << " : " << int(resStr[i]) << endl;
+  }
+
+  string forTheWire = serialize(res);
+
+  c150debug->printf(C150RPCDEBUG, "structs.stubs.cpp: returned from  __area(rectangle) -- responding to client");
+  RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
-
-void __divide(float x, float y) {
-  //
-  // Time to actually call the function 
-  //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: invoking __divide()");
-  float res = divide(x, y);
-
-  //
-  // Send the response to the client
-  //
-  // If __multiply returned something other than void, this is
-  // where we'd send the return value back.
-  //
-  c150debug->printf(C150RPCDEBUG,"floatarithmetic.stub.cpp: returned from  __divide() -- responding to client");
-  RPCSTUBSOCKET->write(serialize(res).c_str(), sizeof(res));
-}
-
 
 
 //
@@ -143,35 +117,41 @@ void dispatchFunction() {
   // WIRE FORMAT YOU USE
   //
 
+  cout << "top of dispatch" << endl;
+
   
   int numBytes = getFunctionCallFromStream(functionCallBuffer,sizeof(functionCallBuffer));
+
+
+  cout << "get function call domne" << endl;
 
   string offTheWire(functionCallBuffer, numBytes);
 
   NetworkFormatter f = NetworkFormatter(offTheWire);
-
+  cout << "checking which function to call" << endl;
   if (!RPCSTUBSOCKET-> eof()) {
-    if (f.getFunctionSignature() == "add,float(4),float(4),float(4)") {
+    if (f.getFunctionSignature() == "findPerson,Person(-1),ThreePeople(-1)") {
+      cout << "trying to call findPerson" << endl;
       string argDataStr1 = get<2>(f.getArgAtIndex(0));
-      string argDataStr2 = get<2>(f.getArgAtIndex(1));
-
-      __add(deserialize_float(argDataStr1), deserialize_float(argDataStr2));
-    } else if (f.getFunctionSignature() == "subtract,float(4),float(4),float(4)") {
+      for (int i = 0; i < argDataStr1.length(); i++) {
+        cout << i << " : " << int(argDataStr1[i]);
+        if(isalnum(argDataStr1[i])) {
+          cout << " (" << argDataStr1[i] << ")";
+        }
+        cout << endl;
+      }
+      __findPerson(deserialize_ThreePeople(argDataStr1));
+    } else if (f.getFunctionSignature() == "area,int(4),rectangle(-1)") {
+      cout << "trying to call area" << endl;
       string argDataStr1 = get<2>(f.getArgAtIndex(0));
-      string argDataStr2 = get<2>(f.getArgAtIndex(1));
 
-      __subtract(deserialize_float(argDataStr1), deserialize_float(argDataStr2));
-    } else if (f.getFunctionSignature() == "multiply,float(4),float(4),float(4)") {
+      __area(deserialize_rectangle(argDataStr1));
+    } else if (f.getFunctionSignature() == "findOtherPerson,Person(-1),StructWithArrays(-1)") {
       string argDataStr1 = get<2>(f.getArgAtIndex(0));
-      string argDataStr2 = get<2>(f.getArgAtIndex(1));
 
-      __multiply(deserialize_float(argDataStr1), deserialize_float(argDataStr2));
-    } else if (f.getFunctionSignature() == "divide,float(4),float(4),float(4)") {
-      string argDataStr1 = get<2>(f.getArgAtIndex(0));
-      string argDataStr2 = get<2>(f.getArgAtIndex(1));
-
-      __divide(deserialize_float(argDataStr1), deserialize_float(argDataStr2));
+      __findOtherPerson(deserialize_StructWithArrays(argDataStr1));
     } else {
+      cout << "bad func: " << f.getFunctionSignature() << endl;
       __badFunction(functionCallBuffer);
     }
   }
@@ -245,8 +225,5 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   return numBytes + sizeof(numBytes);
 
 }
-
-
-
 
 

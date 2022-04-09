@@ -7,6 +7,8 @@
 #include "c150debug.h"
 #include "./RPC/utility.h"
 
+#include "serialize.h"
+
 #include <iostream>
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
@@ -27,8 +29,10 @@ int add(int x, int y) {
 
   c150debug->printf(C150RPCDEBUG,"arithmetic.proxy.cpp: int add(int, int) invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
-
-  int result = (*(reinterpret_cast<int*>(readBuffer)));
+  
+  string offTheWire(readBuffer, sizeof(int));
+  
+  int result = deserialize_int(offTheWire);
   c150debug->printf(C150RPCDEBUG,"arithmetic.proxy.cpp: int add(int, int) successful return from remote call");
 
   return result;
@@ -51,7 +55,9 @@ int subtract(int x, int y) {
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func2() invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  int result = (*(reinterpret_cast<int*>(readBuffer)));
+  string offTheWire(readBuffer, sizeof(int));
+  
+  int result = deserialize_int(offTheWire);
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func2() successful return from remote call");
 
   return result;
@@ -74,8 +80,10 @@ int multiply(int x, int y) {
   
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
-
-  int result = (*(reinterpret_cast<int*>(readBuffer)));
+  
+  string offTheWire(readBuffer, sizeof(int));
+  
+  int result = deserialize_int(offTheWire);
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() successful return from remote call");
   
   return result;
@@ -98,7 +106,9 @@ int divide(int x, int y) {
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  int result = (*(reinterpret_cast<int*>(readBuffer)));
+  string offTheWire(readBuffer, sizeof(int));
+  
+  int result = deserialize_int(offTheWire);
   c150debug->printf(C150RPCDEBUG,"simplefunction.proxy.cpp: func3() successful return from remote call");
   
   return result;

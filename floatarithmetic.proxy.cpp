@@ -7,6 +7,8 @@
 #include "c150debug.h"
 #include "./RPC/utility.h"
 
+#include "serialize.h"
+
 #include <iostream>
 
 using namespace C150NETWORK;  // for all the comp150 utilities 
@@ -27,8 +29,11 @@ float add(float x, float y) {
 
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
+  
+  string offTheWire(readBuffer, sizeof(float));
+  
+  float result = deserialize_float(offTheWire);
 
-  float result = (*(reinterpret_cast<float*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float add(float, float) successful return from remote call");
 
   return result;
@@ -51,7 +56,10 @@ float subtract(float x, float y) {
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float subtract(float, float) invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  float result = (*(reinterpret_cast<float*>(readBuffer)));
+  string offTheWire(readBuffer, sizeof(float));
+  
+  float result = deserialize_float(offTheWire);
+
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float subtract(float, float) successful return from remote call");
 
   return result;
@@ -75,7 +83,10 @@ float multiply(float x, float y) {
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float multiply(float, float) invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
 
-  float result = (*(reinterpret_cast<float*>(readBuffer)));
+  string offTheWire(readBuffer, sizeof(float));
+  
+  float result = deserialize_float(offTheWire);
+
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float multiply(float, float) successful return from remote call");
   
   return result;
@@ -97,8 +108,10 @@ float divide(float x, float y) {
 
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float divide(float, float) invocation sent, waiting for response");
   RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
+  string offTheWire(readBuffer, sizeof(float));
+  
+  float result = deserialize_float(offTheWire);
 
-  float result = (*(reinterpret_cast<float*>(readBuffer)));
   c150debug->printf(C150RPCDEBUG,"floatarithmetic.proxy.cpp: float divide(float, float) successful return from remote call");
   
   return result;
