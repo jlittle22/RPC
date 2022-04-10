@@ -244,4 +244,5 @@ idl_to_json: idl_to_json.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
 clean:
 	 rm -f pingstreamclient pingstreamserver idldeclarationtst idl_to_json simplefunctionclient simplefunctionserver *.o *.json *.pyc
 
-
+logs-go-away:
+	rm -f GRADELOG*.txt

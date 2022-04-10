@@ -1,9 +1,370 @@
 #!/bin/env python3
 
 from idl_to_json import idl_to_json
+import sys
+import json
+import re
+import bisect 
+
+built_in_types = [ "void", "int", "string", "float" ]
+static_size_types = [ "int", "float" ]
+
+###### parse_array_type_name
+## 
+## Takes a string of the form __<type>[<num>]{[<num>]} and parses
+## it into a tuple of the form ('<type>', ['<num>', ...]).
+##
+## Example: "__int[4][10][100]" --> ("int", ["4", "10", "100"])
+##
+######
+def parse_array_type_name(tname):
+    res = [ x for x in re.split('__|\[|\]', tname) if x != "" ]
+    return (res[0], res[1:])
+
+###### create_new_array_type_name
+## 
+## Takes a a tuple of the form ('<type>', ['<num>', ...]) and
+## produces a string of the form Array_<type>_<num>{_<num>}.
+##
+## Example: ("int", ["4", "10", "100"]) --> "Array_int_4_10_100"
+##
+######
+def create_new_array_type_name(type_info):
+    res = f"Array_{type_info[0]}"
+    for dimension in type_info[1]:
+        res += f"_{dimension}"
+
+    return res
+
+###### idl_string_to_python_object
+## 
+## Takes a string containing the contents of a JSON-parsed idl file,
+## preprocesses the string, and returns a Python object representing
+## the idl data.
+##
+## Preprocessing includes replacing all array type names with custom
+## versions that can be used in C++ function names.
+##
+## Example: The type name "__int[4][10][100]"" can't be used in a
+## function name like so:
+##
+##     int* deserialize___int[4][10][100](string x)
+##
+## So, we can use "Array_int_4_10_100" to represent the type instead:
+##
+##     int* deserialize_Array_int_4_10_100(string x)
+##
+######
+def idl_string_to_python_object(idl_str):
+    unclean_idl_obj = json.loads(idl_str)
+    replacements = []
+    for tname, info in unclean_idl_obj["types"].items():
+        if info["type_of_type"] == "array":
+            # Create a new name representing this array type...
+            new_array_type_name = create_new_array_type_name(parse_array_type_name(tname))
+
+            # If the name we created is already in use...
+            if new_array_type_name in unclean_idl_obj["types"]:
+                print(f"DEV LOG (remove!): Type {new_array_type_name} exists already...")
+
+                # Append a number to the name until it is unique.
+                tiebreaker = new_array_type_name
+                i = 0
+                while tiebreaker in unclean_idl_obj["types"]:
+                    tiebreaker = new_array_type_name + f"_v{i}"
+                    i += 1
+                print(f"DEV LOG (remove!): Type {tiebreaker} is unique.")
+                new_array_type_name = tiebreaker
+            bisect.insort(replacements, (tname, new_array_type_name))
+    
+    # Replace the largest type names before the smaller ones to
+    # avoid the prefixes of larger onces being replaced when
+    # replacing smaller ones.
+    replacements.reverse()
+    for (tname, replacement) in replacements:
+        idl_str = idl_str.replace(tname, replacement)
+    print(idl_str)
+    return json.loads(idl_str)
+
+def find_root_type_of_array(typename, idl_types_data):
+    if idl_types_data[typename]["type_of_type"] != "array":
+        return typename
+
+    return find_root_type_of_array(idl_types_data[typename]["member_type"], idl_types_data)
+
+def create_non_array_serialize(type_name, idl_types_data):
+    function = f"\nstring serialize_{type_name}({type_name} x) {{\n"
+    signature = function[:-3] + ';\n';
+    function += "    string data = \"\";\n"
+    for member in idl_types_data[type_name]["members"]:
+        function += f"    data += serialize_{member['type']}(x.{member['name']});\n"
+    function += "    return serialize_int((int)data.length()) + data;\n"
+    function += "}\n"
+    return (signature, function)
+
+def create_non_array_deserialize(type_name, idl_types_data):
+    function = f"\n{type_name} deserialize_{type_name}(string x) {{\n"
+    signature = function[:-3] + ';\n';
+    function += f"    {type_name} new_item;\n"
+    function += "    int len = sizeof(int);\n"
+    for member in idl_types_data[type_name]["members"]:
+        function += f"\n    x = x.substr(len);\n"
+        if member['type'] not in static_size_types:
+            function += f"    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));\n"
+        else:
+            function += f"    len = sizeof({member['type']});\n"
+        if idl_types_data[member['type']]['type_of_type'] != 'array':
+            function += f"    new_item.{member['name']} = deserialize_{member['type']}(x.substr(0, len));\n"
+        else:
+            function += f"    deserialize_{member['type']}(x.substr(0, len), ({find_root_type_of_array(member['type'], idl_types_data)}*)new_item.{member['name']});\n"
+    function += "\n    return new_item;\n"
+    function += "}\n"
+
+    return (signature, function)
+
+def parse_array_name(arr_name, idl_types_data):
+    root_ty = find_root_type_of_array(arr_name, idl_types_data)
+
+    arr_name = arr_name.replace(root_ty, "")
+    sects = arr_name.split('_')
+    
+    dimens = [ x for x in sects if re.match('\d+', x) != None ]
+    
+    return (root_ty, dimens)
+
+def create_cpp_array_type_string(root_ty, dimens):
+    ret = f"{root_ty} x"
+    for d in dimens:
+        ret += f"[{d}]"
+    return ret
+
+def create_array_serialize(type_name, idl_types_data):
+    
+    root_ty, dimens = parse_array_name(type_name, idl_types_data)
+
+    arg = create_cpp_array_type_string(root_ty, dimens)
+   
+    function = f"\nstring serialize_{type_name}({arg}) {{\n"
+    signature = function[:-3] + ';\n';
+    function += "    string data = \"\";\n"
+    function += f"    for (int i = 0; i < {idl_types_data[type_name]['element_count']}; i++) {{\n"
+    function += f"        data += serialize_{idl_types_data[type_name]['member_type']}(x[i]);\n"
+    function += "    }\n"
+    function += "    return serialize_int((int)data.length()) + data;\n"
+    function += "}\n"
+
+    return (signature, function)
+
+def create_array_deserialize(type_name, idl_types_data):
+    print(type_name, idl_types_data[type_name])
+    
+    root_ty, dimens = parse_array_name(type_name, idl_types_data)
+
+    ret = create_cpp_array_type_string(root_ty, dimens)
+
+    member_root_ty, member_dimens = parse_array_name(idl_types_data[type_name]['member_type'], idl_types_data)
+
+    function = f"\nvoid deserialize_{type_name}(string x, {root_ty}* dest) {{\n"
+    signature = function[:-3] + ';\n';
+    function += f"    int len = sizeof(int);\n"
+    function += f"    x = x.substr(len);\n"
+    function += f"\n    for (int i = 0; i < {idl_types_data[type_name]['element_count']}; i++) {{\n"
+    if idl_types_data[type_name]['member_type'] not in static_size_types:
+        function += f"        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));\n"
+    else:
+        function += f"        len = sizeof({idl_types_data[type_name]['member_type']});\n"
+    if idl_types_data[idl_types_data[type_name]['member_type']]['type_of_type'] != 'array':
+        function += f"        dest[i] = deserialize_{idl_types_data[type_name]['member_type']}(x.substr(0, len));\n"
+    else:
+        function += f"        deserialize_{idl_types_data[type_name]['member_type']}(x.substr(0, len), dest + (i * sizeof({root_ty}*)));\n"
+    function += f"        x = x.substr(len);\n"
+    function += "    }\n"
+    function += "}\n"
+
+    return (signature, function)
+
+
+def create_serializers(idl_types_data, idl_name, idl_path):
+    requirements = ("#include <string>\n"
+                    "#include <arpa/inet.h>\n"
+                    "#include <sstream>\n"
+                    "#include <iostream>\n"
+                    "using namespace std;\n"
+                    f"#ifndef {idl_name}\n"
+                    f"#define {idl_name}\n"
+                    f"#include \"{idl_path}\"\n"
+                    "#endif\n"
+                    "\n"
+                    "union FloatInt {\n"
+                    "  uint32_t i;\n"
+                    "  float f;\n"
+                    "};\n")
+    funcs = {
+        "int" : {
+            "serializer" : {
+                "name" : "serialize_int",
+                "signature" : "\nstring serialize_int(int x);\n",
+                "definition" : ("\nstring serialize_int(int x) {\n"
+                                "  uint32_t network_x = htonl((uint32_t)x);\n"
+                                "  stringstream sstream;\n"
+                                "  const char* ptr = reinterpret_cast<char*>(&network_x);\n"
+                                "  sstream.write(ptr, sizeof(network_x));\n"
+                                "  return sstream.str();\n"
+                                "}\n")
+            },
+            "deserializer" : {
+                "name" : "deserialize_int",
+                "signature" : "\nint deserialize_int(string x);\n",
+                "definition" : ("\nint deserialize_int(string x) {\n"
+                                "  uint32_t new_item;\n"
+                                "  std::stringstream ss(x);\n"
+                                "  ss.read(reinterpret_cast<char*>(&new_item), sizeof(new_item));\n"
+                                "  return (int)ntohl(new_item);\n"
+                                "}\n")
+            }
+        },
+        "string" : {
+            "serializer" : {
+                "name" : "serialize_string",
+                "signature" : "\nstring serialize_string(string x);\n",
+                "definition" : ("\nstring serialize_string(string x) {\n"
+                                "  return serialize_int((int)x.length()) + x;\n"
+                                "}\n")
+            },
+            "deserializer" : {
+                "name" : "deserialize_string",
+                "signature" : "\nstring deserialize_string(string x);\n",
+                "definition" : ("\nstring deserialize_string(string x) {\n"
+                                "  int str_size = deserialize_int(x.substr(0, sizeof(int)));\n"
+                                "  return x.substr(sizeof(int), str_size);\n"
+                                "}\n")
+            }
+        },
+        "float" : {
+            "serializer" : {
+                "name" : "serialize_float",
+                "signature" : "\nstring serialize_float(float x);\n",
+                "definition" : ("\nstring serialize_float(float x) {\n"
+                                "  FloatInt conv;\n"
+                                "  conv.f = x;\n"
+                                "  return serialize_int((int)conv.i);\n"
+                                "}\n")
+            },
+            "deserializer" : {
+                "name" : "deserialize_float",
+                "signature" : "\nfloat deserialize(string x);\n",
+                "definition" : ("\nfloat deserialize_float(string x) {\n"
+                                "  int new_item = deserialize_int(x);\n"
+                                "  FloatInt conv;\n"
+                                "  conv.i = (uint32_t)new_item;\n"
+                                "  return conv.f;\n"
+                                "}\n")
+            }
+        }
+    }
+
+    for ty in idl_types_data:
+        if idl_types_data[ty]["type_of_type"] != "builtin":
+            funcs[ty] = {
+                "serializer" : {
+                    "name" : "serialize",
+                    "definition" : ""
+                },
+                "deserializer" : {
+                    "name" : f"deserialize_{ty}",
+                    "definition" : ""
+                }
+            }
+
+    for ty in idl_types_data:
+        if idl_types_data[ty]["type_of_type"] != "builtin":
+            if idl_types_data[ty]["type_of_type"] != "array":
+                ssig, sfunc = create_non_array_serialize(ty, idl_types_data)
+                dsig, dfunc = create_non_array_deserialize(ty, idl_types_data)
+                funcs[ty]["serializer"]["definition"] = sfunc
+                funcs[ty]["serializer"]["signature"] = ssig
+                funcs[ty]["deserializer"]["definition"] = dfunc
+                funcs[ty]["deserializer"]["signature"] = dsig
+            else:
+                ssig, sfunc = create_array_serialize(ty, idl_types_data)
+                dsig, dfunc = create_array_deserialize(ty, idl_types_data)
+                funcs[ty]["serializer"]["definition"] = sfunc
+                funcs[ty]["serializer"]["signature"] = ssig
+                funcs[ty]["deserializer"]["definition"] =  dfunc
+                funcs[ty]["deserializer"]["signature"] = dsig
+
+    # for f in funcs:
+    #     print(funcs[f])
+    return { "requirements" : requirements, "functions" : funcs }
+
+def create_proxy_functions(idl_functions_data):
+    requirements = ("#include \"rpcproxyhelper.h\"\n"
+                    "#include \"c150debug.h\"\n"
+                    "#include \"./RPC/utility.h\"\n"
+                    "using namespace C150NETWORK;\n")
+    funcs = [
+        {
+            "name" : "name",
+            "definition" : "code"
+        }
+    ]
+
+    return { "requirements" : requirements, "functions" : funcs }
+
+
+def create_proxy_file(idl_set_name, serializer_package, proxy_package):
+
+    proxy_file = open(f"{idl_set_name}.proxy.cpp", "w")
+    
+
+    proxy_file.write("\n\n// !! serializer_package requirements !!\n\n")
+    proxy_file.write(serializer_package["requirements"])
+    proxy_file.write("\n\n// !! proxy_package requirements !!\n\n")
+    proxy_file.write(proxy_package["requirements"])
+
+    proxy_file.write("\n\n// !! serializer_package functions !!\n\n")
+    for t in serializer_package["functions"]:
+        proxy_file.write(serializer_package["functions"][t]["serializer"]["signature"])
+        proxy_file.write(serializer_package["functions"][t]["deserializer"]["signature"])
+
+    for t in serializer_package["functions"]:
+        proxy_file.write(serializer_package["functions"][t]["serializer"]["definition"])
+        proxy_file.write(serializer_package["functions"][t]["deserializer"]["definition"])
+        
+    proxy_file.write("\n\n// !! proxy_package functions !!\n\n")
+    for f in proxy_package["functions"]:
+        proxy_file.write(f["definition"])
+
+    proxy_file.close()
 
 def main():
-    print(idl_to_json("../structwitharray.idl"))
+    if len(sys.argv) != 2:
+        print("Error: expected file path as argument. Usage: ./rpcgenerate <path_to_idl_file>")
+        exit(1)
+
+    if re.match(".*\.idl", sys.argv[1]) == None:
+        print("Error: expected a file with the .idl extension")
+        exit(2)
+    
+    idl_name = sys.argv[1]
+    index = idl_name.rfind('/')
+    if index != -1:
+        idl_name = idl_name[index + 1:]
+
+    idl_set_name = idl_name[:-4]
+
+    idl_name = idl_name.replace(".", "_").upper()
+
+    idl_data = idl_string_to_python_object(idl_to_json(sys.argv[1]))
+
+    serializer_package = create_serializers(idl_data["types"], idl_name, sys.argv[1])
+    proxy_package = create_proxy_functions(idl_data["functions"])
+
+    create_proxy_file(idl_set_name, serializer_package, proxy_package)
+
+
+
+    # for each type, create a serializer for that type
 
 if __name__ == "__main__":
-	main()
+    main()

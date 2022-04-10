@@ -1,0 +1,35 @@
+04/09/2022 18:43:50.146443 ./arithmeticclient: rpcproxyinitialize: Creating C150StreamSocket
+04/09/2022 18:43:50.147552 ./arithmeticclient: C150StreamSocket::C150StreamSocket: user port is 7018
+04/09/2022 18:43:50.147573 ./arithmeticclient: C150StreamSocket::connect(comp117-02) called
+04/09/2022 18:43:50.149385 ./arithmeticclient: arithmetic.proxy.cpp: int add(int, int) invoked
+04/09/2022 18:43:50.149411 ./arithmeticclient: C150StreamSocket::write: attempting to send packet with len=38 |..."add,int(4),int(4),....,int(4),....|
+04/09/2022 18:43:50.149454 ./arithmeticclient: C150StreamSocket::write: Success writing packet with len=38 |..."add,int(4),int(4),....,int(4),....|
+04/09/2022 18:43:50.149474 ./arithmeticclient: arithmetic.proxy.cpp: int add(int, int) invocation sent, waiting for response
+04/09/2022 18:43:50.149493 ./arithmeticclient: C150StreamSocket::read: Ready to read data
+04/09/2022 18:43:50.150918 ./arithmeticclient: C150StreamSocket::read: Dropped through read with len=4
+04/09/2022 18:43:50.150938 ./arithmeticclient: C150StreamSocket::read: successful read with len=4 |....|
+04/09/2022 18:43:50.150966 ./arithmeticclient: arithmetic.proxy.cpp: int add(int, int) successful return from remote call
+04/09/2022 18:43:50.151003 ./arithmeticclient: simplefunction.proxy.cpp: func2() invoked
+04/09/2022 18:43:50.151023 ./arithmeticclient: C150StreamSocket::write: attempting to send packet with len=43 |...'subtract,int(4),int(4),....,int(4),....|
+04/09/2022 18:43:50.151052 ./arithmeticclient: C150StreamSocket::write: Success writing packet with len=43 |...'subtract,int(4),int(4),....,int(4),....|
+04/09/2022 18:43:50.151077 ./arithmeticclient: simplefunction.proxy.cpp: func2() invocation sent, waiting for response
+04/09/2022 18:43:50.151097 ./arithmeticclient: C150StreamSocket::read: Ready to read data
+04/09/2022 18:43:50.152509 ./arithmeticclient: C150StreamSocket::read: Dropped through read with len=4
+04/09/2022 18:43:50.152528 ./arithmeticclient: C150StreamSocket::read: successful read with len=4 |....|
+04/09/2022 18:43:50.152548 ./arithmeticclient: simplefunction.proxy.cpp: func2() successful return from remote call
+04/09/2022 18:43:50.152581 ./arithmeticclient: simplefunction.proxy.cpp: func3() invoked
+04/09/2022 18:43:50.152601 ./arithmeticclient: C150StreamSocket::write: attempting to send packet with len=43 |...'multiply,int(4),int(4),....,int(4),....|
+04/09/2022 18:43:50.152636 ./arithmeticclient: C150StreamSocket::write: Success writing packet with len=43 |...'multiply,int(4),int(4),....,int(4),....|
+04/09/2022 18:43:50.152655 ./arithmeticclient: simplefunction.proxy.cpp: func3() invocation sent, waiting for response
+04/09/2022 18:43:50.152674 ./arithmeticclient: C150StreamSocket::read: Ready to read data
+04/09/2022 18:43:50.154094 ./arithmeticclient: C150StreamSocket::read: Dropped through read with len=4
+04/09/2022 18:43:50.154113 ./arithmeticclient: C150StreamSocket::read: successful read with len=4 |....|
+04/09/2022 18:43:50.154133 ./arithmeticclient: simplefunction.proxy.cpp: func3() successful return from remote call
+04/09/2022 18:43:50.154166 ./arithmeticclient: simplefunction.proxy.cpp: func3() invoked
+04/09/2022 18:43:50.154186 ./arithmeticclient: C150StreamSocket::write: attempting to send packet with len=41 |...%divide,int(4),int(4),....,int(4),....|
+04/09/2022 18:43:50.154221 ./arithmeticclient: C150StreamSocket::write: Success writing packet with len=41 |...%divide,int(4),int(4),....,int(4),....|
+04/09/2022 18:43:50.154240 ./arithmeticclient: simplefunction.proxy.cpp: func3() invocation sent, waiting for response
+04/09/2022 18:43:50.154258 ./arithmeticclient: C150StreamSocket::read: Ready to read data
+04/09/2022 18:43:50.155605 ./arithmeticclient: C150StreamSocket::read: Dropped through read with len=4
+04/09/2022 18:43:50.155624 ./arithmeticclient: C150StreamSocket::read: successful read with len=4 |....|
+04/09/2022 18:43:50.155643 ./arithmeticclient: simplefunction.proxy.cpp: func3() successful return from remote call

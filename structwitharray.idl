@@ -4,7 +4,24 @@ struct s {
   int m3[4][10][100];
 };
 
-// s makeStruct(int x, s other);
-// int makeStruct(int x, s other);
+struct Person {string firstname; string lastname; int age;};
 
-// "makeStruct", "s", "int", "s"
+struct ThreePeople {
+  Person p1;
+  Person p2;
+  Person p3;
+};
+
+Person findPerson(ThreePeople tp);
+
+struct StructWithArrays {
+  int aNumber;
+  Person people[10];
+};
+
+Person findOtherPerson(StructWithArrays x);
+
+struct rectangle {int x; int y;};
+
+int area(rectangle r);
+

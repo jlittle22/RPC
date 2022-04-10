@@ -1,0 +1,30 @@
+04/09/2022 19:06:26.488275 ./structsclient: rpcproxyinitialize: Creating C150StreamSocket
+04/09/2022 19:06:26.491896 ./structsclient: C150StreamSocket::C150StreamSocket: user port is 7018
+04/09/2022 19:06:26.491918 ./structsclient: C150StreamSocket::connect(comp117-02) called
+04/09/2022 19:06:26.494044 ./structsclient: structs.proxy.cpp: Person findPerson(ThreePeople) invoked
+04/09/2022 19:06:26.494072 ./structsclient: C150StreamSocket::write: attempting to send packet with len=125 |...yfindPerson,Person(-1),ThreePeople(-1),...O........John....Little............Braden....Little....|
+04/09/2022 19:06:26.494108 ./structsclient: C150StreamSocket::write: Success writing packet with len=125 |...yfindPerson,Person(-1),ThreePeople(-1),...O........John....Little............Braden....Little....|
+04/09/2022 19:06:26.494127 ./structsclient: structs.proxy.cpp: Person findPerson(ThreePeople) invocation sent, waiting for response
+04/09/2022 19:06:26.494147 ./structsclient: C150StreamSocket::read: Ready to read data
+04/09/2022 19:06:26.497304 ./structsclient: C150StreamSocket::read: Dropped through read with len=4
+04/09/2022 19:06:26.497325 ./structsclient: C150StreamSocket::read: successful read with len=4 |....|
+04/09/2022 19:06:26.497365 ./structsclient: C150StreamSocket::read: Ready to read data
+04/09/2022 19:06:26.497386 ./structsclient: C150StreamSocket::read: Dropped through read with len=22
+04/09/2022 19:06:26.497405 ./structsclient: C150StreamSocket::read: successful read with len=22 |....John....Little....|
+04/09/2022 19:06:26.497473 ./structsclient: structs.proxy.cpp: Person findPerson(ThreePeople) successful return from remote call
+04/09/2022 19:06:26.497509 ./structsclient: structs.proxy.cpp: int area(rectangle) invoked
+04/09/2022 19:06:26.497529 ./structsclient: C150StreamSocket::write: attempting to send packet with len=42 |...&area,int(4),rectangle(-1),............|
+04/09/2022 19:06:26.497558 ./structsclient: C150StreamSocket::write: Success writing packet with len=42 |...&area,int(4),rectangle(-1),............|
+04/09/2022 19:06:26.497576 ./structsclient: structs.proxy.cpp: int area(rectangle) invocation sent, waiting for response
+04/09/2022 19:06:26.497594 ./structsclient: C150StreamSocket::read: Ready to read data
+04/09/2022 19:06:26.498618 ./structsclient: C150StreamSocket::read: Dropped through read with len=4
+04/09/2022 19:06:26.498637 ./structsclient: C150StreamSocket::read: successful read with len=4 |....|
+04/09/2022 19:06:26.498664 ./structsclient: structs.proxy.cpp: int area(rectangle) successful return from remote call
+04/09/2022 19:06:26.499058 ./structsclient: C150StreamSocket::write: attempting to send packet with len=290 |....findOtherPerson,Person(-1),StructWithArrays(-1),................0....Little............1....Litt|
+04/09/2022 19:06:26.499091 ./structsclient: C150StreamSocket::write: Success writing packet with len=290 |....findOtherPerson,Person(-1),StructWithArrays(-1),................0....Little............1....Litt|
+04/09/2022 19:06:26.499110 ./structsclient: C150StreamSocket::read: Ready to read data
+04/09/2022 19:06:26.505467 ./structsclient: C150StreamSocket::read: Dropped through read with len=4
+04/09/2022 19:06:26.505486 ./structsclient: C150StreamSocket::read: successful read with len=4 |....|
+04/09/2022 19:06:26.505507 ./structsclient: C150StreamSocket::read: Ready to read data
+04/09/2022 19:06:26.505527 ./structsclient: C150StreamSocket::read: Dropped through read with len=19
+04/09/2022 19:06:26.505545 ./structsclient: C150StreamSocket::read: successful read with len=19 |....4....Little....|

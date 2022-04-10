@@ -1,0 +1,2 @@
+chmod +x RPC/rpcgenerate
+./RPC/rpcgenerate $1

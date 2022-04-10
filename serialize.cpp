@@ -76,26 +76,16 @@ string serialize(Person x) {
 }
 
 Person deserialize_Person(string x) {
-  for (int i = 0; i < x.length(); i++) {
-    cout << i << " : " << int(x[i]);
-    if (isalnum(x[i])) {
-      cout << " (" << x[i] << ") "; 
-    }
-    cout << endl;
-  }
   Person new_item;
   string data = x.substr(sizeof(int));
 
   int len = deserialize_int(data.substr(0, sizeof(int)));
-  cout << "len: " << len << endl; // len = 4
   new_item.firstname = deserialize_string(data);
  
-  cout << "firstname: " << new_item.firstname << endl;
   data = data.substr(sizeof(int) + len);
 
   len = deserialize_int(data.substr(0, sizeof(int)));
   new_item.lastname = deserialize_string(data);
-  cout << "lastname: " << new_item.lastname << endl;
   data = data.substr(sizeof(int) + len);
 
   new_item.age = deserialize_int(data);
@@ -186,6 +176,20 @@ rectangle deserialize_rectangle(std::string x) {
 
   return new_item;
 
+}
+
+int* deserialize_Array_int_4_10_100(string x) {
+    static int x[4][10][100];
+    int len = sizeof(int);
+    x = x.substr(len);
+    
+    for (int i = 0; i < 4; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, len));
+        x[i] = deserialize_Array_int_10_100(x.substr(0, len));
+        x = x.substr(len);
+    }
+
+    return x;
 }
 
 
