@@ -20,10 +20,10 @@ union FloatInt {
 
 // !! proxy_package requirements !!
 
-// #include "rpcproxyhelper.h"
-// #include "c150debug.h"
-// #include "./RPC/utility.h"
-// using namespace C150NETWORK;
+#include "rpcproxyhelper.h"
+#include "c150debug.h"
+#include "./RPC/utility.h"
+using namespace C150NETWORK;
 
 
 // !! serializer_package functions !!
@@ -273,7 +273,7 @@ void deserialize_Array_int_10_100(string x, int* dest) {
 
     for (int i = 0; i < 10; i++) {
         len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
-        deserialize_Array_int_100(x.substr(0, len), dest + (i * sizeof(int*)));
+        deserialize_Array_int_100(x.substr(0, len), dest + (i * 100));
         x = x.substr(len);
     }
 }
@@ -311,7 +311,7 @@ void deserialize_Array_int_4_10(string x, int* dest) {
 
     for (int i = 0; i < 4; i++) {
         len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
-        deserialize_Array_int_10(x.substr(0, len), dest + (i * sizeof(int*)));
+        deserialize_Array_int_10(x.substr(0, len), dest + (i * 10));
         x = x.substr(len);
     }
 }
@@ -330,7 +330,7 @@ void deserialize_Array_int_4_10_100(string x, int* dest) {
 
     for (int i = 0; i < 4; i++) {
         len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
-        deserialize_Array_int_10_100(x.substr(0, len), dest + (i * sizeof(int*)));
+        deserialize_Array_int_10_100(x.substr(0, len), dest + (i * 1000));
         x = x.substr(len);
     }
 }
@@ -384,91 +384,8 @@ s deserialize_s(string x) {
     return new_item;
 }
 
+// !! network_formatter_package code !!
+
 
 // !! proxy_package functions !!
-
-int main() {
-    //    string serialize_int(int x);
-    // int deserialize_int(string x);
-    cout << deserialize_int(serialize_int(123456789)) << endl;
-
-    // string serialize_string(string x);
-    // string deserialize_string(string x);
-    cout << deserialize_string(serialize_string("This is a string")) << endl;
-    
-    // string serialize_float(float x);
-    // float deserialize(string x);
-    cout << deserialize_float(serialize_float(1.23456789)) << endl;
-    
-    // string serialize_Person(Person x);
-    // Person deserialize_Person(string x);
-    Person x;
-    x.firstname = "Johnnnnnnnnnnnn";
-    x.lastname = "Litttttle";
-    x.age = 22;
-    Person y = deserialize_Person(serialize_Person(x));
-    cout << y.firstname << " " << y.lastname << " " << y.age << endl;
-    
-    // string serialize_StructWithArrays(StructWithArrays x);
-    // StructWithArrays deserialize_StructWithArrays(string x);
-    StructWithArrays a;
-    a.aNumber = 5439459;
-    a.people[5] = x;
-    StructWithArrays b = deserialize_StructWithArrays(serialize_StructWithArrays(a));
-    cout << b.aNumber << " " << b.people[5].firstname << " " << b.people[5].lastname << " " << b.people[5].age << endl; 
-    
-    // string serialize_Array_Person_10(Person x[10]);
-    // void deserialize_Array_Person_10(string x, Person* dest);
-    Person c[10];
-    for (int i = 0; i < 10; i++) {
-        c[i].firstname = "John Little";
-        c[i].lastname = "jake";
-        c[i].age = i;
-    }
-    Person d[10];
-    deserialize_Array_Person_10(serialize_Array_Person_10(c), (Person*)d);
-    cout << d[5].age << endl;
-    
-    // string serialize_Array_int_100(int x[100]);
-    // void deserialize_Array_int_100(string x, int* dest);
-    int e[100];
-    for (int i = 0; i < 100; i++) {
-        e[i] = i;
-    }
-    int f[100];
-    deserialize_Array_int_100(serialize_Array_int_100(e), (int*)f);
-    cout << f[56] << endl;
-    
-    
-    // string serialize_Array_int_10_100(int x[10][100]);
-    // void deserialize_Array_int_10_100(string x, int* dest);
-    int g[10][100];
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 100; j++) {
-            g[i][j] = i + j;
-        }
-    }
-    int h[10][100];
-    deserialize_Array_int_10_100(serialize_Array_int_10_100(g), (int*)h);
-
-    cout << h[7][63] << endl;
-    
-    // string serialize_Array_int_4_10_100(int x[4][10][100]);
-    // void deserialize_Array_int_4_10_100(string x, int* dest);
-    int l[4][10][100];
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 10; i++) {
-            for (int z = 0; z < 100; z++) {
-                l[i][j][z] = i + j + z;
-            }
-        }
-    }
-    int m[4][10][100];
-    deserialize_Array_int_4_10_100(serialize_Array_int_4_10_100(l), (int*)m);
-
-    cout << m[3][7][70] << endl;
-
-
-    cout << "HELLO" << endl;
-    return 0;
-}
+code

@@ -1,4 +1,5 @@
 
+#include <sys/resource.h>
 
 // !! serializer_package requirements !!
 
@@ -232,19 +233,11 @@ string serialize_Array_int_100(int x[100]) {
 void deserialize_Array_int_100(string x, int* dest) {
     int len = sizeof(int);
     x = x.substr(len);
-    cout << "here" << endl;
     for (int i = 0; i < 100; i++) {
-        cerr << "i2 " << i << endl;
         len = sizeof(int);
-        cerr << "dest " << dest << endl;
+
         dest[i] = deserialize_int(x.substr(0, len));
         x = x.substr(len);
-    }
-
-    cout << "deserialize_Array_int_100" << endl;
-
-    for (int i = 0; i < 100; i++) {
-        cout << dest[i] << endl;
     }
 }
 
@@ -278,25 +271,20 @@ string serialize_Array_int_10_100(int x[10][100]) {
 void deserialize_Array_int_10_100(string x, int** dest) {
     int len = sizeof(int);
     x = x.substr(len);
-    cerr << "h" << endl;
     for (int i = 0; i < 10; i++) {
-    cerr <<" i " << i << endl;
         len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
-        cerr << "dest2" << dest << endl;
-        cerr << "dest mod " << (int*)(dest + (i * sizeof(int*))) << endl;
-        deserialize_Array_int_100(x.substr(0, len), (int*)(dest + (i * sizeof(int*))));
-        cerr << "hereaa" << endl;
-
+        cerr << "h[i]ish = " << (int*)(dest + (i * 50)) << " h[i]ish - h = " << (dest + (i * 50)) - dest << endl;
+        deserialize_Array_int_100(x.substr(0, len), (int*)(dest + (i * 50)));
         x = x.substr(len);
     }
-        cerr << "deserialize_Array_int_10_100" << endl;
+        // cerr << "deserialize_Array_int_10_100" << endl;
+        // cerr << "final dest: " << dest << endl;
+        // for (int i = 0; i < 10; i++) {
+        //     for(int j = 0; j < 100; j++) {
 
-        for (int i = 0; i < 10; i++) {
-            for(int j = 0; j < 100; j++) {
-
-                cerr << "(" << i << ", " << j << ") " << dest[i][j] << endl;
-            }
-        }
+        //         cerr << "(" << i << ", " << j << ") " << dest + (i * 8) << endl;
+        //     }
+        // }
 }
 
 string serialize_Array_int_4(int x[4]) {
@@ -345,13 +333,13 @@ string serialize_Array_int_4_10_100(int x[4][10][100]) {
     return serialize_int((int)data.length()) + data;
 }
 
-void deserialize_Array_int_4_10_100(string x, int* dest) {
+void deserialize_Array_int_4_10_100(string x, int*** dest) {
     int len = sizeof(int);
     x = x.substr(len);
 
     for (int i = 0; i < 4; i++) {
         len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
-        // deserialize_Array_int_10_100(x.substr(0, len), dest + (i * sizeof(int*)));
+        deserialize_Array_int_10_100(x.substr(0, len), (int**)(dest + (i * 50)));
         x = x.substr(len);
     }
 }
@@ -409,6 +397,9 @@ s deserialize_s(string x) {
 // !! proxy_package functions !!
 
 int main() {
+    int stupid;
+    
+
     //    string serialize_int(int x);
     // int deserialize_int(string x);
     cout << deserialize_int(serialize_int(123456789)) << endl;
@@ -471,24 +462,25 @@ int main() {
     }
     int h[10][100];
     deserialize_Array_int_10_100(serialize_Array_int_10_100(g), (int**)h);
-    for (int i = 0; i < 10; i++) fprintf(stderr, "h %p\n", h[i]);
+    fprintf(stderr, "h: %p\n", h);
+    for (int i = 0; i < 10; i++) fprintf(stderr, "h[i] %p h[i] - h: %d\n", h[i], (long long)h[i] - (long) h);
     cout << "here " << g[7][63] << endl;
     cout << "tjis: "<< h[7][63] << endl;
-    
+
     // string serialize_Array_int_4_10_100(int x[4][10][100]);
     // void deserialize_Array_int_4_10_100(string x, int* dest);
-    int l[4][10][100];
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 10; i++) {
-            for (int z = 0; z < 100; z++) {
-                l[i][j][z] = i + j + z;
-            }
-        }
-    }
-    int m[4][10][100];
-    deserialize_Array_int_4_10_100(serialize_Array_int_4_10_100(l), (int*)m);
+    // int l[4][10][100];
+    // for (int i = 0; i < 4; i++) {
+    //     for (int j = 0; j < 10; i++) {
+    //         for (int z = 0; z < 100; z++) {
+    //             l[i][j][z] = i + j + z;
+    //         }
+    //     }
+    // }
+    // int m[4][10][100];
+    // deserialize_Array_int_4_10_100(serialize_Array_int_4_10_100(l), (int*)m);
 
-    cout << "last: " << m[3][7][70] << endl;
+    // cout << "last: " << m[3][7][70] << endl;
 
 
     cout << "HELLO" << endl;

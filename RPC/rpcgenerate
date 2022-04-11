@@ -5,6 +5,8 @@ import sys
 import json
 import re
 import bisect 
+from functools import reduce
+
 
 built_in_types = [ "void", "int", "string", "float" ]
 static_size_types = [ "int", "float" ]
@@ -83,6 +85,7 @@ def idl_string_to_python_object(idl_str):
     replacements.reverse()
     for (tname, replacement) in replacements:
         idl_str = idl_str.replace(tname, replacement)
+
     print(idl_str)
     return json.loads(idl_str)
 
@@ -100,6 +103,7 @@ def create_non_array_serialize(type_name, idl_types_data):
         function += f"    data += serialize_{member['type']}(x.{member['name']});\n"
     function += "    return serialize_int((int)data.length()) + data;\n"
     function += "}\n"
+
     return (signature, function)
 
 def create_non_array_deserialize(type_name, idl_types_data):
@@ -156,13 +160,16 @@ def create_array_serialize(type_name, idl_types_data):
     return (signature, function)
 
 def create_array_deserialize(type_name, idl_types_data):
-    print(type_name, idl_types_data[type_name])
     
     root_ty, dimens = parse_array_name(type_name, idl_types_data)
 
     ret = create_cpp_array_type_string(root_ty, dimens)
 
     member_root_ty, member_dimens = parse_array_name(idl_types_data[type_name]['member_type'], idl_types_data)
+
+    arg = root_ty + ''.join(['*' for _ in dimens])
+
+
 
     function = f"\nvoid deserialize_{type_name}(string x, {root_ty}* dest) {{\n"
     signature = function[:-3] + ';\n';
@@ -176,11 +183,12 @@ def create_array_deserialize(type_name, idl_types_data):
     if idl_types_data[idl_types_data[type_name]['member_type']]['type_of_type'] != 'array':
         function += f"        dest[i] = deserialize_{idl_types_data[type_name]['member_type']}(x.substr(0, len));\n"
     else:
-        function += f"        deserialize_{idl_types_data[type_name]['member_type']}(x.substr(0, len), dest + (i * sizeof({root_ty}*)));\n"
+        num_elems_in_next_arr = reduce(lambda a, b: a * b, [int(x) for x in member_dimens])
+        next_arr_elem_ty = member_root_ty + ''.join(['*' for _ in member_dimens])
+        function += f"        deserialize_{idl_types_data[type_name]['member_type']}(x.substr(0, len), dest + (i * { num_elems_in_next_arr }));\n"
     function += f"        x = x.substr(len);\n"
     function += "    }\n"
     function += "}\n"
-
     return (signature, function)
 
 
@@ -267,7 +275,7 @@ def create_serializers(idl_types_data, idl_name, idl_path):
         if idl_types_data[ty]["type_of_type"] != "builtin":
             funcs[ty] = {
                 "serializer" : {
-                    "name" : "serialize",
+                    "name" : f"serialize_{ty}",
                     "definition" : ""
                 },
                 "deserializer" : {
@@ -297,17 +305,52 @@ def create_serializers(idl_types_data, idl_name, idl_path):
     #     print(funcs[f])
     return { "requirements" : requirements, "functions" : funcs }
 
+def create_proxy_function(name, idl_func_data):
+    ret_ty = idl_func_data['return_type']
+    args = "string x, int y, float z"
+    function = f"\n{ret_ty} {name}({args}) {{\n"
+    sig = function[:-3] + ';\n'
+
+    function += "   int len;\n"
+    print(function)
+    return (sig, function)
+
 def create_proxy_functions(idl_functions_data):
+    '''
+    {
+        "area" : {
+            "return_type" : "int",
+            "arguments" : [            
+                {"name" : "r", "type" : "rectangle"}
+            ]
+        },
+        "findOtherPerson" : {
+            "return_type" : "Person",
+            "arguments" : [            
+                {"name" : "x", "type" : "StructWithArrays"}
+            ]
+        },
+        "findPerson" : {
+            "return_type" : "Person",
+            "arguments" : [            
+                {"name" : "tp", "type" : "ThreePeople"}
+            ]
+        }
+    }
+    '''
     requirements = ("#include \"rpcproxyhelper.h\"\n"
                     "#include \"c150debug.h\"\n"
                     "#include \"./RPC/utility.h\"\n"
                     "using namespace C150NETWORK;\n")
-    funcs = [
-        {
-            "name" : "name",
-            "definition" : "code"
+
+    funcs = []
+    for fname in idl_functions_data:
+        sig, definition = create_proxy_function(fname, idl_functions_data[fname])
+        func_obj = { 
+            "name" : fname,
+            "signature" : sig,
+            "definition" : definition
         }
-    ]
 
     return { "requirements" : requirements, "functions" : funcs }
 

@@ -3,18 +3,14 @@
 #include <iostream>
 using namespace std;
 
-#include "../serialize.h"
+string serialize_int(int x) {
+  uint32_t network_x = htonl((uint32_t)x);
+  stringstream sstream;
+  const char* ptr = reinterpret_cast<char*>(&network_x);
+  sstream.write(ptr, sizeof(network_x));
+  return sstream.str();
+}
 
-// generate this function using the idl_to_json results in the python script
-// static bool is_hard(string type_name) {
-//     if (type_name == "int") {
-//         return TRUE;
-//     } else if (type_name == "float") {
-//         return TRUE;
-//     } else if (type_name == "void") {
-
-//     }
-// }
 
 NetworkFormatter::NetworkFormatter() {
 	functionName = "";
@@ -132,7 +128,6 @@ int NetworkFormatter::getNumArgs() {
     return args.size();
 }
 
-// TODO @Jake: Still figuring out how / if this will be used. Ignore for now.
 std::string NetworkFormatter::getFunctionSignature() {
     string sig = functionName + "," + get<0>(returnType) + "(" + to_string(get<1>(returnType)) + ")";
 
@@ -185,7 +180,7 @@ string NetworkFormatter::networkForm() {
         res += "," + get<0>(it) + "(" + to_string(get<1>(it)) + ")," + get<2>(it);
     }
 
-    res = serialize((int)res.length()) + res;
+    res = serialize_int((int)res.length()) + res;
 
     return res;
 }
