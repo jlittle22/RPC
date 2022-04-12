@@ -67,15 +67,12 @@ def idl_string_to_python_object(idl_str):
 
             # If the name we created is already in use...
             if new_array_type_name in unclean_idl_obj["types"]:
-                print(f"DEV LOG (remove!): Type {new_array_type_name} exists already...")
-
                 # Append a number to the name until it is unique.
                 tiebreaker = new_array_type_name
                 i = 0
                 while tiebreaker in unclean_idl_obj["types"]:
                     tiebreaker = new_array_type_name + f"_v{i}"
                     i += 1
-                print(f"DEV LOG (remove!): Type {tiebreaker} is unique.")
                 new_array_type_name = tiebreaker
             bisect.insort(replacements, (tname, new_array_type_name))
     
@@ -305,17 +302,26 @@ def create_serializers(idl_types_data, idl_name, idl_path):
     #     print(funcs[f])
     return { "requirements" : requirements, "functions" : funcs }
 
-def create_proxy_function(name, idl_func_data):
-    ret_ty = idl_func_data['return_type']
-    args = "string x, int y, float z"
-    function = f"\n{ret_ty} {name}({args}) {{\n"
+def create_proxy_function(name, idl_data):
+    ret_ty = idl_data['functions'][name]['return_type']
+    args = ""
+    if len(idl_data['functions'][name]['arguments']) > 0:
+        for i in range(len(idl_data['functions'][name]['arguments'])):
+            if idl_data['types'][idl_data['functions'][name]['arguments'][i]['type']]['type_of_type'] == 'array':
+                root_ty, dimens = parse_array_name(idl_data['functions'][name]['arguments'][i]['type'], idl_data['types'])
+                arr_ty = create_cpp_array_type_string(root_ty, dimens)
+                args += f", {arr_ty}"
+            else:
+                args += f", {idl_data['functions'][name]['arguments'][i]['type']} {idl_data['functions'][name]['arguments'][i]['name']}"
+
+    function = f"\n{ret_ty} {name}({args[2:]}) {{\n"
     sig = function[:-3] + ';\n'
 
     function += "   int len;\n"
     print(function)
     return (sig, function)
 
-def create_proxy_functions(idl_functions_data):
+def create_proxy_functions(idl_data):
     '''
     {
         "area" : {
@@ -344,8 +350,9 @@ def create_proxy_functions(idl_functions_data):
                     "using namespace C150NETWORK;\n")
 
     funcs = []
-    for fname in idl_functions_data:
-        sig, definition = create_proxy_function(fname, idl_functions_data[fname])
+
+    for fname in idl_data['functions']:
+        sig, definition = create_proxy_function(fname, idl_data)
         func_obj = { 
             "name" : fname,
             "signature" : sig,
@@ -401,7 +408,7 @@ def main():
     idl_data = idl_string_to_python_object(idl_to_json(sys.argv[1]))
 
     serializer_package = create_serializers(idl_data["types"], idl_name, sys.argv[1])
-    proxy_package = create_proxy_functions(idl_data["functions"])
+    proxy_package = create_proxy_functions(idl_data)
 
     create_proxy_file(idl_set_name, serializer_package, proxy_package)
 

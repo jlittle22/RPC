@@ -384,8 +384,6 @@ s deserialize_s(string x) {
     return new_item;
 }
 
-// !! network_formatter_package code !!
-
 
 // !! proxy_package functions !!
-code
+

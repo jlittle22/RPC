@@ -25,3 +25,6 @@ struct rectangle {int x; int y;};
 
 int area(rectangle r);
 
+int fake(int arr[10][1000]);
+
+
