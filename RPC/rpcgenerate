@@ -9,7 +9,7 @@ from functools import reduce
 
 
 built_in_types = [ "void", "int", "string", "float" ]
-static_size_types = [ "int", "float" ]
+static_size_types = [ "int", "float", "void" ]
 
 ###### parse_array_type_name
 ## 
@@ -133,8 +133,8 @@ def parse_array_name(arr_name, idl_types_data):
     
     return (root_ty, dimens)
 
-def create_cpp_array_type_string(root_ty, dimens):
-    ret = f"{root_ty} x"
+def create_cpp_array_type_string(root_ty, dimens, name='x'):
+    ret = f"{root_ty} {name}"
     for d in dimens:
         ret += f"[{d}]"
     return ret
@@ -305,19 +305,106 @@ def create_serializers(idl_types_data, idl_name, idl_path):
 def create_proxy_function(name, idl_data):
     ret_ty = idl_data['functions'][name]['return_type']
     args = ""
+
+    # If the function has any arguments...
     if len(idl_data['functions'][name]['arguments']) > 0:
+
+        # For each argument...
         for i in range(len(idl_data['functions'][name]['arguments'])):
+
+            # If the argument is an array...
             if idl_data['types'][idl_data['functions'][name]['arguments'][i]['type']]['type_of_type'] == 'array':
+
+                # Create the cpp-friendly version of the type name... Array_int_4_10 --> int x[4][10]
                 root_ty, dimens = parse_array_name(idl_data['functions'][name]['arguments'][i]['type'], idl_data['types'])
-                arr_ty = create_cpp_array_type_string(root_ty, dimens)
+                arr_ty = create_cpp_array_type_string(root_ty, dimens, idl_data['functions'][name]['arguments'][i]['name'])
                 args += f", {arr_ty}"
             else:
+
+                # Otherwise add it normally...
                 args += f", {idl_data['functions'][name]['arguments'][i]['type']} {idl_data['functions'][name]['arguments'][i]['name']}"
 
     function = f"\n{ret_ty} {name}({args[2:]}) {{\n"
     sig = function[:-3] + ';\n'
 
-    function += "   int len;\n"
+    function += "char readBuffer[STDSIZE];\n" #append readbuffer - DECIDE STDSIZE
+    function += "NetworkFormatter f = NetworkFormatter();\n"
+    function += "f.setFunctionName(" + name + ");\n" #set func name w name arg
+    function += "f.setFunctionRetType("
+
+    if (ret_ty == STRUCT)
+        function += ret_ty + ", -1"
+    else 
+        function += ret_ty + ", " + sizeof(ret_ty) + ");\n" # add return type nad size
+
+    for i in range(len(idl_data['functions'][name]['arguments'])): # can i just repeat this loop
+        function += "f.appendArg(" + idl_data['functions'][name]['arguments'][i]['name'] + SIZE;
+        function += "serialize(" # need size
+
+        # NOT DONE
+
+'''
+  char readBuffer[sizeof(int)];
+
+  NetworkFormatter f = NetworkFormatter();
+  f.setFunctionName("area");
+  f.setFunctionRetType("int", sizeof(int));
+  f.appendArg("rectangle", -1, serialize(r));
+
+  string data = f.networkForm();
+
+  RPCPROXYSOCKET->write(data.c_str(), data.length()); 
+
+  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
+
+  string resultStr(readBuffer, sizeof(readBuffer));
+
+  int result = deserialize_int(resultStr);
+  
+  return result;
+
+
+'''
+'''
+TWO NEED TO ADD: 
+    1. A way to encode success / failure when using void return types (0000 0000 'N' | 'Y')
+    2. A way to encode BAD / nonexistent function call (idea: add a byte to beginning of all
+       results coming over network... If byte == 0000 0000, success. Else, not a real function.)
+
+all caps 
+
+standard:
+
+char readBuffer[STDSIZE];
+
+NetworkFormatter f = NetworkFormatter();
+f.setFunctionName(NAME);
+f.setFunctionRetType(ret_ty, SIZE); - if struct, -1, if const size send size
+
+loop:
+    f.appendArg(ARG_I_NAME, SIZE_I, serialize_RET_TY_I(ARG_NAME));
+
+string data = f.networkForm();
+
+RPCPROXYSOCKET->write(data.c_str(), data.length()); 
+
+RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
+
+update read buffer if needed 
+
+string firstfour - deserialize, look as integer, next string resultStr is data str (IF we need to based on struct type)
+
+string resultStr(readBuffer, sizeof(readBuffer));
+
+// worry about void - 
+
+int result = deserialize_int__RET_TY_I(resultStr);
+  
+
+'''
+
+
+    function += "}\n"
     print(function)
     return (sig, function)
 
