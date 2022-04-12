@@ -178,19 +178,5 @@ rectangle deserialize_rectangle(std::string x) {
 
 }
 
-int* deserialize_Array_int_4_10_100(string x) {
-    static int x[4][10][100];
-    int len = sizeof(int);
-    x = x.substr(len);
-    
-    for (int i = 0; i < 4; i++) {
-        len = sizeof(int) + deserialize_int(x.substr(0, len));
-        x[i] = deserialize_Array_int_10_100(x.substr(0, len));
-        x = x.substr(len);
-    }
-
-    return x;
-}
-
 
 /////

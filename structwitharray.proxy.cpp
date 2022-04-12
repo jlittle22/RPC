@@ -23,71 +23,136 @@ union FloatInt {
 #include "rpcproxyhelper.h"
 #include "c150debug.h"
 #include "./RPC/utility.h"
+#define STD_READ_SIZE 20
 using namespace C150NETWORK;
+
+
+// !! serializer_package forward declarations !!
+
+
+string serialize_int(int x);
+int deserialize_int(string x);
+string serialize_string(string x);
+string deserialize_string(string x);
+string serialize_float(float x);
+float deserialize(string x);
+string serialize_Person(Person x);
+Person deserialize_Person(string x);
+string serialize_StructWithArrays(StructWithArrays x);
+StructWithArrays deserialize_StructWithArrays(string x);
+string serialize_ThreePeople(ThreePeople x);
+ThreePeople deserialize_ThreePeople(string x);
+string serialize_Array_Person_10(Person x[10]);
+void deserialize_Array_Person_10(string x, Person* dest);
+string serialize_Array_int_1000(int x[1000]);
+void deserialize_Array_int_1000(string x, int* dest);
+string serialize_Array_int_100(int x[100]);
+void deserialize_Array_int_100(string x, int* dest);
+string serialize_Array_int_10(int x[10]);
+void deserialize_Array_int_10(string x, int* dest);
+string serialize_Array_int_10_1000(int x[10][1000]);
+void deserialize_Array_int_10_1000(string x, int* dest);
+string serialize_Array_int_10_100(int x[10][100]);
+void deserialize_Array_int_10_100(string x, int* dest);
+string serialize_Array_int_4(int x[4]);
+void deserialize_Array_int_4(string x, int* dest);
+string serialize_Array_int_4_10(int x[4][10]);
+void deserialize_Array_int_4_10(string x, int* dest);
+string serialize_Array_int_4_10_100(int x[4][10][100]);
+void deserialize_Array_int_4_10_100(string x, int* dest);
+string serialize_rectangle(rectangle x);
+rectangle deserialize_rectangle(string x);
+string serialize_s(s x);
+s deserialize_s(string x);
+
+// !! proxy_package functions !!
+
+
+int area(rectangle r) {
+    char readBuffer[STD_READ_SIZE];
+    readBuffer[0] = 'J';  // sanity check
+    NetworkFormatter f = NetworkFormatter();
+    f.setFunctionName("area");
+    f.setFunctionRetType("int", sizeof(int));
+    f.appendArg("rectangle", -1, serialize_rectangle(r));
+    string data = f.networkForm();
+    RPCPROXYSOCKET->write(data.c_str(), data.length());
+    RPCPROXYSOCKET->read(readBuffer, 1);
+    if (readBuffer[0] != '\0') {
+        throw C150Exception("int area(rectangle r): call not recognized by the server.");
+    }
+    RPCPROXYSOCKET->read(readBuffer, sizeof(int));
+    string resultStr(readBuffer, sizeof(int));
+    return deserialize_int(resultStr);
+}
+
+int fake(int arr[10][1000]) {
+    char readBuffer[STD_READ_SIZE];
+    readBuffer[0] = 'J';  // sanity check
+    NetworkFormatter f = NetworkFormatter();
+    f.setFunctionName("fake");
+    f.setFunctionRetType("int", sizeof(int));
+    f.appendArg("Array_int_10_1000", -1, serialize_Array_int_10_1000(arr));
+    string data = f.networkForm();
+    RPCPROXYSOCKET->write(data.c_str(), data.length());
+    RPCPROXYSOCKET->read(readBuffer, 1);
+    if (readBuffer[0] != '\0') {
+        throw C150Exception("int fake(int arr[10][1000]): call not recognized by the server.");
+    }
+    RPCPROXYSOCKET->read(readBuffer, sizeof(int));
+    string resultStr(readBuffer, sizeof(int));
+    return deserialize_int(resultStr);
+}
+
+Person findOtherPerson(StructWithArrays x) {
+    char readBuffer[STD_READ_SIZE];
+    readBuffer[0] = 'J';  // sanity check
+    NetworkFormatter f = NetworkFormatter();
+    f.setFunctionName("findOtherPerson");
+    f.setFunctionRetType("Person", -1);
+    f.appendArg("StructWithArrays", -1, serialize_StructWithArrays(x));
+    string data = f.networkForm();
+    RPCPROXYSOCKET->write(data.c_str(), data.length());
+    RPCPROXYSOCKET->read(readBuffer, 1);
+    if (readBuffer[0] != '\0') {
+        throw C150Exception("Person findOtherPerson(StructWithArrays x): call not recognized by the server.");
+    }
+    RPCPROXYSOCKET->read(readBuffer, sizeof(sizeof(int)));
+    string lenStr(readBuffer, sizeof(int));
+    int len = deserialize_int(lenStr);
+    char dataBuffer[len];
+    RPCPROXYSOCKET->read(dataBuffer, len);
+    string resultStr(dataBuffer, len);
+    resultStr = lenStr + resultStr;
+    return deserialize_Person(resultStr);
+}
+
+Person findPerson(ThreePeople tp) {
+    char readBuffer[STD_READ_SIZE];
+    readBuffer[0] = 'J';  // sanity check
+    NetworkFormatter f = NetworkFormatter();
+    f.setFunctionName("findPerson");
+    f.setFunctionRetType("Person", -1);
+    f.appendArg("ThreePeople", -1, serialize_ThreePeople(tp));
+    string data = f.networkForm();
+    RPCPROXYSOCKET->write(data.c_str(), data.length());
+    RPCPROXYSOCKET->read(readBuffer, 1);
+    if (readBuffer[0] != '\0') {
+        throw C150Exception("Person findPerson(ThreePeople tp): call not recognized by the server.");
+    }
+    RPCPROXYSOCKET->read(readBuffer, sizeof(sizeof(int)));
+    string lenStr(readBuffer, sizeof(int));
+    int len = deserialize_int(lenStr);
+    char dataBuffer[len];
+    RPCPROXYSOCKET->read(dataBuffer, len);
+    string resultStr(dataBuffer, len);
+    resultStr = lenStr + resultStr;
+    return deserialize_Person(resultStr);
+}
 
 
 // !! serializer_package functions !!
 
-
-string serialize_int(int x);
-
-int deserialize_int(string x);
-
-string serialize_string(string x);
-
-string deserialize_string(string x);
-
-string serialize_float(float x);
-
-float deserialize(string x);
-
-string serialize_Person(Person x);
-
-Person deserialize_Person(string x);
-
-string serialize_StructWithArrays(StructWithArrays x);
-
-StructWithArrays deserialize_StructWithArrays(string x);
-
-string serialize_ThreePeople(ThreePeople x);
-
-ThreePeople deserialize_ThreePeople(string x);
-
-string serialize_Array_Person_10(Person x[10]);
-
-void deserialize_Array_Person_10(string x, Person* dest);
-
-string serialize_Array_int_100(int x[100]);
-
-void deserialize_Array_int_100(string x, int* dest);
-
-string serialize_Array_int_10(int x[10]);
-
-void deserialize_Array_int_10(string x, int* dest);
-
-string serialize_Array_int_10_100(int x[10][100]);
-
-void deserialize_Array_int_10_100(string x, int* dest);
-
-string serialize_Array_int_4(int x[4]);
-
-void deserialize_Array_int_4(string x, int* dest);
-
-string serialize_Array_int_4_10(int x[4][10]);
-
-void deserialize_Array_int_4_10(string x, int* dest);
-
-string serialize_Array_int_4_10_100(int x[4][10][100]);
-
-void deserialize_Array_int_4_10_100(string x, int* dest);
-
-string serialize_rectangle(rectangle x);
-
-rectangle deserialize_rectangle(string x);
-
-string serialize_s(s x);
-
-s deserialize_s(string x);
 
 string serialize_int(int x) {
   uint32_t network_x = htonl((uint32_t)x);
@@ -221,6 +286,25 @@ void deserialize_Array_Person_10(string x, Person* dest) {
     }
 }
 
+string serialize_Array_int_1000(int x[1000]) {
+    string data = "";
+    for (int i = 0; i < 1000; i++) {
+        data += serialize_int(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_1000(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 1000; i++) {
+        len = sizeof(int);
+        dest[i] = deserialize_int(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
 string serialize_Array_int_100(int x[100]) {
     string data = "";
     for (int i = 0; i < 100; i++) {
@@ -255,6 +339,25 @@ void deserialize_Array_int_10(string x, int* dest) {
     for (int i = 0; i < 10; i++) {
         len = sizeof(int);
         dest[i] = deserialize_int(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_10_1000(int x[10][1000]) {
+    string data = "";
+    for (int i = 0; i < 10; i++) {
+        data += serialize_Array_int_1000(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_10_1000(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 10; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_1000(x.substr(0, len), dest + (i * 1000));
         x = x.substr(len);
     }
 }
@@ -383,7 +486,3 @@ s deserialize_s(string x) {
 
     return new_item;
 }
-
-
-// !! proxy_package functions !!
-

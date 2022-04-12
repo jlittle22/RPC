@@ -7,9 +7,10 @@ import re
 import bisect 
 from functools import reduce
 
+STD_READ_SIZE = 20
 
 built_in_types = [ "void", "int", "string", "float" ]
-static_size_types = [ "int", "float", "void" ]
+static_size_types = [ "int", "float" ]
 
 ###### parse_array_type_name
 ## 
@@ -94,7 +95,7 @@ def find_root_type_of_array(typename, idl_types_data):
 
 def create_non_array_serialize(type_name, idl_types_data):
     function = f"\nstring serialize_{type_name}({type_name} x) {{\n"
-    signature = function[:-3] + ';\n';
+    signature = function[:-3] + ';';
     function += "    string data = \"\";\n"
     for member in idl_types_data[type_name]["members"]:
         function += f"    data += serialize_{member['type']}(x.{member['name']});\n"
@@ -105,7 +106,7 @@ def create_non_array_serialize(type_name, idl_types_data):
 
 def create_non_array_deserialize(type_name, idl_types_data):
     function = f"\n{type_name} deserialize_{type_name}(string x) {{\n"
-    signature = function[:-3] + ';\n';
+    signature = function[:-3] + ';';
     function += f"    {type_name} new_item;\n"
     function += "    int len = sizeof(int);\n"
     for member in idl_types_data[type_name]["members"]:
@@ -146,7 +147,7 @@ def create_array_serialize(type_name, idl_types_data):
     arg = create_cpp_array_type_string(root_ty, dimens)
    
     function = f"\nstring serialize_{type_name}({arg}) {{\n"
-    signature = function[:-3] + ';\n';
+    signature = function[:-3] + ';';
     function += "    string data = \"\";\n"
     function += f"    for (int i = 0; i < {idl_types_data[type_name]['element_count']}; i++) {{\n"
     function += f"        data += serialize_{idl_types_data[type_name]['member_type']}(x[i]);\n"
@@ -169,7 +170,7 @@ def create_array_deserialize(type_name, idl_types_data):
 
 
     function = f"\nvoid deserialize_{type_name}(string x, {root_ty}* dest) {{\n"
-    signature = function[:-3] + ';\n';
+    signature = function[:-3] + ';';
     function += f"    int len = sizeof(int);\n"
     function += f"    x = x.substr(len);\n"
     function += f"\n    for (int i = 0; i < {idl_types_data[type_name]['element_count']}; i++) {{\n"
@@ -208,7 +209,7 @@ def create_serializers(idl_types_data, idl_name, idl_path):
         "int" : {
             "serializer" : {
                 "name" : "serialize_int",
-                "signature" : "\nstring serialize_int(int x);\n",
+                "signature" : "\nstring serialize_int(int x);",
                 "definition" : ("\nstring serialize_int(int x) {\n"
                                 "  uint32_t network_x = htonl((uint32_t)x);\n"
                                 "  stringstream sstream;\n"
@@ -219,7 +220,7 @@ def create_serializers(idl_types_data, idl_name, idl_path):
             },
             "deserializer" : {
                 "name" : "deserialize_int",
-                "signature" : "\nint deserialize_int(string x);\n",
+                "signature" : "\nint deserialize_int(string x);",
                 "definition" : ("\nint deserialize_int(string x) {\n"
                                 "  uint32_t new_item;\n"
                                 "  std::stringstream ss(x);\n"
@@ -231,14 +232,14 @@ def create_serializers(idl_types_data, idl_name, idl_path):
         "string" : {
             "serializer" : {
                 "name" : "serialize_string",
-                "signature" : "\nstring serialize_string(string x);\n",
+                "signature" : "\nstring serialize_string(string x);",
                 "definition" : ("\nstring serialize_string(string x) {\n"
                                 "  return serialize_int((int)x.length()) + x;\n"
                                 "}\n")
             },
             "deserializer" : {
                 "name" : "deserialize_string",
-                "signature" : "\nstring deserialize_string(string x);\n",
+                "signature" : "\nstring deserialize_string(string x);",
                 "definition" : ("\nstring deserialize_string(string x) {\n"
                                 "  int str_size = deserialize_int(x.substr(0, sizeof(int)));\n"
                                 "  return x.substr(sizeof(int), str_size);\n"
@@ -248,7 +249,7 @@ def create_serializers(idl_types_data, idl_name, idl_path):
         "float" : {
             "serializer" : {
                 "name" : "serialize_float",
-                "signature" : "\nstring serialize_float(float x);\n",
+                "signature" : "\nstring serialize_float(float x);",
                 "definition" : ("\nstring serialize_float(float x) {\n"
                                 "  FloatInt conv;\n"
                                 "  conv.f = x;\n"
@@ -257,7 +258,7 @@ def create_serializers(idl_types_data, idl_name, idl_path):
             },
             "deserializer" : {
                 "name" : "deserialize_float",
-                "signature" : "\nfloat deserialize(string x);\n",
+                "signature" : "\nfloat deserialize(string x);",
                 "definition" : ("\nfloat deserialize_float(string x) {\n"
                                 "  int new_item = deserialize_int(x);\n"
                                 "  FloatInt conv;\n"
@@ -311,101 +312,73 @@ def create_proxy_function(name, idl_data):
 
         # For each argument...
         for i in range(len(idl_data['functions'][name]['arguments'])):
+            arg_type = idl_data['functions'][name]['arguments'][i]['type']
+            arg_name = idl_data['functions'][name]['arguments'][i]['name']
 
             # If the argument is an array...
-            if idl_data['types'][idl_data['functions'][name]['arguments'][i]['type']]['type_of_type'] == 'array':
+            if idl_data['types'][arg_type]['type_of_type'] == 'array':
 
                 # Create the cpp-friendly version of the type name... Array_int_4_10 --> int x[4][10]
-                root_ty, dimens = parse_array_name(idl_data['functions'][name]['arguments'][i]['type'], idl_data['types'])
-                arr_ty = create_cpp_array_type_string(root_ty, dimens, idl_data['functions'][name]['arguments'][i]['name'])
+                root_ty, dimens = parse_array_name(arg_type, idl_data['types'])
+                arr_ty = create_cpp_array_type_string(root_ty, dimens, arg_name)
                 args += f", {arr_ty}"
             else:
 
                 # Otherwise add it normally...
-                args += f", {idl_data['functions'][name]['arguments'][i]['type']} {idl_data['functions'][name]['arguments'][i]['name']}"
+                args += f", {arg_type} {arg_name}"
 
     function = f"\n{ret_ty} {name}({args[2:]}) {{\n"
-    sig = function[:-3] + ';\n'
+    sig = function[1:-3] + ';\n'
 
-    function += "char readBuffer[STDSIZE];\n" #append readbuffer - DECIDE STDSIZE
-    function += "NetworkFormatter f = NetworkFormatter();\n"
-    function += "f.setFunctionName(" + name + ");\n" #set func name w name arg
-    function += "f.setFunctionRetType("
+    function += "    char readBuffer[STD_READ_SIZE];\n"
+    function += "    readBuffer[0] = 'J';  // sanity check\n"
+    function += "    NetworkFormatter f = NetworkFormatter();\n"
+    function += f'    f.setFunctionName("{name}");\n'
 
-    if (ret_ty == STRUCT)
-        function += ret_ty + ", -1"
-    else 
-        function += ret_ty + ", " + sizeof(ret_ty) + ");\n" # add return type nad size
+    ret_ty_size_str = ""
+    if ret_ty in static_size_types:
+        ret_ty_size_str = f"sizeof({ret_ty})"
+    else:
+        ret_ty_size_str = "-1"
+    
+    function += f'    f.setFunctionRetType("{ret_ty}", {ret_ty_size_str});\n'
 
-    for i in range(len(idl_data['functions'][name]['arguments'])): # can i just repeat this loop
-        function += "f.appendArg(" + idl_data['functions'][name]['arguments'][i]['name'] + SIZE;
-        function += "serialize(" # need size
+    for i in range(len(idl_data['functions'][name]['arguments'])):
+        arg_type = idl_data['functions'][name]['arguments'][i]['type']
+        arg_name = idl_data['functions'][name]['arguments'][i]['name']
+        arg_size_str = ""
+        if arg_type in static_size_types:
+            arg_size_str = f"sizeof({arg_type})"
+        else:
+            arg_size_str = "-1"
 
-        # NOT DONE
+        function += f'    f.appendArg("{arg_type}", {arg_size_str}, serialize_{arg_type}({arg_name}));\n'
+    
+    function += "    string data = f.networkForm();\n"
+    function += "    RPCPROXYSOCKET->write(data.c_str(), data.length());\n"
+    function += "    RPCPROXYSOCKET->read(readBuffer, 1);\n"
+    function += "    if (readBuffer[0] != '\\0') {\n"
+    function += f'        throw C150Exception("{sig[:-2]}: call not recognized by the server.");\n'
+    function += '    }\n'
 
-'''
-  char readBuffer[sizeof(int)];
-
-  NetworkFormatter f = NetworkFormatter();
-  f.setFunctionName("area");
-  f.setFunctionRetType("int", sizeof(int));
-  f.appendArg("rectangle", -1, serialize(r));
-
-  string data = f.networkForm();
-
-  RPCPROXYSOCKET->write(data.c_str(), data.length()); 
-
-  RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
-
-  string resultStr(readBuffer, sizeof(readBuffer));
-
-  int result = deserialize_int(resultStr);
-  
-  return result;
-
-
-'''
-'''
-TWO NEED TO ADD: 
-    1. A way to encode success / failure when using void return types (0000 0000 'N' | 'Y')
-    2. A way to encode BAD / nonexistent function call (idea: add a byte to beginning of all
-       results coming over network... If byte == 0000 0000, success. Else, not a real function.)
-
-all caps 
-
-standard:
-
-char readBuffer[STDSIZE];
-
-NetworkFormatter f = NetworkFormatter();
-f.setFunctionName(NAME);
-f.setFunctionRetType(ret_ty, SIZE); - if struct, -1, if const size send size
-
-loop:
-    f.appendArg(ARG_I_NAME, SIZE_I, serialize_RET_TY_I(ARG_NAME));
-
-string data = f.networkForm();
-
-RPCPROXYSOCKET->write(data.c_str(), data.length()); 
-
-RPCPROXYSOCKET->read(readBuffer, sizeof(readBuffer));
-
-update read buffer if needed 
-
-string firstfour - deserialize, look as integer, next string resultStr is data str (IF we need to based on struct type)
-
-string resultStr(readBuffer, sizeof(readBuffer));
-
-// worry about void - 
-
-int result = deserialize_int__RET_TY_I(resultStr);
-  
-
-'''
-
+    if ret_ty in static_size_types:
+        function += f"    RPCPROXYSOCKET->read(readBuffer, sizeof({ret_ty}));\n"
+        function += f"    string resultStr(readBuffer, sizeof({ret_ty}));\n"
+        function += f"    return deserialize_{ret_ty}(resultStr);\n"
+    elif ret_ty == "void":
+        function += '   return;\n'   
+    else:
+        function += "    RPCPROXYSOCKET->read(readBuffer, sizeof(sizeof(int)));\n"
+        function += "    string lenStr(readBuffer, sizeof(int));\n"
+        function += "    int len = deserialize_int(lenStr);\n"
+        function += "    char dataBuffer[len];\n"
+        function += "    RPCPROXYSOCKET->read(dataBuffer, len);\n"
+        function += "    string resultStr(dataBuffer, len);\n"
+        function += "    resultStr = lenStr + resultStr;\n"
+        function += f"    return deserialize_{ret_ty}(resultStr);\n"
 
     function += "}\n"
-    print(function)
+
     return (sig, function)
 
 def create_proxy_functions(idl_data):
@@ -434,6 +407,7 @@ def create_proxy_functions(idl_data):
     requirements = ("#include \"rpcproxyhelper.h\"\n"
                     "#include \"c150debug.h\"\n"
                     "#include \"./RPC/utility.h\"\n"
+                    f"#define STD_READ_SIZE {STD_READ_SIZE}\n"
                     "using namespace C150NETWORK;\n")
 
     funcs = []
@@ -445,6 +419,8 @@ def create_proxy_functions(idl_data):
             "signature" : sig,
             "definition" : definition
         }
+
+        funcs.append(func_obj)
 
     return { "requirements" : requirements, "functions" : funcs }
 
@@ -459,18 +435,21 @@ def create_proxy_file(idl_set_name, serializer_package, proxy_package):
     proxy_file.write("\n\n// !! proxy_package requirements !!\n\n")
     proxy_file.write(proxy_package["requirements"])
 
-    proxy_file.write("\n\n// !! serializer_package functions !!\n\n")
+    proxy_file.write("\n\n// !! serializer_package forward declarations !!\n\n")
     for t in serializer_package["functions"]:
         proxy_file.write(serializer_package["functions"][t]["serializer"]["signature"])
         proxy_file.write(serializer_package["functions"][t]["deserializer"]["signature"])
+    
+    proxy_file.write("\n\n// !! proxy_package functions !!\n\n")
+    for f in proxy_package["functions"]:
+        proxy_file.write(f["definition"])
 
+    proxy_file.write("\n\n// !! serializer_package functions !!\n\n")
     for t in serializer_package["functions"]:
         proxy_file.write(serializer_package["functions"][t]["serializer"]["definition"])
         proxy_file.write(serializer_package["functions"][t]["deserializer"]["definition"])
         
-    proxy_file.write("\n\n// !! proxy_package functions !!\n\n")
-    for f in proxy_package["functions"]:
-        proxy_file.write(f["definition"])
+   
 
     proxy_file.close()
 
