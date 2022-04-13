@@ -25,6 +25,11 @@ struct rectangle {int x; int y;};
 
 int area(rectangle r);
 
-int fake(int arr[10][1000]);
+void voidFuncThatTakesALot(int x, float y, Person z);
+Person nonVoidFuncThatTakesALot(int x, float y, Person z);
 
+int fake(int arr[10][10]);
 
+int getValueAt(int arr[10][10], int i, int j);
+
+int tough(int arr[1][2][3][4][5][6][7][8]);

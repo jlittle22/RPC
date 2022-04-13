@@ -45,7 +45,7 @@ UTILITY_PATH = ./RPC/
 LDFLAGS = 
 INCLUDES = $(C150LIB)c150streamsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h $(C150LIB)c150grading.h $(C150IDSRPC)IDLToken.h $(C150IDSRPC)tokenizeddeclarations.h  $(C150IDSRPC)tokenizeddeclaration.h $(C150IDSRPC)declarations.h $(C150IDSRPC)declaration.h $(C150IDSRPC)functiondeclaration.h $(C150IDSRPC)typedeclaration.h $(C150IDSRPC)arg_or_member_declaration.h rpcproxyhelper.h rpcstubhelper.h simplefunction.idl arithmetic.idl floatarithmetic.idl structs.idl
 
-all: pingstreamclient pingstreamserver idldeclarationtst simplefunctionclient simplefunctionserver idl_to_json arithmeticclient arithmeticserver floatarithmeticclient floatarithmeticserver structsclient structsserver
+all: pingstreamclient pingstreamserver idldeclarationtst idl_to_json
 
 ########################################################################
 #
@@ -55,8 +55,8 @@ all: pingstreamclient pingstreamserver idldeclarationtst simplefunctionclient si
 #
 ########################################################################
 
-utility:
-	$(CPP) -c $(UTILITY_PATH)utility.cpp serialize.o
+# utility:
+# 	$(CPP) -c $(UTILITY_PATH)utility.cpp serialize.o
 
 pingstreamclient: pingstreamclient.o  $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 	$(CPP) -o pingstreamclient pingstreamclient.o $(C150AR) $(C150IDSRPCAR) 
@@ -81,26 +81,26 @@ pingstreamserver: pingstreamserver.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
 #
 ########################################################################
 
-structsclient: structsclient.o rpcproxyhelper.o structs.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o structsclient structsclient.o rpcproxyhelper.o structs.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
+# structsclient: structsclient.o rpcproxyhelper.o structs.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+# 	$(CPP) -o structsclient structsclient.o rpcproxyhelper.o structs.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
 
-structsserver: structs.stub.o rpcserver.o rpcstubhelper.o structs.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o structsserver rpcserver.o structs.stub.o structs.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
+# structsserver: structs.stub.o rpcserver.o rpcstubhelper.o structs.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+# 	$(CPP) -o structsserver rpcserver.o structs.stub.o structs.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
 
-arithmeticclient: arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o arithmeticclient arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o serialize.o  $(C150AR) $(C150IDSRPCAR) 
+# arithmeticclient: arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+# 	$(CPP) -o arithmeticclient arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o serialize.o  $(C150AR) $(C150IDSRPCAR) 
 
-arithmeticserver: arithmetic.stub.o rpcserver.o rpcstubhelper.o arithmetic.o utility.o serialize.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o arithmeticserver rpcserver.o arithmetic.stub.o arithmetic.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
+# arithmeticserver: arithmetic.stub.o rpcserver.o rpcstubhelper.o arithmetic.o utility.o serialize.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+# 	$(CPP) -o arithmeticserver rpcserver.o arithmetic.stub.o arithmetic.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
 
-floatarithmeticclient: floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o floatarithmeticclient floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
+# floatarithmeticclient: floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+# 	$(CPP) -o floatarithmeticclient floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
 
-floatarithmeticserver: floatarithmetic.stub.o rpcserver.o rpcstubhelper.o floatarithmetic.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o floatarithmeticserver rpcserver.o floatarithmetic.stub.o floatarithmetic.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
+# floatarithmeticserver: floatarithmetic.stub.o rpcserver.o rpcstubhelper.o floatarithmetic.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+# 	$(CPP) -o floatarithmeticserver rpcserver.o floatarithmetic.stub.o floatarithmetic.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
 
-simplefunctionclient: simplefunctionclient.o rpcproxyhelper.o simplefunction.proxy.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o simplefunctionclient simplefunctionclient.o rpcproxyhelper.o simplefunction.proxy.o  $(C150AR) $(C150IDSRPCAR) 
+# simplefunctionclient: simplefunctionclient.o rpcproxyhelper.o simplefunction.proxy.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
+# 	$(CPP) -o simplefunctionclient simplefunctionclient.o rpcproxyhelper.o simplefunction.proxy.o  $(C150AR) $(C150IDSRPCAR) 
 
 # The following is NOT a mistake. The main program for any of the rpc servers
 # is rpcserver.o.  This way, we can make a different one for each set 
@@ -120,8 +120,8 @@ simplefunctionserver: simplefunction.stub.o rpcserver.o rpcstubhelper.o simplefu
 ########################################################################
 
 # Compile the rpcgenerate program
-rpcgenerate: Makefile rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
-	$(CPP) -o rpcgenerate rpcgenerate.o $(C150AR) $(C150IDSRPCAR)
+# rpcgenerate: Makefile rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
+# 	$(CPP) -o rpcgenerate rpcgenerate.o $(C150AR) $(C150IDSRPCAR)
 
 ########################################################################
 #
@@ -144,12 +144,12 @@ rpcgenerate: Makefile rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 ########################################################################
 
 # Compile / link any client executable: 
-#%client: %.o %.proxy.o rpcserver.o rpcproxyhelper.o %client.o %.proxy.o
-#	$(CPP) -o $@ $@.o rpcproxyhelper.o $*.proxy.o  $(C150AR) $(C150IDSRPCAR) 
+%client: %.o %.proxy.o rpcserver.o rpcproxyhelper.o %client.o
+	$(CPP) -o $@ $@.o rpcproxyhelper.o $*.proxy.o  $(C150AR) $(C150IDSRPCAR) 
 
 # Compile / link any server executable:
-#%server: %.o %.stub.o rpcserver.o rpcstubhelper.o %.stub.o
-#	$(CPP) -o $@ rpcserver.o $*.stub.o $*.o rpcstubhelper.o $(C150AR) $(C150IDSRPCAR) 
+%server: %.o %.stub.o rpcserver.o rpcstubhelper.o %.stub.o
+	$(CPP) -o $@ rpcserver.o $*.stub.o $*.o rpcstubhelper.o $(C150AR) $(C150IDSRPCAR) 
 
 
 
@@ -172,8 +172,8 @@ rpcgenerate: Makefile rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
 #
 ########################################################################
 
-# %.proxy.cpp %.stub.cpp:%.idl $(RPCGEN)
-#	$(RPCGEN) $<
+ %.proxy.cpp %.stub.cpp:%.idl $(RPCGEN) idl_to_json
+	$(RPCGEN) $<
 
 ########################################################################
 #

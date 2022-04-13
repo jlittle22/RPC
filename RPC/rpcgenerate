@@ -8,6 +8,7 @@ import bisect
 from functools import reduce
 
 STD_READ_SIZE = 20
+FUNC_CALL_BUFFER_SIZE = 50000
 
 built_in_types = [ "void", "int", "string", "float" ]
 static_size_types = [ "int", "float" ]
@@ -84,7 +85,6 @@ def idl_string_to_python_object(idl_str):
     for (tname, replacement) in replacements:
         idl_str = idl_str.replace(tname, replacement)
 
-    print(idl_str)
     return json.loads(idl_str)
 
 def find_root_type_of_array(typename, idl_types_data):
@@ -258,7 +258,7 @@ def create_serializers(idl_types_data, idl_name, idl_path):
             },
             "deserializer" : {
                 "name" : "deserialize_float",
-                "signature" : "\nfloat deserialize(string x);",
+                "signature" : "\nfloat deserialize_float(string x);",
                 "definition" : ("\nfloat deserialize_float(string x) {\n"
                                 "  int new_item = deserialize_int(x);\n"
                                 "  FloatInt conv;\n"
@@ -299,8 +299,6 @@ def create_serializers(idl_types_data, idl_name, idl_path):
                 funcs[ty]["deserializer"]["definition"] =  dfunc
                 funcs[ty]["deserializer"]["signature"] = dsig
 
-    # for f in funcs:
-    #     print(funcs[f])
     return { "requirements" : requirements, "functions" : funcs }
 
 def create_proxy_function(name, idl_data):
@@ -357,7 +355,7 @@ def create_proxy_function(name, idl_data):
     function += "    string data = f.networkForm();\n"
     function += "    RPCPROXYSOCKET->write(data.c_str(), data.length());\n"
     function += "    RPCPROXYSOCKET->read(readBuffer, 1);\n"
-    function += "    if (readBuffer[0] != '\\0') {\n"
+    function += "    if (readBuffer[0] != '0') {\n"
     function += f'        throw C150Exception("{sig[:-2]}: call not recognized by the server.");\n'
     function += '    }\n'
 
@@ -368,7 +366,7 @@ def create_proxy_function(name, idl_data):
     elif ret_ty == "void":
         function += '   return;\n'   
     else:
-        function += "    RPCPROXYSOCKET->read(readBuffer, sizeof(sizeof(int)));\n"
+        function += "    RPCPROXYSOCKET->read(readBuffer, sizeof(int));\n"
         function += "    string lenStr(readBuffer, sizeof(int));\n"
         function += "    int len = deserialize_int(lenStr);\n"
         function += "    char dataBuffer[len];\n"
@@ -382,31 +380,8 @@ def create_proxy_function(name, idl_data):
     return (sig, function)
 
 def create_proxy_functions(idl_data):
-    '''
-    {
-        "area" : {
-            "return_type" : "int",
-            "arguments" : [            
-                {"name" : "r", "type" : "rectangle"}
-            ]
-        },
-        "findOtherPerson" : {
-            "return_type" : "Person",
-            "arguments" : [            
-                {"name" : "x", "type" : "StructWithArrays"}
-            ]
-        },
-        "findPerson" : {
-            "return_type" : "Person",
-            "arguments" : [            
-                {"name" : "tp", "type" : "ThreePeople"}
-            ]
-        }
-    }
-    '''
     requirements = ("#include \"rpcproxyhelper.h\"\n"
                     "#include \"c150debug.h\"\n"
-                    "#include \"./RPC/utility.h\"\n"
                     f"#define STD_READ_SIZE {STD_READ_SIZE}\n"
                     "using namespace C150NETWORK;\n")
 
@@ -424,34 +399,472 @@ def create_proxy_functions(idl_data):
 
     return { "requirements" : requirements, "functions" : funcs }
 
+def get_comparable_func_signature(fname, idl_data):
+    ret_ty_str = idl_data['functions'][fname]['return_type']
+    if idl_data['functions'][fname]['return_type'] in static_size_types:
+        ret_ty_str += '(4)'
+    else:
+        ret_ty_str += '(-1)'
 
-def create_proxy_file(idl_set_name, serializer_package, proxy_package):
-
-    proxy_file = open(f"{idl_set_name}.proxy.cpp", "w")
+    components = [fname, ret_ty_str]
+    for arg in idl_data['functions'][fname]['arguments']:
+        arg_ty_str = arg['type']
+        if arg['type'] in static_size_types:
+            arg_ty_str += '(4)'
+        else:
+            arg_ty_str += '(-1)'
+        components.append(arg_ty_str)
     
+    return ','.join(components)
 
-    proxy_file.write("\n\n// !! serializer_package requirements !!\n\n")
-    proxy_file.write(serializer_package["requirements"])
-    proxy_file.write("\n\n// !! proxy_package requirements !!\n\n")
-    proxy_file.write(proxy_package["requirements"])
 
-    proxy_file.write("\n\n// !! serializer_package forward declarations !!\n\n")
-    for t in serializer_package["functions"]:
-        proxy_file.write(serializer_package["functions"][t]["serializer"]["signature"])
-        proxy_file.write(serializer_package["functions"][t]["deserializer"]["signature"])
+
+def create_dispatch_function(idl_data):
     
-    proxy_file.write("\n\n// !! proxy_package functions !!\n\n")
-    for f in proxy_package["functions"]:
-        proxy_file.write(f["definition"])
-
-    proxy_file.write("\n\n// !! serializer_package functions !!\n\n")
-    for t in serializer_package["functions"]:
-        proxy_file.write(serializer_package["functions"][t]["serializer"]["definition"])
-        proxy_file.write(serializer_package["functions"][t]["deserializer"]["definition"])
-        
+    function = "\nvoid dispatchFunction() {\n"
+    function += f"  char numBytesBuf[sizeof(int)];\n"
+    function += "  int numBytesIncoming = sizeof(numBytesBuf) + getNumBytesInIncomingFunctionCall(numBytesBuf);\n"
+    function += "  if (numBytesIncoming == sizeof(numBytesBuf)) return;\n"
+    function += " char functionCallBuffer[numBytesIncoming];\n"
+    function += "  for (size_t i = 0; i < sizeof(numBytesBuf); i++) {\n"
+    function += "    functionCallBuffer[i] = numBytesBuf[i];\n"
+    function += "  }\n"
+    function += "  int numBytesRead = getFunctionCallFromStream(functionCallBuffer,sizeof(functionCallBuffer));\n"
+    function += "  if (numBytesRead == 0) return;\n"
+    function += "  string offTheWire(functionCallBuffer, sizeof(int) + numBytesRead);\n"
+    function += "  NetworkFormatter f = NetworkFormatter(offTheWire);\n"
+    function += "  if (!RPCSTUBSOCKET-> eof()) {\n"
    
+    if len(idl_data['functions'].keys()) == 0:
+        function += "    __badFunction();\n"
+    else:
+        fnames = list(idl_data['functions'].keys())
+        for i in range(len(fnames)):
+            s = get_comparable_func_signature(fnames[i], idl_data)
+            if i == 0:
+                function += f"    if (f.getFunctionSignature() == \"{s}\") {{\n"
+            else:
+                function += f"    }} else if (f.getFunctionSignature() == \"{s}\") {{\n"
 
-    proxy_file.close()
+            arg_names = []
+            j = 0
+            for arg in idl_data['functions'][fnames[i]]['arguments']:
+                arg_declaration = ""
+                if idl_data['types'][arg['type']]['type_of_type'] != 'array':
+                    arg_declaration = f"{arg['type']} {arg['name']}"
+                    function += f"      {arg_declaration} = deserialize_{arg['type']}(get<2>(f.getArgAtIndex({j})));\n"
+                else:
+                    root_ty, dimens = parse_array_name(arg['type'], idl_data['types'])
+                    arg_declaration = create_cpp_array_type_string(root_ty, dimens, arg['name'])
+                    function += f"      {arg_declaration};\n"
+                    function += f"      deserialize_{arg['type']}(get<2>(f.getArgAtIndex({j})), ({root_ty}*){arg['name']});\n"
+                arg_names.append(arg['name'])
+                
+                j += 1
+            
+            function += f"      __{fnames[i]}({', '.join(arg_names)});\n"
+
+        function += "    } else {\n"
+        function += "        __badFunction();\n"
+        function += "    }\n"
+
+    function += "  }\n"
+    function += "}\n"
+
+    func_obj = {
+        "name" : "dispatchFunction",
+        "signature" : "\nvoid dispatchFunction();",
+        "definition" : function 
+    }
+
+    return func_obj
+
+def create_stub_function(fname, idl_data):
+    args = ""
+    call_args = ""
+    # If the function has any arguments...
+    if len(idl_data['functions'][fname]['arguments']) > 0:
+
+        # For each argument...
+        for i in range(len(idl_data['functions'][fname]['arguments'])):
+            arg_type = idl_data['functions'][fname]['arguments'][i]['type']
+            arg_name = idl_data['functions'][fname]['arguments'][i]['name']
+            call_args += f', {arg_name}'
+            # If the argument is an array...
+            if idl_data['types'][arg_type]['type_of_type'] == 'array':
+
+                # Create the cpp-friendly version of the type name... Array_int_4_10 --> int x[4][10]
+                root_ty, dimens = parse_array_name(arg_type, idl_data['types'])
+                arr_ty = create_cpp_array_type_string(root_ty, dimens, arg_name)
+                args += f", {arr_ty}"
+            else:
+
+                # Otherwise add it normally...
+                args += f", {arg_type} {arg_name}"
+        args = args[2:]
+        call_args = call_args[2:]
+
+    ret_ty = idl_data['functions'][fname]['return_type']
+
+    function = f"\nvoid __{fname}({args}) {{\n"
+    signature = function[:-3] + ';'
+    if ret_ty != "void":
+        function += f'    {ret_ty} result = {fname}({call_args});\n'
+        function += f'    string forTheWire = \'0\' + serialize_{ret_ty}(result);\n'
+    else:
+        function += '    string forTheWire = "0";\n'
+        function += f'    {fname}({call_args});\n'
+
+    function += '    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());\n}\n'
+
+    return (signature, function)
+
+def create_stub_functions(idl_data):
+    requirements = ("#include \"rpcstubhelper.h\"\n"
+                    "#include \"c150debug.h\"\n"
+                    f"#define FUNC_CALL_BUFFER_SIZE {FUNC_CALL_BUFFER_SIZE}\n"
+                    "using namespace C150NETWORK;\n")
+
+    funcs = [
+        {
+            "name" : "__badFunction",
+            "signature" : "\nvoid __badFunction();",
+            "definition" : ("void __badFunction() {\n"
+                            "    char buf[2] = \"I\";\n"
+                            "    RPCSTUBSOCKET->write(buf, 1);\n"
+                            "}\n")
+        },
+        {
+            "name" : "getNumBytesInIncomingFunctionCall",
+            "signature" : "\nint getNumBytesInIncomingFunctionCall(char *buffer);",
+            "definition" : ("int getNumBytesInIncomingFunctionCall(char *buffer) {\n"
+                            "  unsigned int i;\n"
+                            "  char *bufp;\n"
+                            "  ssize_t readlen;\n"
+                            "  unsigned int numBytes;\n"
+                            "  bufp = buffer;\n"
+                            "  for (i = 0; i < sizeof(numBytes); i++) {\n"
+                            "    readlen = RPCSTUBSOCKET-> read(bufp, 1);\n"
+                            "    if (readlen == 0) {\n"
+                            "      break;\n"
+                            "    }\n"
+                            "    bufp++;\n"
+                            "  }\n"
+                            "  if (readlen == 0) {\n"
+                            "    if (RPCSTUBSOCKET->eof()) {\n"
+                            "      c150debug->printf(C150RPCDEBUG, \"Client signaled EOF before calling function\");\n"
+                            "      return 0;\n"
+                            "    } else {\n"
+                            "      throw C150Exception(\"arithmetic.stub: unexpected zero length read without eof\");\n"
+                            "    }\n"
+                            "  }\n"
+                            "  string numBytesStr(buffer, sizeof(numBytes));\n"
+                            "  numBytes = deserialize_int(numBytesStr);\n"
+                            "  return numBytes;\n"
+                            "}\n")
+        },
+        {
+            "name" : "getFunctionCallFromStream",
+            "signature" : "\nint getFunctionCallFromStream(char *buffer, unsigned int bufSize);",
+            "definition" : ("int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {\n"
+                            "  unsigned int i;\n"
+                            "  char *bufp;\n"
+                            "  ssize_t readlen;\n"
+                            "  unsigned int numBytes;\n"
+                            "  bufp = buffer + sizeof(numBytes);\n"
+                            "  string numBytesStr(buffer, sizeof(numBytes));\n"
+                            "  numBytes = deserialize_int(numBytesStr);\n"
+                            "  for (i = 0; i < bufSize && i < numBytes; i++) {\n"
+                            "    readlen = RPCSTUBSOCKET-> read(bufp, 1);\n"
+                            "    if (readlen == 0) {\n"
+                            "      break;\n"
+                            "    }\n"
+                            "    bufp++;\n"
+                            "  }\n"
+                            "  if (readlen == 0) {\n"
+                            "    c150debug->printf(C150RPCDEBUG,\"arithmetic.stub: read zero length message, checking EOF\");\n"
+                            "    if (RPCSTUBSOCKET-> eof()) {\n"
+                            "      c150debug->printf(C150RPCDEBUG,\"arithmetic.stub: EOF signaled on input\");\n"
+                            "    } else {\n"
+                            "      throw C150Exception(\"arithmetic.stub: unexpected zero length read without eof\");\n"
+                            "    }\n"
+                            "  }\n"
+                            "  if (i < numBytes && i >= bufSize) {\n"
+                            "    throw C150Exception(\"arithmetic.stub: Incoming message was larger than bufSize\");\n"
+                            "  }\n"
+                            "  return numBytes;\n"
+                            "}\n")
+        },
+    ]
+
+    for fname in idl_data['functions']:
+        sig, definition = create_stub_function(fname, idl_data)
+        func_obj = {
+            "name" : fname,
+            "signature" : sig,
+            "definition" : definition 
+        }
+
+        funcs.append(func_obj)
+
+    funcs.append(create_dispatch_function(idl_data))
+
+    return { "requirements" : requirements, "functions" : funcs }
+
+def create_network_formatter():
+    requirements = ("#include <stdexcept>\n"
+                    "#include <tuple>\n"
+                    "#include <vector>\n"
+                    "#include <string>\n"
+                    "#include <sstream>\n"
+                    "#include <inttypes.h>\n")
+
+    class_decl = '''
+class NetworkFormatter {
+  public:
+    NetworkFormatter();
+    NetworkFormatter(std::string offTheWire);
+    ~NetworkFormatter();
+
+    void setFunctionName(std::string name);
+    std::string getFunctionName();
+
+    void setFunctionRetType(std::string type, int typeSize);
+    std::tuple<std::string, int> getFunctionRetType();
+
+    void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
+    std::tuple<std::string, int, std::string> getArgAtIndex(int index);
+    int getNumArgs();
+
+    std::string getFunctionSignature();
+
+
+
+    std::string networkForm();
+
+
+  private:
+    std::vector<std::tuple<std::string, int, std::string>> args;
+    std::string functionName;
+    int networkFormLength;
+    std::tuple<std::string, int> returnType;
+};
+    ''' 
+
+    class_def = '''
+NetworkFormatter::NetworkFormatter() {
+    functionName = "";
+    returnType = make_tuple("", 0);
+    networkFormLength = 0;
+}
+
+NetworkFormatter::NetworkFormatter(string offTheWire) {
+    int numBytes = (*reinterpret_cast<const int*>(offTheWire.c_str()));
+
+    offTheWire = offTheWire.substr(sizeof(int), numBytes + sizeof(int));
+ 
+    //////
+    // Find the first occurrence of ','... this character indicates the end of the function name
+    size_t endOfNameIndex = offTheWire.find_first_of(",");
+    if (endOfNameIndex == string::npos) {
+        throw runtime_error("NetworkFormatter::NetworkFormatter(string offTheWire) -- no ',' located for the function name...");
+    }
+    functionName = offTheWire.substr(0, endOfNameIndex);
+    // Take the substring representing the function name...
+    //////
+
+    //////
+    // Find the next occurrence of '('...
+    size_t endOfReturnTypeIndex = offTheWire.find_first_of("(", endOfNameIndex + 1);
+    if (endOfReturnTypeIndex == string::npos) {
+        throw runtime_error("NetworkFormatter::NetworkFormatter(string offTheWire) -- no '(' located for the return type name...");
+    }
+    string returnTypeName = offTheWire.substr(endOfNameIndex + 1, endOfReturnTypeIndex - endOfNameIndex - 1);
+
+    // Take that substring representing the return type name...
+    //////
+
+    //////
+    // Find the next occurence of ')'...
+    size_t endOfReturnTypeSizeIndex = offTheWire.find_first_of(")", endOfReturnTypeIndex);
+    if (endOfReturnTypeSizeIndex == string::npos) {
+        throw runtime_error("NetworkFormatter::NetworkFormatter(string offTheWire) -- no ')' located for the return type size...");
+    }
+    int returnTypeSize = stoi(offTheWire.substr(endOfReturnTypeIndex + 1, endOfReturnTypeSizeIndex - endOfReturnTypeIndex - 1));
+    // Take the subtring between the '(' and ')' as the return type size...
+    //////
+
+    //////
+    // Set the return type as a tuple.
+    returnType = make_tuple(returnTypeName, returnTypeSize);
+    //////
+
+
+    int currSectionStart = endOfReturnTypeSizeIndex + 2;
+    while (currSectionStart <= (int)offTheWire.length()) {
+        //////
+        // Find the next occurrence of '(' in this section...
+        size_t endOfArgTypeNameIndex = offTheWire.find_first_of("(", currSectionStart);
+
+        // If no such '(' exists, then we have finished reading all of the arguments.
+        if (endOfArgTypeNameIndex == string::npos) {
+            break;
+        }
+
+        string argTypeName = offTheWire.substr(currSectionStart, endOfArgTypeNameIndex - currSectionStart);
+        // Otherwise, take the substring from the start of the section to the '(' to be the arg type name.
+        //////
+
+        //////
+        // Find the next ')'...
+        size_t endOfArgSizeIndex = offTheWire.find_first_of(")", endOfArgTypeNameIndex + 1);
+        if (endOfArgSizeIndex == string::npos) {
+            throw runtime_error("NetworkFormatter::NetworkFormatter(string offTheWire) -- no ')' located for the arg type size...");
+        }
+
+        // Take what's between the '(' and ')' as an integer representing the size of the arg type...
+        int argTypeSize = stoi(offTheWire.substr(endOfArgTypeNameIndex + 1, endOfArgSizeIndex - endOfArgTypeNameIndex - 1));
+
+        int dataSize = argTypeSize == -1 ? sizeof(int) + deserialize_int(offTheWire.substr(endOfArgSizeIndex + 2, sizeof(int))) : argTypeSize; 
+        
+        // Read the next argTypeSize as the data representing the argument...
+        string argData = offTheWire.substr(endOfArgSizeIndex + 2, dataSize);
+        args.emplace_back(make_tuple(argTypeName, argTypeSize, argData));
+        // Add the argument as a tuple to our vector.
+        //////
+
+        // Update the currSectionStart for the next iteration of the loop.
+        currSectionStart = endOfArgSizeIndex + dataSize + 3;
+    }   
+}
+
+NetworkFormatter::~NetworkFormatter() { }
+
+void NetworkFormatter::setFunctionName(std::string name) {
+    functionName = name;
+}
+
+std::string NetworkFormatter::getFunctionName() {
+    return functionName;
+}
+
+void NetworkFormatter::setFunctionRetType(std::string type, int typeSize) {
+    returnType = make_tuple(type, typeSize);
+}
+
+std::tuple<std::string, int> NetworkFormatter::getFunctionRetType() {
+    return returnType;
+}
+
+void NetworkFormatter::appendArg(std::string argTypeName, int argTypeSize, std::string argData) {
+    args.emplace_back(make_tuple(argTypeName, argTypeSize, argData));
+}
+  
+std::tuple<std::string, int, std::string> NetworkFormatter::getArgAtIndex(int index) {
+    if (index >= 0 && index < (int)args.size()) return args[index];
+    else throw runtime_error("NetworkFormatter::getArgAtIndex -- index " + to_string(index) + " out of bounds... [0, " + to_string(args.size()) + "]");
+}
+  
+int NetworkFormatter::getNumArgs() {
+    return args.size();
+}
+
+std::string NetworkFormatter::getFunctionSignature() {
+    string sig = functionName + "," + get<0>(returnType) + "(" + to_string(get<1>(returnType)) + ")";
+
+    // For each argument in our vector...
+    for (auto it : args) {
+        // Add a component of the form: {,<argType>(<size>)}
+        sig += "," + get<0>(it) + "(" + to_string(get<1>(it)) + ")";
+    }
+
+    return sig;
+}
+
+//////
+//
+// NETWORK FORM:
+//
+//    <functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
+//
+// Example:
+//
+//    int foo(float x, myStruct y)
+//
+//        ==
+//
+//    foo,int(4),float(4),xxxx,myStruct(10),yyyyyyyyyy
+//
+// Glossary & Other Hints:
+//
+// { ... } -- content between curly brackets is OPTIONAL and can be REPEATED. 
+//
+// <functionName> -- a string of any length representing the name of the function being called.
+// 
+// <returnType> -- a string representing the return type of the function... can be "void".
+//
+// <size> -- a non-negative integer representing the number of bytes associated with a type.
+//
+// <argType> -- a string representing the type of an argument to the function.
+//
+// <argData> -- a string representing the data intended to be interpreted as an argument to the function.
+//
+//////
+
+string NetworkFormatter::networkForm() {
+    // Add the required: <functionName>,<returnType>(<size>)
+    string res = functionName + "," + get<0>(returnType) + "(" + to_string(get<1>(returnType)) + ")";
+
+    // For each argument in our vector...
+    for (auto it : args) {
+        // Add a component of the form: {,<argType>(<size>),<argData>}
+        res += "," + get<0>(it) + "(" + to_string(get<1>(it)) + ")," + get<2>(it);
+    }
+
+    res = serialize_int((int)res.length()) + res;
+
+    return res;
+}
+    '''
+
+    return { "requirements" : requirements, "class_decl" : class_decl, "class_def" : class_def }
+
+def create_file(file_name, network_formatter_package, serializer_package, functionality_package):
+
+    file = open(file_name, "w")
+    
+    file.write(f"\n\n// !! {serializer_package['name']} requirements !!\n\n")
+    file.write(serializer_package["pack"]["requirements"])
+    file.write(f"\n\n// !! {functionality_package['name']} requirements !!\n\n")
+    file.write(functionality_package["pack"]["requirements"])
+    file.write(f"\n\n// !! {network_formatter_package['name']} requirements !!\n\n")
+    file.write(network_formatter_package["pack"]["requirements"])
+
+    file.write(f"\n\n// !! {functionality_package['name']} forward declarations !!\n\n")
+    for f in functionality_package["pack"]["functions"]:
+        file.write(f["signature"])
+
+    file.write(f"\n\n// !! {serializer_package['name']} forward declarations !!\n\n")
+    for t in serializer_package["pack"]["functions"]:
+        file.write(serializer_package["pack"]["functions"][t]["serializer"]["signature"])
+        file.write(serializer_package["pack"]["functions"][t]["deserializer"]["signature"])
+    
+    file.write(f"\n\n// !! {network_formatter_package['name']} forward declarations !!\n\n")
+    file.write(network_formatter_package['pack']['class_decl'])
+
+    file.write(f"\n\n// !! {functionality_package['name']} functions !!\n\n")
+    for f in functionality_package["pack"]["functions"]:
+        file.write(f["definition"])
+
+    file.write(f"\n\n// !! {serializer_package['name']} functions !!\n\n")
+    for t in serializer_package["pack"]["functions"]:
+        file.write(serializer_package["pack"]["functions"][t]["serializer"]["definition"])
+        file.write(serializer_package["pack"]["functions"][t]["deserializer"]["definition"])
+
+    file.write(f"\n\n// !! {network_formatter_package['name']} functions !!\n\n")
+    file.write(network_formatter_package['pack']['class_def'])
+
+    file.close()    
 
 def main():
     if len(sys.argv) != 2:
@@ -475,8 +888,15 @@ def main():
 
     serializer_package = create_serializers(idl_data["types"], idl_name, sys.argv[1])
     proxy_package = create_proxy_functions(idl_data)
+    stub_package = create_stub_functions(idl_data)
+    network_formatter_package = create_network_formatter()
 
-    create_proxy_file(idl_set_name, serializer_package, proxy_package)
+    serp = { "name" : "Serializer Package", "pack" : serializer_package }
+    proxp = { "name" : "Proxy Package", "pack" : proxy_package }
+    stubp = { "name" : "Stub Package", "pack" : stub_package }
+    nformp = { "name" : "Network Formatter Package", "pack" : network_formatter_package}
+    create_file(f"{idl_set_name}.proxy.cpp", nformp, serp, proxp)
+    create_file(f"{idl_set_name}.stub.cpp", nformp, serp, stubp)
 
 
 

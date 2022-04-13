@@ -11,6 +11,15 @@
 // void, int, float, string
 // 
 
+/*     for (int i = 0; i < data.length(); i++) {
+        cerr << i << " : " << int(data[i]);
+        if (isalnum(data[i])) {
+            cerr << " (" << data[i] << ")"; 
+        }
+
+        cerr << endl;
+    }*/
+
 // string x = "this is a long strng that has lots of data";
 
 // -> string(43),this is a long string that has lots of data
@@ -64,7 +73,7 @@
 
 
 class NetworkFormatter {
-public:
+  public:
 	NetworkFormatter();                        // ... for WRITING to the network
 	NetworkFormatter(std::string offTheWire);  // ... for READING from the network
 	~NetworkFormatter();
@@ -86,7 +95,7 @@ public:
 	std::string networkForm();
 
 
-private:
+  private:
     std::vector<std::tuple<std::string, int, std::string>> args;  // type name, size, data
     std::string functionName;
     int networkFormLength;

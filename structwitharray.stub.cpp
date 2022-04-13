@@ -7,9 +7,9 @@
 #include <sstream>
 #include <iostream>
 using namespace std;
-#ifndef STRUCTS_IDL
-#define STRUCTS_IDL
-#include "structs.idl"
+#ifndef STRUCTWITHARRAY_IDL
+#define STRUCTWITHARRAY_IDL
+#include "structwitharray.idl"
 #endif
 
 union FloatInt {
@@ -43,8 +43,13 @@ void __badFunction();
 int getNumBytesInIncomingFunctionCall(char *buffer);
 int getFunctionCallFromStream(char *buffer, unsigned int bufSize);
 void __area(rectangle r);
+void __fake(int arr[10][10]);
 void __findOtherPerson(StructWithArrays x);
 void __findPerson(ThreePeople tp);
+void __getValueAt(int arr[10][10], int i, int j);
+void __nonVoidFuncThatTakesALot(int x, float y, Person z);
+void __tough(int arr[1][2][3][4][5][6][7][8]);
+void __voidFuncThatTakesALot(int x, float y, Person z);
 void dispatchFunction();
 
 // !! Serializer Package forward declarations !!
@@ -64,8 +69,40 @@ string serialize_ThreePeople(ThreePeople x);
 ThreePeople deserialize_ThreePeople(string x);
 string serialize_Array_Person_10(Person x[10]);
 void deserialize_Array_Person_10(string x, Person* dest);
+string serialize_Array_int_100(int x[100]);
+void deserialize_Array_int_100(string x, int* dest);
+string serialize_Array_int_10(int x[10]);
+void deserialize_Array_int_10(string x, int* dest);
+string serialize_Array_int_10_100(int x[10][100]);
+void deserialize_Array_int_10_100(string x, int* dest);
+string serialize_Array_int_10_10(int x[10][10]);
+void deserialize_Array_int_10_10(string x, int* dest);
+string serialize_Array_int_1_2_3_4_5_6_7_8(int x[1][2][3][4][5][6][7][8]);
+void deserialize_Array_int_1_2_3_4_5_6_7_8(string x, int* dest);
+string serialize_Array_int_2_3_4_5_6_7_8(int x[2][3][4][5][6][7][8]);
+void deserialize_Array_int_2_3_4_5_6_7_8(string x, int* dest);
+string serialize_Array_int_3_4_5_6_7_8(int x[3][4][5][6][7][8]);
+void deserialize_Array_int_3_4_5_6_7_8(string x, int* dest);
+string serialize_Array_int_4(int x[4]);
+void deserialize_Array_int_4(string x, int* dest);
+string serialize_Array_int_4_10(int x[4][10]);
+void deserialize_Array_int_4_10(string x, int* dest);
+string serialize_Array_int_4_10_100(int x[4][10][100]);
+void deserialize_Array_int_4_10_100(string x, int* dest);
+string serialize_Array_int_4_5_6_7_8(int x[4][5][6][7][8]);
+void deserialize_Array_int_4_5_6_7_8(string x, int* dest);
+string serialize_Array_int_5_6_7_8(int x[5][6][7][8]);
+void deserialize_Array_int_5_6_7_8(string x, int* dest);
+string serialize_Array_int_6_7_8(int x[6][7][8]);
+void deserialize_Array_int_6_7_8(string x, int* dest);
+string serialize_Array_int_7_8(int x[7][8]);
+void deserialize_Array_int_7_8(string x, int* dest);
+string serialize_Array_int_8(int x[8]);
+void deserialize_Array_int_8(string x, int* dest);
 string serialize_rectangle(rectangle x);
 rectangle deserialize_rectangle(string x);
+string serialize_s(s x);
+s deserialize_s(string x);
 
 // !! Network Formatter Package forward declarations !!
 
@@ -167,6 +204,12 @@ void __area(rectangle r) {
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
+void __fake(int arr[10][10]) {
+    int result = fake(arr);
+    string forTheWire = '0' + serialize_int(result);
+    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+}
+
 void __findOtherPerson(StructWithArrays x) {
     Person result = findOtherPerson(x);
     string forTheWire = '0' + serialize_Person(result);
@@ -176,6 +219,30 @@ void __findOtherPerson(StructWithArrays x) {
 void __findPerson(ThreePeople tp) {
     Person result = findPerson(tp);
     string forTheWire = '0' + serialize_Person(result);
+    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+}
+
+void __getValueAt(int arr[10][10], int i, int j) {
+    int result = getValueAt(arr, i, j);
+    string forTheWire = '0' + serialize_int(result);
+    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+}
+
+void __nonVoidFuncThatTakesALot(int x, float y, Person z) {
+    Person result = nonVoidFuncThatTakesALot(x, y, z);
+    string forTheWire = '0' + serialize_Person(result);
+    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+}
+
+void __tough(int arr[1][2][3][4][5][6][7][8]) {
+    int result = tough(arr);
+    string forTheWire = '0' + serialize_int(result);
+    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+}
+
+void __voidFuncThatTakesALot(int x, float y, Person z) {
+    string forTheWire = "0";
+    voidFuncThatTakesALot(x, y, z);
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
@@ -195,12 +262,36 @@ void dispatchFunction() {
     if (f.getFunctionSignature() == "area,int(4),rectangle(-1)") {
       rectangle r = deserialize_rectangle(get<2>(f.getArgAtIndex(0)));
       __area(r);
+    } else if (f.getFunctionSignature() == "fake,int(4),Array_int_10_10(-1)") {
+      int arr[10][10];
+      deserialize_Array_int_10_10(get<2>(f.getArgAtIndex(0)), (int*)arr);
+      __fake(arr);
     } else if (f.getFunctionSignature() == "findOtherPerson,Person(-1),StructWithArrays(-1)") {
       StructWithArrays x = deserialize_StructWithArrays(get<2>(f.getArgAtIndex(0)));
       __findOtherPerson(x);
     } else if (f.getFunctionSignature() == "findPerson,Person(-1),ThreePeople(-1)") {
       ThreePeople tp = deserialize_ThreePeople(get<2>(f.getArgAtIndex(0)));
       __findPerson(tp);
+    } else if (f.getFunctionSignature() == "getValueAt,int(4),Array_int_10_10(-1),int(4),int(4)") {
+      int arr[10][10];
+      deserialize_Array_int_10_10(get<2>(f.getArgAtIndex(0)), (int*)arr);
+      int i = deserialize_int(get<2>(f.getArgAtIndex(1)));
+      int j = deserialize_int(get<2>(f.getArgAtIndex(2)));
+      __getValueAt(arr, i, j);
+    } else if (f.getFunctionSignature() == "nonVoidFuncThatTakesALot,Person(-1),int(4),float(4),Person(-1)") {
+      int x = deserialize_int(get<2>(f.getArgAtIndex(0)));
+      float y = deserialize_float(get<2>(f.getArgAtIndex(1)));
+      Person z = deserialize_Person(get<2>(f.getArgAtIndex(2)));
+      __nonVoidFuncThatTakesALot(x, y, z);
+    } else if (f.getFunctionSignature() == "tough,int(4),Array_int_1_2_3_4_5_6_7_8(-1)") {
+      int arr[1][2][3][4][5][6][7][8];
+      deserialize_Array_int_1_2_3_4_5_6_7_8(get<2>(f.getArgAtIndex(0)), (int*)arr);
+      __tough(arr);
+    } else if (f.getFunctionSignature() == "voidFuncThatTakesALot,void(-1),int(4),float(4),Person(-1)") {
+      int x = deserialize_int(get<2>(f.getArgAtIndex(0)));
+      float y = deserialize_float(get<2>(f.getArgAtIndex(1)));
+      Person z = deserialize_Person(get<2>(f.getArgAtIndex(2)));
+      __voidFuncThatTakesALot(x, y, z);
     } else {
         __badFunction();
     }
@@ -343,6 +434,291 @@ void deserialize_Array_Person_10(string x, Person* dest) {
     }
 }
 
+string serialize_Array_int_100(int x[100]) {
+    string data = "";
+    for (int i = 0; i < 100; i++) {
+        data += serialize_int(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_100(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 100; i++) {
+        len = sizeof(int);
+        dest[i] = deserialize_int(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_10(int x[10]) {
+    string data = "";
+    for (int i = 0; i < 10; i++) {
+        data += serialize_int(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_10(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 10; i++) {
+        len = sizeof(int);
+        dest[i] = deserialize_int(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_10_100(int x[10][100]) {
+    string data = "";
+    for (int i = 0; i < 10; i++) {
+        data += serialize_Array_int_100(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_10_100(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 10; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_100(x.substr(0, len), dest + (i * 100));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_10_10(int x[10][10]) {
+    string data = "";
+    for (int i = 0; i < 10; i++) {
+        data += serialize_Array_int_10(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_10_10(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 10; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_10(x.substr(0, len), dest + (i * 10));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_1_2_3_4_5_6_7_8(int x[1][2][3][4][5][6][7][8]) {
+    string data = "";
+    for (int i = 0; i < 1; i++) {
+        data += serialize_Array_int_2_3_4_5_6_7_8(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_1_2_3_4_5_6_7_8(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 1; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_2_3_4_5_6_7_8(x.substr(0, len), dest + (i * 40320));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_2_3_4_5_6_7_8(int x[2][3][4][5][6][7][8]) {
+    string data = "";
+    for (int i = 0; i < 2; i++) {
+        data += serialize_Array_int_3_4_5_6_7_8(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_2_3_4_5_6_7_8(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 2; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_3_4_5_6_7_8(x.substr(0, len), dest + (i * 20160));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_3_4_5_6_7_8(int x[3][4][5][6][7][8]) {
+    string data = "";
+    for (int i = 0; i < 3; i++) {
+        data += serialize_Array_int_4_5_6_7_8(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_3_4_5_6_7_8(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 3; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_4_5_6_7_8(x.substr(0, len), dest + (i * 6720));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_4(int x[4]) {
+    string data = "";
+    for (int i = 0; i < 4; i++) {
+        data += serialize_int(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_4(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 4; i++) {
+        len = sizeof(int);
+        dest[i] = deserialize_int(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_4_10(int x[4][10]) {
+    string data = "";
+    for (int i = 0; i < 4; i++) {
+        data += serialize_Array_int_10(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_4_10(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 4; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_10(x.substr(0, len), dest + (i * 10));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_4_10_100(int x[4][10][100]) {
+    string data = "";
+    for (int i = 0; i < 4; i++) {
+        data += serialize_Array_int_10_100(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_4_10_100(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 4; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_10_100(x.substr(0, len), dest + (i * 1000));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_4_5_6_7_8(int x[4][5][6][7][8]) {
+    string data = "";
+    for (int i = 0; i < 4; i++) {
+        data += serialize_Array_int_5_6_7_8(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_4_5_6_7_8(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 4; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_5_6_7_8(x.substr(0, len), dest + (i * 1680));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_5_6_7_8(int x[5][6][7][8]) {
+    string data = "";
+    for (int i = 0; i < 5; i++) {
+        data += serialize_Array_int_6_7_8(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_5_6_7_8(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 5; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_6_7_8(x.substr(0, len), dest + (i * 336));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_6_7_8(int x[6][7][8]) {
+    string data = "";
+    for (int i = 0; i < 6; i++) {
+        data += serialize_Array_int_7_8(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_6_7_8(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 6; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_7_8(x.substr(0, len), dest + (i * 56));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_7_8(int x[7][8]) {
+    string data = "";
+    for (int i = 0; i < 7; i++) {
+        data += serialize_Array_int_8(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_7_8(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 7; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        deserialize_Array_int_8(x.substr(0, len), dest + (i * 8));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_int_8(int x[8]) {
+    string data = "";
+    for (int i = 0; i < 8; i++) {
+        data += serialize_int(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_int_8(string x, int* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 8; i++) {
+        len = sizeof(int);
+        dest[i] = deserialize_int(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
 string serialize_rectangle(rectangle x) {
     string data = "";
     data += serialize_int(x.x);
@@ -361,6 +737,33 @@ rectangle deserialize_rectangle(string x) {
     x = x.substr(len);
     len = sizeof(int);
     new_item.y = deserialize_int(x.substr(0, len));
+
+    return new_item;
+}
+
+string serialize_s(s x) {
+    string data = "";
+    data += serialize_Array_int_4(x.m1);
+    data += serialize_Array_int_4_10(x.m2);
+    data += serialize_Array_int_4_10_100(x.m3);
+    return serialize_int((int)data.length()) + data;
+}
+
+s deserialize_s(string x) {
+    s new_item;
+    int len = sizeof(int);
+
+    x = x.substr(len);
+    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+    deserialize_Array_int_4(x.substr(0, len), (int*)new_item.m1);
+
+    x = x.substr(len);
+    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+    deserialize_Array_int_4_10(x.substr(0, len), (int*)new_item.m2);
+
+    x = x.substr(len);
+    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+    deserialize_Array_int_4_10_100(x.substr(0, len), (int*)new_item.m3);
 
     return new_item;
 }
