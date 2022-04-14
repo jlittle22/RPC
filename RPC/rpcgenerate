@@ -8,7 +8,6 @@ import bisect
 from functools import reduce
 
 STD_READ_SIZE = 20
-FUNC_CALL_BUFFER_SIZE = 50000
 
 built_in_types = [ "void", "int", "string", "float" ]
 static_size_types = [ "int", "float" ]
@@ -49,7 +48,7 @@ def create_new_array_type_name(type_info):
 ## Preprocessing includes replacing all array type names with custom
 ## versions that can be used in C++ function names.
 ##
-## Example: The type name "__int[4][10][100]"" can't be used in a
+## Example: The type name "__int[4][10][100]" can't be used in a
 ## function name like so:
 ##
 ##     int* deserialize___int[4][10][100](string x)
@@ -87,46 +86,130 @@ def idl_string_to_python_object(idl_str):
 
     return json.loads(idl_str)
 
+###### find_root_type_of_array
+## 
+## Given some type name representing an array, finds the root member type
+## of the array.
+##
+## Example: "Array_int_10_5_100" --> "int"
+##
+######
 def find_root_type_of_array(typename, idl_types_data):
     if idl_types_data[typename]["type_of_type"] != "array":
         return typename
 
     return find_root_type_of_array(idl_types_data[typename]["member_type"], idl_types_data)
 
+###### create_non_array_serialize
+## 
+## Given some type, creates two strings. One string represents the
+## C++ signature of the serializer for the type and the other represents
+## the C++ definition of the serializer for the type.
+##
+## Note: The procedure for seriliazing a non-array type is distinct from
+## that of arrays.
+##
+######
 def create_non_array_serialize(type_name, idl_types_data):
     function = f"\nstring serialize_{type_name}({type_name} x) {{\n"
     signature = function[:-3] + ';';
     function += "    string data = \"\";\n"
+
+    # For each data member in the struct, serialize it.
     for member in idl_types_data[type_name]["members"]:
         function += f"    data += serialize_{member['type']}(x.{member['name']});\n"
+
+    # Return serialized data.
     function += "    return serialize_int((int)data.length()) + data;\n"
     function += "}\n"
 
     return (signature, function)
 
+###### create_non_array_deserialize
+## 
+## Given some type, creates two strings. One string represents the
+## C++ signature of the deserializer for the type and the other represents
+## the C++ definition of the deserializer for the type.
+##
+## Note: The procedure for deseriliazing a non-array type is distinct from
+## that of arrays.
+##
+######
 def create_non_array_deserialize(type_name, idl_types_data):
     function = f"\n{type_name} deserialize_{type_name}(string x) {{\n"
     signature = function[:-3] + ';';
     function += f"    {type_name} new_item;\n"
     function += "    int len = sizeof(int);\n"
+
+    # For each member of the struct...
     for member in idl_types_data[type_name]["members"]:
         function += f"\n    x = x.substr(len);\n"
+
+        # If the member is NOT known to be static size (i.e. is NOT an integer or float)
         if member['type'] not in static_size_types:
+            # Then we need to extract the len of the object from the first 4 bytes of the string.
             function += f"    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));\n"
         else:
+            # Otherwise, the len of the object is simply its C++ sizeof result.
             function += f"    len = sizeof({member['type']});\n"
+
+        # If the struct member is NOT an array
         if idl_types_data[member['type']]['type_of_type'] != 'array':
+            # Then we can directly assign the result of deserialized to the struct.
             function += f"    new_item.{member['name']} = deserialize_{member['type']}(x.substr(0, len));\n"
         else:
+            # Otherwise, we can't return a C++ array, so we have to pass the member by reference.
             function += f"    deserialize_{member['type']}(x.substr(0, len), ({find_root_type_of_array(member['type'], idl_types_data)}*)new_item.{member['name']});\n"
+
     function += "\n    return new_item;\n"
     function += "}\n"
 
     return (signature, function)
 
+###### parse_array_name
+## 
+## Given some array name, return the root type and dimensions of the array.
+##
+## Example: Array_int_10_5_50 -> ("int", ['10', '5', '50'])
+##
+######
 def parse_array_name(arr_name, idl_types_data):
+
+    # Identify the root type of the array.
     root_ty = find_root_type_of_array(arr_name, idl_types_data)
 
+    # Remove the root type from the array name string.
+    # This step is necessary because the array's root type
+    # could be a deceptively named struct. Example:
+    #
+    # struct Array_int_10 {
+    #     int x;
+    # };
+    #
+    # This is a valid C++ struct, but according to this type
+    # system, the name would appear to be an array even though
+    # it is not. An array of these structs such as:
+    #
+    # void foo(Array_int_10 x[5][2]);
+    #
+    # Would have the type:
+    #
+    # Array_Array_int_10_5_2
+    #
+    # Therefore, in order to determine the correct dimensions
+    # of the argument to foo(), we have to remove the root type
+    # from the array's type string:
+    #
+    # Array_Array_int_10_5_2 --> Array__5_2
+    #
+    # Now, we can easily see that the array x has:
+    #
+    # root type = Array_int_10, dimensions = 5, 2
+    #
+    # which clearly correspond correctly to:
+    #
+    # Array_int_10 x[5][2]
+    # 
     arr_name = arr_name.replace(root_ty, "")
     sects = arr_name.split('_')
     
@@ -134,21 +217,40 @@ def parse_array_name(arr_name, idl_types_data):
     
     return (root_ty, dimens)
 
+###### create_cpp_array_type_string
+## 
+## Given a root type, dimensions, and optionally a variable name,
+## returns a string containing a C++ type string.
+##
+## Example: ("int", ['5', '10'], 'arr') -> "int arr[5][10]"
+##
+######
 def create_cpp_array_type_string(root_ty, dimens, name='x'):
     ret = f"{root_ty} {name}"
     for d in dimens:
         ret += f"[{d}]"
     return ret
 
+###### create_array_serialize
+## 
+## Given a type representing an array, creates a C++ serializer
+## for the type and returns it as a signature string and definition
+## string.
+##
+######
 def create_array_serialize(type_name, idl_types_data):
     
+    # Find the root type and dimensions of the array...
     root_ty, dimens = parse_array_name(type_name, idl_types_data)
 
+    # Create the C++ type string representing the array...
+    # Example: "int x[5][10]"
     arg = create_cpp_array_type_string(root_ty, dimens)
    
     function = f"\nstring serialize_{type_name}({arg}) {{\n"
     signature = function[:-3] + ';';
     function += "    string data = \"\";\n"
+    # For each element of the array, serialize it and add it to the data.
     function += f"    for (int i = 0; i < {idl_types_data[type_name]['element_count']}; i++) {{\n"
     function += f"        data += serialize_{idl_types_data[type_name]['member_type']}(x[i]);\n"
     function += "    }\n"
@@ -157,39 +259,78 @@ def create_array_serialize(type_name, idl_types_data):
 
     return (signature, function)
 
+###### create_array_deserialize
+## 
+## Given a type representing an array, generates a C++ deserializer
+## and returns it in the form of a signature string and a definition
+## string.
+##
+######
 def create_array_deserialize(type_name, idl_types_data):
     
+    # Find root type and dimensions of the array type we are deserializing.
     root_ty, dimens = parse_array_name(type_name, idl_types_data)
 
-    ret = create_cpp_array_type_string(root_ty, dimens)
-
+    # Find the member type's root and dimensions.
     member_root_ty, member_dimens = parse_array_name(idl_types_data[type_name]['member_type'], idl_types_data)
 
-    arg = root_ty + ''.join(['*' for _ in dimens])
-
-
-
+    # NOTE: "dest" is a parameter where we will *STORE* the result of deserialization.
+    # It represents a pointer to the beginning of an array matching the type we 
+    # are deserializing.
     function = f"\nvoid deserialize_{type_name}(string x, {root_ty}* dest) {{\n"
     signature = function[:-3] + ';';
     function += f"    int len = sizeof(int);\n"
     function += f"    x = x.substr(len);\n"
     function += f"\n    for (int i = 0; i < {idl_types_data[type_name]['element_count']}; i++) {{\n"
+    # If the array contains elements that are NOT of static size...
     if idl_types_data[type_name]['member_type'] not in static_size_types:
+        # We have to read the length of the element from the string...
         function += f"        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));\n"
     else:
+        # Otherwise, we can just use the C++ sizeof function to find the length.
         function += f"        len = sizeof({idl_types_data[type_name]['member_type']});\n"
+    
+    # If the array is NOT a multidimensional array...
     if idl_types_data[idl_types_data[type_name]['member_type']]['type_of_type'] != 'array':
+        # Then we can simply assign the result of deserialization directly to each element.
         function += f"        dest[i] = deserialize_{idl_types_data[type_name]['member_type']}(x.substr(0, len));\n"
     else:
+        # Otherwise, we have to compute the total number of elements stored in each subarray
+        # by multiply together its dimensions.
+        #
+        # Example: An int arr[5][10][2] will contain 5 * 10 * 2 = 100 integers...
+        #
         num_elems_in_next_arr = reduce(lambda a, b: a * b, [int(x) for x in member_dimens])
-        next_arr_elem_ty = member_root_ty + ''.join(['*' for _ in member_dimens])
+        
+        # Next, since dest is a simple integer pointer, we cannot use the compiler's knowledge of the
+        # dimensions of the array to index it. Instead we have to do pointer arithmetic to identify
+        # the appropriate offset:
+        #
+        # dest[i] <--> dest + (i * { num_elems_in_next_arr })
+        #
+        # Example with int arr[5][10][2]: arr[i] <--> arr + (i * 20)
+        #
         function += f"        deserialize_{idl_types_data[type_name]['member_type']}(x.substr(0, len), dest + (i * { num_elems_in_next_arr }));\n"
     function += f"        x = x.substr(len);\n"
     function += "    }\n"
     function += "}\n"
     return (signature, function)
 
-
+###### create_serializers
+## 
+## Given a dictionary of IDL types data, an IDL group name, and 
+## a path to an IDL file, create all necessary C++ code for 
+## SERIALIZING and DESERIALIZING *all* types found in the IDL file.
+##
+## Returns a dictionary of the form:
+##
+## { "requirements" : requirements, "functions" : funcs }
+##
+## Where "requirements" contain any inclusions, definitions, or
+## non-function declarations necessary and "functions" contains
+## all function names, signatures, and definitions necessary.
+##
+######
 def create_serializers(idl_types_data, idl_name, idl_path):
     requirements = ("#include <string>\n"
                     "#include <arpa/inet.h>\n"
@@ -205,6 +346,9 @@ def create_serializers(idl_types_data, idl_name, idl_path):
                     "  uint32_t i;\n"
                     "  float f;\n"
                     "};\n")
+
+    # The following serializer / deserializer pairs are always
+    # provided regardless of what's in the IDL file.
     funcs = {
         "int" : {
             "serializer" : {
@@ -268,9 +412,13 @@ def create_serializers(idl_types_data, idl_name, idl_path):
             }
         }
     }
-
+    
+    # For each type found in the IDL file, if the type is not
+    # built in, we need to create a serializer / deserializer
+    # pair for it.
     for ty in idl_types_data:
         if idl_types_data[ty]["type_of_type"] != "builtin":
+            # Initialize each entry with two dictionaries...
             funcs[ty] = {
                 "serializer" : {
                     "name" : f"serialize_{ty}",
@@ -282,8 +430,11 @@ def create_serializers(idl_types_data, idl_name, idl_path):
                 }
             }
 
+    # For each type in the IDL file...
     for ty in idl_types_data:
+        # If the type is not built in...
         if idl_types_data[ty]["type_of_type"] != "builtin":
+            # Create the appropriate serializer / deserializer pair.
             if idl_types_data[ty]["type_of_type"] != "array":
                 ssig, sfunc = create_non_array_serialize(ty, idl_types_data)
                 dsig, dfunc = create_non_array_deserialize(ty, idl_types_data)
@@ -301,6 +452,14 @@ def create_serializers(idl_types_data, idl_name, idl_path):
 
     return { "requirements" : requirements, "functions" : funcs }
 
+###### create_proxy_function
+## 
+## Given the name of a function in the IDL file, creates
+## a C++ proxy function for it. Returns the proxy function
+## as two strings: one representing its C++ signature and 
+## the other representing its C++ definition.
+##
+######
 def create_proxy_function(name, idl_data):
     ret_ty = idl_data['functions'][name]['return_type']
     args = ""
@@ -327,6 +486,7 @@ def create_proxy_function(name, idl_data):
 
     function = f"\n{ret_ty} {name}({args[2:]}) {{\n"
     sig = function[1:-3] + ';\n'
+    function += f'  *GRADING << "[{name}] Called proxy function." << endl;\n'
 
     function += "    char readBuffer[STD_READ_SIZE];\n"
     function += "    readBuffer[0] = 'J';  // sanity check\n"
@@ -334,60 +494,99 @@ def create_proxy_function(name, idl_data):
     function += f'    f.setFunctionName("{name}");\n'
 
     ret_ty_size_str = ""
+
+    # If the return of the function is of static size...
     if ret_ty in static_size_types:
+        # Then we can use the C++ sizeof() function to reliability predict
+        # the number of bytes it will be.
         ret_ty_size_str = f"sizeof({ret_ty})"
     else:
+        # Otherwise its size may be variable, which we indicate with a -1 size.
         ret_ty_size_str = "-1"
     
     function += f'    f.setFunctionRetType("{ret_ty}", {ret_ty_size_str});\n'
 
+    # For each argument take by the function...
     for i in range(len(idl_data['functions'][name]['arguments'])):
         arg_type = idl_data['functions'][name]['arguments'][i]['type']
         arg_name = idl_data['functions'][name]['arguments'][i]['name']
         arg_size_str = ""
+        # Similarly to above, if the argument type is static size...
         if arg_type in static_size_types:
+            # We can accurately predict how many bytes it will serialize to.
             arg_size_str = f"sizeof({arg_type})"
         else:
+            # Otherwise, we need to use -1 to indicate variability.
             arg_size_str = "-1"
 
         function += f'    f.appendArg("{arg_type}", {arg_size_str}, serialize_{arg_type}({arg_name}));\n'
     
     function += "    string data = f.networkForm();\n"
+    function += f'    *GRADING << "[{name}] Sending function call to server." << endl;\n'
     function += "    RPCPROXYSOCKET->write(data.c_str(), data.length());\n"
     function += "    RPCPROXYSOCKET->read(readBuffer, 1);\n"
+
+    # The first byte of *any* successful function call response must be '0'.
     function += "    if (readBuffer[0] != '0') {\n"
+    function += f'        *GRADING << "[{name}] Server indicated bad function call." << endl;\n'
     function += f'        throw C150Exception("{sig[:-2]}: call not recognized by the server.");\n'
     function += '    }\n'
+    function += f'    *GRADING << "[{name}] Reading response from server." << endl;\n'
 
+    # If the return type is static size...
     if ret_ty in static_size_types:
+        # Just read the appropriate size directly from the socket and deserialize.
         function += f"    RPCPROXYSOCKET->read(readBuffer, sizeof({ret_ty}));\n"
         function += f"    string resultStr(readBuffer, sizeof({ret_ty}));\n"
         function += f"    return deserialize_{ret_ty}(resultStr);\n"
     elif ret_ty == "void":
+        # If the function is void, just return! No reading necessary.
         function += '   return;\n'   
     else:
+        # Otherwise, we have a variable number of bytes coming back.
+        # Read the first four bytes...
         function += "    RPCPROXYSOCKET->read(readBuffer, sizeof(int));\n"
         function += "    string lenStr(readBuffer, sizeof(int));\n"
+
+        # Decode those bytes as an int representing then number of bytes following...
         function += "    int len = deserialize_int(lenStr);\n"
         function += "    char dataBuffer[len];\n"
+
+        # Read the rest of the incoming bytes...
         function += "    RPCPROXYSOCKET->read(dataBuffer, len);\n"
         function += "    string resultStr(dataBuffer, len);\n"
         function += "    resultStr = lenStr + resultStr;\n"
+
+        # Deserialize and return the result.
         function += f"    return deserialize_{ret_ty}(resultStr);\n"
 
     function += "}\n"
 
     return (sig, function)
 
+###### create_proxy_functions
+## 
+## Given a dictionary representing IDL data, creates all
+## necessary C++ proxy functions and returns them as a package:
+##
+##  { "requirements" : requirements, "functions" : funcs }
+##
+## Where "requirements" contain any inclusions, definitions, or
+## non-function declarations necessary and "functions" contains
+## all function names, signatures, and definitions necessary.
+######
 def create_proxy_functions(idl_data):
     requirements = ("#include \"rpcproxyhelper.h\"\n"
                     "#include \"c150debug.h\"\n"
+                    "#include \"c150grading.h\"\n"
                     f"#define STD_READ_SIZE {STD_READ_SIZE}\n"
                     "using namespace C150NETWORK;\n")
 
     funcs = []
 
+    # For each function name in the IDL file...
     for fname in idl_data['functions']:
+        # Create its proxy function!
         sig, definition = create_proxy_function(fname, idl_data)
         func_obj = { 
             "name" : fname,
@@ -399,47 +598,89 @@ def create_proxy_functions(idl_data):
 
     return { "requirements" : requirements, "functions" : funcs }
 
+###### get_comparable_func_signature
+## 
+## Given a name of a function from the IDL file, returns
+## a string representing the C++ equality operation (==)
+## friendly signature of the function.
+## 
+## Example:
+##
+## SomeStruct foo(int x, string y, int z[10]);
+## 
+## using "foo", produce ...
+##
+## "foo,SomeStruct(-1),int(4),string(-1),Array_int_10(-1)"
+##
+######
 def get_comparable_func_signature(fname, idl_data):
     ret_ty_str = idl_data['functions'][fname]['return_type']
+
+    # If the function returns a type of static size...
     if idl_data['functions'][fname]['return_type'] in static_size_types:
+        # Then it must be size 4 (only int and float are static size).
         ret_ty_str += '(4)'
     else:
+        # Otherwise, use -1 to indicate that the size is variable.
         ret_ty_str += '(-1)'
 
     components = [fname, ret_ty_str]
+
+    # For each argument that the function takes...
     for arg in idl_data['functions'][fname]['arguments']:
         arg_ty_str = arg['type']
+        # If the function argument is a static type...
         if arg['type'] in static_size_types:
+            # Then it must be size 4.
             arg_ty_str += '(4)'
         else:
+            # Otherwise, use -1 to indicate variable size.
             arg_ty_str += '(-1)'
         components.append(arg_ty_str)
     
     return ','.join(components)
 
 
-
+###### create_dispatch_function
+## 
+## Given a dictionary of IDL data, create a C++
+## dispatch function. Returns a dictionary with the
+## function's name, signature, and defintion as strings.
+##
+######
 def create_dispatch_function(idl_data):
     
     function = "\nvoid dispatchFunction() {\n"
     function += f"  char numBytesBuf[sizeof(int)];\n"
+    function += "\n  // Read the number of incoming bytes from the stream...\n"
     function += "  int numBytesIncoming = sizeof(numBytesBuf) + getNumBytesInIncomingFunctionCall(numBytesBuf);\n"
     function += "  if (numBytesIncoming == sizeof(numBytesBuf)) return;\n"
-    function += " char functionCallBuffer[numBytesIncoming];\n"
+    function += '  *GRADING << "[dispatchFunction] Preparing to read " << numBytesIncoming << " bytes from stream." << endl;\n'
+    function += "\n  // Create an appropriately sized buffer for the data...\n"
+    function += "  char functionCallBuffer[numBytesIncoming];\n"
+    function += "\n  // Copy over the first few bytes that we already read into the new buffer...\n"
     function += "  for (size_t i = 0; i < sizeof(numBytesBuf); i++) {\n"
     function += "    functionCallBuffer[i] = numBytesBuf[i];\n"
     function += "  }\n"
+    function += "\n  // Read the remaining bytes of data.\n"
     function += "  int numBytesRead = getFunctionCallFromStream(functionCallBuffer,sizeof(functionCallBuffer));\n"
     function += "  if (numBytesRead == 0) return;\n"
     function += "  string offTheWire(functionCallBuffer, sizeof(int) + numBytesRead);\n"
     function += "  NetworkFormatter f = NetworkFormatter(offTheWire);\n"
     function += "  if (!RPCSTUBSOCKET-> eof()) {\n"
+    function += '    *GRADING << "[dispatchFunction] Looking for function with matching signature: " << f.getFunctionSignature() << endl;\n'
+    function += "\n    // Identify the appropriate function and call it...\n"
    
+    # If there are no functions in our IDL file...
     if len(idl_data['functions'].keys()) == 0:
+        # Our dispatch function automatically fails on any input.
         function += "    __badFunction();\n"
     else:
+
         fnames = list(idl_data['functions'].keys())
+        # For each function name in our IDL file...
         for i in range(len(fnames)):
+            # Get its == operator friendly signature.
             s = get_comparable_func_signature(fnames[i], idl_data)
             if i == 0:
                 function += f"    if (f.getFunctionSignature() == \"{s}\") {{\n"
@@ -448,12 +689,16 @@ def create_dispatch_function(idl_data):
 
             arg_names = []
             j = 0
+            # For each argument of the function...
             for arg in idl_data['functions'][fnames[i]]['arguments']:
                 arg_declaration = ""
+                # If the argument is NOT an array...
                 if idl_data['types'][arg['type']]['type_of_type'] != 'array':
+                    # Then we can deserialize the argument with direct assignment.
                     arg_declaration = f"{arg['type']} {arg['name']}"
                     function += f"      {arg_declaration} = deserialize_{arg['type']}(get<2>(f.getArgAtIndex({j})));\n"
                 else:
+                    # Otherwise, we have to deserialize the array with pass-by-reference semantics.
                     root_ty, dimens = parse_array_name(arg['type'], idl_data['types'])
                     arg_declaration = create_cpp_array_type_string(root_ty, dimens, arg['name'])
                     function += f"      {arg_declaration};\n"
@@ -462,9 +707,11 @@ def create_dispatch_function(idl_data):
                 
                 j += 1
             
+            # Call the stub function!
             function += f"      __{fnames[i]}({', '.join(arg_names)});\n"
 
         function += "    } else {\n"
+        function += '        *GRADING << "[dispatchFunction] No matching signature. Bad function." << endl;\n'
         function += "        __badFunction();\n"
         function += "    }\n"
 
@@ -479,6 +726,14 @@ def create_dispatch_function(idl_data):
 
     return func_obj
 
+###### create_stub_function
+## 
+## Given a function name from the IDL file, creates a
+## C++ stub function. Returns two strings: one representing
+## the C++ function signature and the other representing
+## its definition.
+##
+######
 def create_stub_function(fname, idl_data):
     args = ""
     call_args = ""
@@ -508,28 +763,48 @@ def create_stub_function(fname, idl_data):
 
     function = f"\nvoid __{fname}({args}) {{\n"
     signature = function[:-3] + ';'
+    function += f'  *GRADING << "[{fname}] Entering stub function." << endl;\n'
     if ret_ty != "void":
+        # If the return type isn't void, we have to actually send a result.
         function += f'    {ret_ty} result = {fname}({call_args});\n'
         function += f'    string forTheWire = \'0\' + serialize_{ret_ty}(result);\n'
     else:
+        # Otherwise, we can just send back the '0' success character.
         function += '    string forTheWire = "0";\n'
         function += f'    {fname}({call_args});\n'
+    function += f'   *GRADING << "[{fname}] Result acquired. Writing to client." << endl;\n'
 
     function += '    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());\n}\n'
 
     return (signature, function)
 
+###### create_stub_functions
+## 
+## Given data from an IDL file, create all necessary C++
+## stub functions. Return the functions in the form:
+##
+## { "requirements" : requirements, "functions" : funcs }
+##
+## Where "requirements" contain any inclusions, definitions, or
+## non-function declarations necessary and "functions" contains
+## all function names, signatures, and definitions necessary.
+##
+######
 def create_stub_functions(idl_data):
     requirements = ("#include \"rpcstubhelper.h\"\n"
                     "#include \"c150debug.h\"\n"
-                    f"#define FUNC_CALL_BUFFER_SIZE {FUNC_CALL_BUFFER_SIZE}\n"
+                    "#include \"c150grading.h\"\n"
                     "using namespace C150NETWORK;\n")
 
+    # The following functions are built into ANY C++ stub file
+    # regardless of what the IDL file has in it.
     funcs = [
         {
             "name" : "__badFunction",
             "signature" : "\nvoid __badFunction();",
-            "definition" : ("void __badFunction() {\n"
+            "definition" : ("\nvoid __badFunction() {\n"
+                            "    // Any good function call must result in '0' in the first\n"
+                            "    // byte of the response... so send 'I' for Isabella.\n"
                             "    char buf[2] = \"I\";\n"
                             "    RPCSTUBSOCKET->write(buf, 1);\n"
                             "}\n")
@@ -537,12 +812,13 @@ def create_stub_functions(idl_data):
         {
             "name" : "getNumBytesInIncomingFunctionCall",
             "signature" : "\nint getNumBytesInIncomingFunctionCall(char *buffer);",
-            "definition" : ("int getNumBytesInIncomingFunctionCall(char *buffer) {\n"
+            "definition" : ("\nint getNumBytesInIncomingFunctionCall(char *buffer) {\n"
                             "  unsigned int i;\n"
                             "  char *bufp;\n"
                             "  ssize_t readlen;\n"
                             "  unsigned int numBytes;\n"
                             "  bufp = buffer;\n"
+                            "\n  // Read the first four bytes of the stream...\n"
                             "  for (i = 0; i < sizeof(numBytes); i++) {\n"
                             "    readlen = RPCSTUBSOCKET-> read(bufp, 1);\n"
                             "    if (readlen == 0) {\n"
@@ -550,15 +826,19 @@ def create_stub_functions(idl_data):
                             "    }\n"
                             "    bufp++;\n"
                             "  }\n"
+                            "\n  // Error handle in the event that the stream dies.\n"
                             "  if (readlen == 0) {\n"
                             "    if (RPCSTUBSOCKET->eof()) {\n"
+                            f'      *GRADING << "[getNumBytesInIncomingFunctionCall] Client signaled EOF before calling a function." << endl;\n'
                             "      c150debug->printf(C150RPCDEBUG, \"Client signaled EOF before calling function\");\n"
                             "      return 0;\n"
                             "    } else {\n"
-                            "      throw C150Exception(\"arithmetic.stub: unexpected zero length read without eof\");\n"
+                            "      throw C150Exception(\"unexpected zero length read without eof\");\n"
                             "    }\n"
                             "  }\n"
+                            "\n  // Convert the first four bytes into a string...\n"
                             "  string numBytesStr(buffer, sizeof(numBytes));\n"
+                            "\n  // Deserialize as an int (representing the number of bytes to come)\n"
                             "  numBytes = deserialize_int(numBytesStr);\n"
                             "  return numBytes;\n"
                             "}\n")
@@ -566,14 +846,17 @@ def create_stub_functions(idl_data):
         {
             "name" : "getFunctionCallFromStream",
             "signature" : "\nint getFunctionCallFromStream(char *buffer, unsigned int bufSize);",
-            "definition" : ("int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {\n"
+            "definition" : ("\n// Adapted from Noah's getFunctionName function!\n"
+                            "int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {\n"
                             "  unsigned int i;\n"
                             "  char *bufp;\n"
                             "  ssize_t readlen;\n"
                             "  unsigned int numBytes;\n"
+                            "\n // We already read four bytes and don't want to overwrite them.\n"
                             "  bufp = buffer + sizeof(numBytes);\n"
                             "  string numBytesStr(buffer, sizeof(numBytes));\n"
                             "  numBytes = deserialize_int(numBytesStr);\n"
+                            "\n // Read until we have read enough bytes OR our buffer is full.\n"
                             "  for (i = 0; i < bufSize && i < numBytes; i++) {\n"
                             "    readlen = RPCSTUBSOCKET-> read(bufp, 1);\n"
                             "    if (readlen == 0) {\n"
@@ -581,23 +864,28 @@ def create_stub_functions(idl_data):
                             "    }\n"
                             "    bufp++;\n"
                             "  }\n"
+                            "\n // Error handle in the event that the stream dies.\n"
                             "  if (readlen == 0) {\n"
-                            "    c150debug->printf(C150RPCDEBUG,\"arithmetic.stub: read zero length message, checking EOF\");\n"
+                            "    c150debug->printf(C150RPCDEBUG,\"read zero length message, checking EOF\");\n"
                             "    if (RPCSTUBSOCKET-> eof()) {\n"
-                            "      c150debug->printf(C150RPCDEBUG,\"arithmetic.stub: EOF signaled on input\");\n"
+                            f'      *GRADING << "[getFunctionCallFromStream] Client signaled EOF before calling a function." << endl;\n'
+                            "      c150debug->printf(C150RPCDEBUG,\"EOF signaled on input\");\n"
                             "    } else {\n"
-                            "      throw C150Exception(\"arithmetic.stub: unexpected zero length read without eof\");\n"
+                            "      throw C150Exception(\"unexpected zero length read without eof\");\n"
                             "    }\n"
                             "  }\n"
+                            "\n // If our buffer filled up without reading all bytes...\n"
                             "  if (i < numBytes && i >= bufSize) {\n"
-                            "    throw C150Exception(\"arithmetic.stub: Incoming message was larger than bufSize\");\n"
+                            "    throw C150Exception(\"Incoming message was larger than bufSize\");\n"
                             "  }\n"
                             "  return numBytes;\n"
                             "}\n")
         },
     ]
 
+    # For each function in the IDL file...
     for fname in idl_data['functions']:
+        # Create a stub for it!
         sig, definition = create_stub_function(fname, idl_data)
         func_obj = {
             "name" : fname,
@@ -607,10 +895,22 @@ def create_stub_functions(idl_data):
 
         funcs.append(func_obj)
 
+    # Can't forget to create the dispatch function.
     funcs.append(create_dispatch_function(idl_data))
 
     return { "requirements" : requirements, "functions" : funcs }
 
+###### create_network_formatter
+## 
+## Function to store and return all of the boilerplate
+## network formatting code.
+##
+## The network format is defined in the comments in the
+## C++ code below as well as in the report.
+##
+## See the REPORT for a more readable-version. :)
+##
+######
 def create_network_formatter():
     requirements = ("#include <stdexcept>\n"
                     "#include <tuple>\n"
@@ -620,29 +920,22 @@ def create_network_formatter():
                     "#include <inttypes.h>\n")
 
     class_decl = '''
+// Class to handle all network formatting of data. See definitions below
+// for more detail comments.
 class NetworkFormatter {
   public:
     NetworkFormatter();
     NetworkFormatter(std::string offTheWire);
     ~NetworkFormatter();
-
     void setFunctionName(std::string name);
     std::string getFunctionName();
-
     void setFunctionRetType(std::string type, int typeSize);
     std::tuple<std::string, int> getFunctionRetType();
-
     void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
     std::tuple<std::string, int, std::string> getArgAtIndex(int index);
     int getNumArgs();
-
     std::string getFunctionSignature();
-
-
-
     std::string networkForm();
-
-
   private:
     std::vector<std::tuple<std::string, int, std::string>> args;
     std::string functionName;
@@ -829,17 +1122,45 @@ string NetworkFormatter::networkForm() {
 
     return { "requirements" : requirements, "class_decl" : class_decl, "class_def" : class_def }
 
+###### create_file
+## 
+## Takes a file name as well as three packages:
+##     1. network_formatter_package: contains all requirements and
+##        definitions for network formatting of data.
+##
+##     2. serializer_package: contains all requirements and definitions for
+##        serialization and deserialization of IDL file defined types.
+##
+##     3. functionality_package: contains all requirements and definitions
+##        for file-specific functionality (i.e. proxy functions OR stub functions).
+##
+## Creates a file named file_name, places all necessary requirements, then forward
+## declares ALL functions, and finally writes all function definitions.
+##
+######
 def create_file(file_name, network_formatter_package, serializer_package, functionality_package):
 
     file = open(file_name, "w")
     
-    file.write(f"\n\n// !! {serializer_package['name']} requirements !!\n\n")
+    file.write(f'''//
+// {file_name}
+//
+// C++ file created by rpcgenerate.
+//
+// Meta-authors: John Little and Isabella Urdahl
+//\n''')
+
+    # Write ALL requirements to the top of the file (incusions, non-function
+    # declarations, preprocessor definitions, etc.)
+    file.write(f"\n// !! {serializer_package['name']} requirements !!\n\n")
     file.write(serializer_package["pack"]["requirements"])
     file.write(f"\n\n// !! {functionality_package['name']} requirements !!\n\n")
     file.write(functionality_package["pack"]["requirements"])
     file.write(f"\n\n// !! {network_formatter_package['name']} requirements !!\n\n")
     file.write(network_formatter_package["pack"]["requirements"])
-
+    
+    # Write ALL signatures to forward declare functions since it is impossible
+    # to tell which functions will need to use others.
     file.write(f"\n\n// !! {functionality_package['name']} forward declarations !!\n\n")
     for f in functionality_package["pack"]["functions"]:
         file.write(f["signature"])
@@ -852,6 +1173,7 @@ def create_file(file_name, network_formatter_package, serializer_package, functi
     file.write(f"\n\n// !! {network_formatter_package['name']} forward declarations !!\n\n")
     file.write(network_formatter_package['pack']['class_decl'])
 
+    # Finally, write all of the function definititions.
     file.write(f"\n\n// !! {functionality_package['name']} functions !!\n\n")
     for f in functionality_package["pack"]["functions"]:
         file.write(f["definition"])
@@ -875,18 +1197,22 @@ def main():
         print("Error: expected a file with the .idl extension")
         exit(2)
     
-    idl_name = sys.argv[1]
-    index = idl_name.rfind('/')
+    idl_file_path = sys.argv[1]
+    index = idl_file_path.rfind('/')
     if index != -1:
-        idl_name = idl_name[index + 1:]
+        idl_file_path = idl_file_path[index + 1:]
 
-    idl_set_name = idl_name[:-4]
+    # Example: structs.idl --> structs
+    idl_set_name = idl_file_path[:-4]
 
-    idl_name = idl_name.replace(".", "_").upper()
+    # Example: structs.idl --> STRUCTS_IDL
+    idl_file_path = idl_file_path.replace(".", "_").upper()
 
+    # Parse and preprocess IDL data.
     idl_data = idl_string_to_python_object(idl_to_json(sys.argv[1]))
 
-    serializer_package = create_serializers(idl_data["types"], idl_name, sys.argv[1])
+    # Create all necessary packages.
+    serializer_package = create_serializers(idl_data["types"], idl_file_path, sys.argv[1])
     proxy_package = create_proxy_functions(idl_data)
     stub_package = create_stub_functions(idl_data)
     network_formatter_package = create_network_formatter()
@@ -895,12 +1221,10 @@ def main():
     proxp = { "name" : "Proxy Package", "pack" : proxy_package }
     stubp = { "name" : "Stub Package", "pack" : stub_package }
     nformp = { "name" : "Network Formatter Package", "pack" : network_formatter_package}
+
+    # Create the proxy and stub files for this IDL data.
     create_file(f"{idl_set_name}.proxy.cpp", nformp, serp, proxp)
     create_file(f"{idl_set_name}.stub.cpp", nformp, serp, stubp)
-
-
-
-    # for each type, create a serializer for that type
 
 if __name__ == "__main__":
     main()

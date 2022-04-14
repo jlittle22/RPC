@@ -172,7 +172,7 @@ simplefunctionserver: simplefunction.stub.o rpcserver.o rpcstubhelper.o simplefu
 #
 ########################################################################
 
- %.proxy.cpp %.stub.cpp:%.idl $(RPCGEN) idl_to_json
+ %.proxy.cpp %.stub.cpp:%.idl $(RPCGEN) idl_to_json ./RPC/rpcgenerate
 	$(RPCGEN) $<
 
 ########################################################################

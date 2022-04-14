@@ -1,2 +1,4 @@
+# short script to run the rpcgenerate program... permissions
+# kept getting messed up by my SFTP setup with Halligan.
 chmod +x RPC/rpcgenerate
 ./RPC/rpcgenerate $1

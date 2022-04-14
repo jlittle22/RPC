@@ -36,6 +36,8 @@ void searchRectangles(rectangle rects[200]);
 
 struct MT {};
 
+void hopefullydoesntcrash(MT x);
+
 
 
 
