@@ -1,0 +1,857 @@
+04/14/2022 15:27:54.195366 ./structwitharrayclient: rpcproxyinitialize: Creating C150StreamSocket
+04/14/2022 15:27:54.198953 ./structwitharrayclient: C150StreamSocket::C150StreamSocket: user port is 7018
+04/14/2022 15:27:54.198975 ./structwitharrayclient: C150StreamSocket::connect(comp117-02) called
+04/14/2022 15:27:54.201334 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=132 |....findPerson,Person(-1),ThreePeople(-1),...V........jake....Little............Isabella....Urdahl..|
+04/14/2022 15:27:54.201372 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=132 |....findPerson,Person(-1),ThreePeople(-1),...V........jake....Little............Isabella....Urdahl..|
+04/14/2022 15:27:54.201392 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.204272 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.204292 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.204312 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.204331 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.204350 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.204381 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.204400 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=22
+04/14/2022 15:27:54.204419 ./structwitharrayclient: C150StreamSocket::read: successful read with len=22 |....JAKE....Little....|
+04/14/2022 15:27:54.204508 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=262 |....findOtherPerson,Person(-1),StructWithArrays(-1),................................................|
+04/14/2022 15:27:54.204540 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=262 |....findOtherPerson,Person(-1),StructWithArrays(-1),................................................|
+04/14/2022 15:27:54.204558 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.209842 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.209862 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.209882 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.209910 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.209928 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.209950 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.209969 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=26
+04/14/2022 15:27:54.209988 ./structwitharrayclient: C150StreamSocket::read: successful read with len=26 |....Isabella....Urdahl....|
+04/14/2022 15:27:54.210034 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=42 |...&area,int(4),rectangle(-1),.......d..q||
+04/14/2022 15:27:54.210067 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=42 |...&area,int(4),rectangle(-1),.......d..q||
+04/14/2022 15:27:54.210085 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.211026 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.211044 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.211063 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.211082 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.211101 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |..Tp|
+04/14/2022 15:27:54.211152 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=102 |...bvoidFuncThatTakesALot,void(-1),int(4),....,float(4),@H..,Person(-1),........Noah....Mendelsohn..|
+04/14/2022 15:27:54.211188 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=102 |...bvoidFuncThatTakesALot,void(-1),int(4),....,float(4),@H..,Person(-1),........Noah....Mendelsohn..|
+04/14/2022 15:27:54.211208 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.213425 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.213444 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.213486 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=103 |...cnonVoidFuncThatTakesALot,Person(-1),int(4),....,float(4),@H..,Person(-1),........jake....Little.|
+04/14/2022 15:27:54.213535 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=103 |...cnonVoidFuncThatTakesALot,Person(-1),int(4),....,float(4),@H..,Person(-1),........jake....Little.|
+04/14/2022 15:27:54.213555 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.215671 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.215690 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.215709 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.215728 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.215747 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.215767 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.215787 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=22
+04/14/2022 15:27:54.215806 ./structwitharrayclient: C150StreamSocket::read: successful read with len=22 |....jake....Little....|
+04/14/2022 15:27:54.215928 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.215959 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.215978 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.226138 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.226158 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.226177 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.226196 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.226215 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.226312 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.226343 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.226362 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.236476 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.236496 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.236517 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.236537 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.236556 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.236665 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.236705 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.236725 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.246753 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.246774 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.246795 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.246815 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.246834 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.246952 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.246988 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.247007 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.257122 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.257142 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.257163 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.257182 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.257201 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.257303 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.257335 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.257354 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.267480 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.267499 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.267519 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.267540 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.267558 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.267655 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.267685 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.267704 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.277873 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.277904 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.277924 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.277950 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.277968 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.278070 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.278105 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.278124 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.288297 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.288316 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.288337 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.288357 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.288376 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.288474 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.288507 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.288526 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.299500 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.299520 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.299541 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.299562 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.299581 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.299687 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.299736 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.299755 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.309957 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.309978 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.309999 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.310020 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.310039 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.310144 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.310188 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.310207 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.320448 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.320468 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.320493 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.321388 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.321407 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.321744 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.321784 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.321804 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.331976 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.331996 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.332017 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.332037 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.332056 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.332161 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.332198 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.332217 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.342422 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.342442 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.342462 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.342482 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.342501 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.342602 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.342634 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.342653 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.352908 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.352928 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.352947 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.352967 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.352986 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.353082 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.353112 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.353131 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.363600 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.363631 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.363651 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.363671 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.363690 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.363785 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.363823 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.363842 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.374037 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.374057 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.374078 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.374098 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.374117 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.374224 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.374259 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.374278 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.384475 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.384495 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.384521 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.384541 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.384562 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.384670 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.384706 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.384725 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.394942 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.394962 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.394983 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.395003 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.395022 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.395126 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.395164 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.395187 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.405397 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.405417 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.405436 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.405456 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.405475 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.405571 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.405603 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.405622 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.418392 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.418412 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.418432 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.418452 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.418471 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.418573 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.418610 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.418629 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.434624 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.434643 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.434662 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.434682 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.434700 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.434795 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.434827 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.434846 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.447354 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.447374 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.447394 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.447414 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.447432 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.447531 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.447565 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.447589 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.457840 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.457860 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.457879 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.457906 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.457925 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.458020 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.458052 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.458070 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.468187 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.468206 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.468225 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.468245 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.468263 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.468357 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.468387 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.468405 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.478605 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.478625 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.478645 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.478666 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.478684 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.478792 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.478826 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.478845 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.489096 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.489115 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.489134 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.489153 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.489172 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.489267 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.489305 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.489324 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.499551 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.499570 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.499595 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.499615 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.499634 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.499735 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.499772 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.499791 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.510014 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.510033 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.510055 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.510075 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.510094 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.510198 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.510235 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.510254 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.520409 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.520428 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.520448 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.520467 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.520485 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.520580 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.520614 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.520634 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.531042 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.531062 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.531083 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.531102 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.531121 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.531223 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.531261 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.531280 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.541460 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.541479 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.541498 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.541518 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.541536 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.541632 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.541663 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.541682 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.551879 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.551906 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.551925 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.551945 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.551964 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.552057 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.552088 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.552107 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.562556 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.562575 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.562594 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.562613 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.562631 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.562726 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.562758 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.562777 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.573239 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.573258 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.573279 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.573298 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.573321 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.573420 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.573457 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.573476 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.583669 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.583688 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.583708 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.583727 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.583746 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.583843 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.583879 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.583912 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.594139 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.594157 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.594177 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.594196 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.594214 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.594309 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.594338 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.594357 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.604552 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.604572 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.604591 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.604611 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.604629 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.604727 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.604761 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.604780 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.615035 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.615055 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.615075 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.615100 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.615119 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.615233 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.615271 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.615290 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.625577 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.625596 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.625616 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.625635 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.625654 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.625751 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.625786 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.625805 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.635993 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.636013 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.636033 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.636054 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.636073 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.636173 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.636219 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.636239 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.646443 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.646462 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.646482 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.646502 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.646521 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.646620 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.646662 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.646681 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.657038 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.657058 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.657082 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.657102 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.657121 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.657218 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.657251 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.657270 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.667375 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.667395 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.667415 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.667435 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.667454 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.667601 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.667646 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.667670 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.677909 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.677929 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.677950 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.677970 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.677989 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.678090 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.678126 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.678145 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.688453 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.688483 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.688512 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.688543 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.688570 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.688755 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.688807 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.688835 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.699135 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.699155 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.699176 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.699202 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.699221 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.699324 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.699360 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.699379 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.709683 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.709703 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.709724 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.709744 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.709763 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.709868 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.709918 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.709937 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.720249 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.720269 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.720289 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.720309 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.720328 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.720431 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.720468 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.720487 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.730620 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.730651 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.730681 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.730713 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.730741 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.730943 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.730996 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.731033 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.741270 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.741300 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.741330 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.741360 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.741389 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |... |
+04/14/2022 15:27:54.741570 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.741619 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.741648 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.751828 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.751849 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.751869 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.751900 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.751921 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...$|
+04/14/2022 15:27:54.752027 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.752069 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.752088 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.762327 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.762347 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.762367 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.762387 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.762406 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.762508 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.762546 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.762565 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.772703 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.772722 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.772742 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.772761 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.772779 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.772875 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.772921 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.772947 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.783146 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.783166 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.783186 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.783205 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.783225 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.783322 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.783356 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.783375 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.793626 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.793645 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.793665 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.793685 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.793703 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.793802 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.793840 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.793860 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.804023 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.804043 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.804063 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.804083 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.804101 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.804199 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.804232 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.804252 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.814428 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.814448 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.814468 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.814488 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.814508 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.814604 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.814642 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.814661 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.824828 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.824848 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.824868 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.824898 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.824917 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.825017 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.825053 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.825071 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.835333 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.835354 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.835374 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.835394 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.835413 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...#|
+04/14/2022 15:27:54.835521 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.835558 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.835577 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.845767 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.845788 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.845809 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.845829 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.845848 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...(|
+04/14/2022 15:27:54.845969 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.846007 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.846026 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.856239 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.856260 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.856281 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.856301 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.856320 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...-|
+04/14/2022 15:27:54.856430 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.856464 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.856483 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.866663 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.866683 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.866704 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.866724 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.866743 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.866846 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.866882 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.866925 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.877041 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.877060 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.877081 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.877101 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.877120 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.877223 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.877271 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.877290 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.887496 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.887516 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.887536 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.887555 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.887574 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.887673 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.887704 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.887723 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.897875 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.897903 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.897922 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.897942 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.897964 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.898060 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.898091 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.898109 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.908324 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.908342 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.908362 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.908381 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.908400 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.908493 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.908538 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.908557 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.918599 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.918618 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.918637 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.918656 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.918675 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.918781 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.918810 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.918829 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.929108 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.929127 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.929146 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.929165 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.929183 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...$|
+04/14/2022 15:27:54.929276 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.929306 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.929325 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.939511 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.939530 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.939550 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.939574 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.939593 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...*|
+04/14/2022 15:27:54.939687 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.939718 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.939737 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.949912 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.949933 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.949953 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.949974 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.949992 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...0|
+04/14/2022 15:27:54.950096 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.950132 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.950151 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.960327 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.960347 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.960366 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.960386 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.960405 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...6|
+04/14/2022 15:27:54.960500 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.960534 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.960554 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.970728 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.970747 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.970768 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.970787 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.970806 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.970919 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.970951 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.970970 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.981220 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.981248 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.981269 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.981290 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.981309 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.981422 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.981460 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.981479 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.991640 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:54.991660 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:54.991680 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:54.991700 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:54.991719 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:54.991819 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.991863 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:54.991881 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.003337 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.003356 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.003376 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.003395 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.003414 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.003509 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.003542 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.003562 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.014800 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.014821 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.014843 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.014863 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.014883 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.014998 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.015032 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.015051 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.025301 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.025320 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.025340 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.025359 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.025378 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...#|
+04/14/2022 15:27:55.025476 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.025508 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.025527 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.035741 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.035760 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.035780 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.035800 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.035819 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...*|
+04/14/2022 15:27:55.035937 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.035969 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.035988 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.046176 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.046196 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.046215 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.046234 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.046253 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...1|
+04/14/2022 15:27:55.046349 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.046381 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.046400 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.056573 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.056593 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.056612 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.056631 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.056650 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...8|
+04/14/2022 15:27:55.056744 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.056776 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.056800 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.066880 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.066907 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.066926 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.066946 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.066965 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...?|
+04/14/2022 15:27:55.067059 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.067090 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.067109 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.077333 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.077353 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.077374 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.077394 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.077413 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.077515 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.077550 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.077569 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.087809 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.087828 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.087847 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.087867 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.087893 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.087989 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.088021 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.088041 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.098293 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.098312 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.098331 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.098351 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.098370 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.098463 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.098497 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.098516 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.108749 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.108770 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.108790 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.108809 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.108828 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.108942 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.108976 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.108995 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.119161 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.119181 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.119200 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.119220 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.119239 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |... |
+04/14/2022 15:27:55.119333 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.119363 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.119382 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.129615 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.129634 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.129653 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.129673 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.129692 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...(|
+04/14/2022 15:27:55.129786 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.129816 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.129835 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.140053 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.140072 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.140091 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.140111 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.140130 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...0|
+04/14/2022 15:27:55.140222 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.140256 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.140275 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.150422 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.150441 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.150461 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.150480 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.150499 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...8|
+04/14/2022 15:27:55.150595 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.150625 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.150644 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.160880 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.160910 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.160930 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.160949 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.160968 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...@|
+04/14/2022 15:27:55.161061 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.161092 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.161111 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.171324 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.171342 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.171362 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.171382 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.171400 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...H|
+04/14/2022 15:27:55.171493 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.171524 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.171542 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.181694 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.181714 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.181734 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.181753 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.181772 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.181876 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.181925 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.181944 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.192194 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.192214 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.192233 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.192252 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.192271 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.192366 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.192404 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.192423 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.202572 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.202591 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.202611 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.202630 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.202649 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.202743 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.202779 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.202798 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.213019 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.213039 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.213060 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.213079 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.213098 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:27:55.213197 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.213241 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.213260 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.223489 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.223509 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.223528 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.223548 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.223573 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...$|
+04/14/2022 15:27:55.223673 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.223707 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.223727 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.233898 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.233917 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.233937 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.233956 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.233974 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...-|
+04/14/2022 15:27:55.234068 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.234098 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.234117 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.244268 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.244288 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.244308 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.244328 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.244347 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...6|
+04/14/2022 15:27:55.244446 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.244479 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.244498 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.254673 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.254692 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.254713 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.254733 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.254752 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...?|
+04/14/2022 15:27:55.254857 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.254906 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.254925 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.265095 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.265114 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.265138 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.265158 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.265177 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...H|
+04/14/2022 15:27:55.265274 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.265308 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=510 |....getValueAt,int(4),Array_int_10_10(-1),.......(...........................................(......|
+04/14/2022 15:27:55.265327 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.275494 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:55.275512 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:55.275532 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:55.275551 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:55.275570 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...Q|
+04/14/2022 15:27:55.298355 ./structwitharrayclient: C150StreamSocket::write: attempting to send packet with len=184983 |....tough,int(4),Array_int_1_2_3_4_5_6_7_8(-1),...d...`..i,..x`............... .....................|
+04/14/2022 15:27:55.298692 ./structwitharrayclient: C150StreamSocket::write: Success writing packet with len=184983 |....tough,int(4),Array_int_1_2_3_4_5_6_7_8(-1),...d...`..i,..x`............... .....................|
+04/14/2022 15:27:55.298731 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:58.960768 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:27:58.960790 ./structwitharrayclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:27:58.960812 ./structwitharrayclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:27:58.960834 ./structwitharrayclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:27:58.960853 ./structwitharrayclient: C150StreamSocket::read: successful read with len=4 |...'|

@@ -1,5 +1,10 @@
-
-
+//
+// floatarithmetic.proxy.cpp
+//
+// C++ file created by rpcgenerate.
+//
+// Meta-authors: John Little and Isabella Urdahl
+//
 // !! Serializer Package requirements !!
 
 #include <string>
@@ -57,29 +62,22 @@ float deserialize_float(string x);
 // !! Network Formatter Package forward declarations !!
 
 
+// Class to handle all network formatting of data. See definitions below
+// for more detail comments.
 class NetworkFormatter {
   public:
     NetworkFormatter();
     NetworkFormatter(std::string offTheWire);
     ~NetworkFormatter();
-
     void setFunctionName(std::string name);
     std::string getFunctionName();
-
     void setFunctionRetType(std::string type, int typeSize);
     std::tuple<std::string, int> getFunctionRetType();
-
     void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
     std::tuple<std::string, int, std::string> getArgAtIndex(int index);
     int getNumArgs();
-
     std::string getFunctionSignature();
-
-
-
     std::string networkForm();
-
-
   private:
     std::vector<std::tuple<std::string, int, std::string>> args;
     std::string functionName;

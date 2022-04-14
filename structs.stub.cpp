@@ -5,6 +5,7 @@
 //
 // Meta-authors: John Little and Isabella Urdahl
 //
+
 // !! Serializer Package requirements !!
 
 #include <string>
@@ -47,12 +48,9 @@ using namespace C150NETWORK;
 void __badFunction();
 int getNumBytesInIncomingFunctionCall(char *buffer);
 int getFunctionCallFromStream(char *buffer, unsigned int bufSize);
-void __area(rectangle r) {
-  *GRADING << "[area] Entering stub function." << end;
-void __findOtherPerson(StructWithArrays x) {
-  *GRADING << "[findOtherPerson] Entering stub function." << end;
-void __findPerson(ThreePeople tp) {
-  *GRADING << "[findPerson] Entering stub function." << end;
+void __area(rectangle r);
+void __findOtherPerson(StructWithArrays x);
+void __findPerson(ThreePeople tp);
 void dispatchFunction();
 
 // !! Serializer Package forward declarations !!
@@ -216,7 +214,7 @@ void dispatchFunction() {
   // Read the number of incoming bytes from the stream...
   int numBytesIncoming = sizeof(numBytesBuf) + getNumBytesInIncomingFunctionCall(numBytesBuf);
   if (numBytesIncoming == sizeof(numBytesBuf)) return;
-  *GRADING << "[dispatchFunction] Preparing to read " << numBytesIncoming << " from stream." << endl;
+  *GRADING << "[dispatchFunction] Preparing to read " << numBytesIncoming << " bytes from stream." << endl;
 
   // Create an appropriately sized buffer for the data...
   char functionCallBuffer[numBytesIncoming];

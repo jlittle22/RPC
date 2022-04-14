@@ -1,4 +1,10 @@
-
+//
+// simplefunction.proxy.cpp
+//
+// C++ file created by rpcgenerate.
+//
+// Meta-authors: John Little and Isabella Urdahl
+//
 
 // !! Serializer Package requirements !!
 
@@ -22,6 +28,7 @@ union FloatInt {
 
 #include "rpcproxyhelper.h"
 #include "c150debug.h"
+#include "c150grading.h"
 #define STD_READ_SIZE 20
 using namespace C150NETWORK;
 
@@ -56,29 +63,22 @@ float deserialize_float(string x);
 // !! Network Formatter Package forward declarations !!
 
 
+// Class to handle all network formatting of data. See definitions below
+// for more detail comments.
 class NetworkFormatter {
   public:
     NetworkFormatter();
     NetworkFormatter(std::string offTheWire);
     ~NetworkFormatter();
-
     void setFunctionName(std::string name);
     std::string getFunctionName();
-
     void setFunctionRetType(std::string type, int typeSize);
     std::tuple<std::string, int> getFunctionRetType();
-
     void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
     std::tuple<std::string, int, std::string> getArgAtIndex(int index);
     int getNumArgs();
-
     std::string getFunctionSignature();
-
-
-
     std::string networkForm();
-
-
   private:
     std::vector<std::tuple<std::string, int, std::string>> args;
     std::string functionName;
@@ -91,47 +91,59 @@ class NetworkFormatter {
 
 
 void func1() {
+  *GRADING << "[func1] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
     f.setFunctionName("func1");
     f.setFunctionRetType("void", -1);
     string data = f.networkForm();
+    *GRADING << "[func1] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[func1] Server indicated bad function call." << endl;
         throw C150Exception("void func1(): call not recognized by the server.");
     }
+    *GRADING << "[func1] Reading response from server." << endl;
    return;
 }
 
 void func2() {
+  *GRADING << "[func2] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
     f.setFunctionName("func2");
     f.setFunctionRetType("void", -1);
     string data = f.networkForm();
+    *GRADING << "[func2] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[func2] Server indicated bad function call." << endl;
         throw C150Exception("void func2(): call not recognized by the server.");
     }
+    *GRADING << "[func2] Reading response from server." << endl;
    return;
 }
 
 void func3() {
+  *GRADING << "[func3] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
     f.setFunctionName("func3");
     f.setFunctionRetType("void", -1);
     string data = f.networkForm();
+    *GRADING << "[func3] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[func3] Server indicated bad function call." << endl;
         throw C150Exception("void func3(): call not recognized by the server.");
     }
+    *GRADING << "[func3] Reading response from server." << endl;
    return;
 }
 

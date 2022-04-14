@@ -1,0 +1,13 @@
+04/14/2022 15:20:13.183521 ./jakeclient: rpcproxyinitialize: Creating C150StreamSocket
+04/14/2022 15:20:13.189544 ./jakeclient: C150StreamSocket::C150StreamSocket: user port is 7018
+04/14/2022 15:20:13.189565 ./jakeclient: C150StreamSocket::connect(comp117-02) called
+04/14/2022 15:20:13.193660 ./jakeclient: C150StreamSocket::write: attempting to send packet with len=30 |....useless,MT(-1),MT(-1),....|
+04/14/2022 15:20:13.193704 ./jakeclient: C150StreamSocket::write: Success writing packet with len=30 |....useless,MT(-1),MT(-1),....|
+04/14/2022 15:20:13.193724 ./jakeclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:20:13.194576 ./jakeclient: C150StreamSocket::read: Dropped through read with len=1
+04/14/2022 15:20:13.194603 ./jakeclient: C150StreamSocket::read: successful read with len=1 |0|
+04/14/2022 15:20:13.194622 ./jakeclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:20:13.194641 ./jakeclient: C150StreamSocket::read: Dropped through read with len=4
+04/14/2022 15:20:13.194659 ./jakeclient: C150StreamSocket::read: successful read with len=4 |....|
+04/14/2022 15:20:13.194693 ./jakeclient: C150StreamSocket::read: Ready to read data
+04/14/2022 15:20:13.194711 ./jakeclient: C150StreamSocket::read: Dropped through read with len=0

@@ -1,0 +1,38 @@
+04/14/2022 15:20:09.834232 ./jakeserver: rpcstubinitialize: Creating C150StreamSocket
+04/14/2022 15:20:09.839977 ./jakeserver: rpcserver.cpp:calling C150StreamSocket::accept
+04/14/2022 15:20:13.194558 ./jakeserver: C150StreamSocket::read: successful read with len=1 |.|
+04/14/2022 15:20:13.194580 ./jakeserver: C150StreamSocket::read: successful read with len=1 |.|
+04/14/2022 15:20:13.194599 ./jakeserver: C150StreamSocket::read: successful read with len=1 |.|
+04/14/2022 15:20:13.194618 ./jakeserver: C150StreamSocket::read: successful read with len=1 |.|
+04/14/2022 15:20:13.194702 ./jakeserver: C150StreamSocket::read: successful read with len=1 |u|
+04/14/2022 15:20:13.194721 ./jakeserver: C150StreamSocket::read: successful read with len=1 |s|
+04/14/2022 15:20:13.194740 ./jakeserver: C150StreamSocket::read: successful read with len=1 |e|
+04/14/2022 15:20:13.194759 ./jakeserver: C150StreamSocket::read: successful read with len=1 |l|
+04/14/2022 15:20:13.194778 ./jakeserver: C150StreamSocket::read: successful read with len=1 |e|
+04/14/2022 15:20:13.194796 ./jakeserver: C150StreamSocket::read: successful read with len=1 |s|
+04/14/2022 15:20:13.194815 ./jakeserver: C150StreamSocket::read: successful read with len=1 |s|
+04/14/2022 15:20:13.194834 ./jakeserver: C150StreamSocket::read: successful read with len=1 |,|
+04/14/2022 15:20:13.194853 ./jakeserver: C150StreamSocket::read: successful read with len=1 |M|
+04/14/2022 15:20:13.194871 ./jakeserver: C150StreamSocket::read: successful read with len=1 |T|
+04/14/2022 15:20:13.194890 ./jakeserver: C150StreamSocket::read: successful read with len=1 |(|
+04/14/2022 15:20:13.194909 ./jakeserver: C150StreamSocket::read: successful read with len=1 |-|
+04/14/2022 15:20:13.194928 ./jakeserver: C150StreamSocket::read: successful read with len=1 |1|
+04/14/2022 15:20:13.194946 ./jakeserver: C150StreamSocket::read: successful read with len=1 |)|
+04/14/2022 15:20:13.194966 ./jakeserver: C150StreamSocket::read: successful read with len=1 |,|
+04/14/2022 15:20:13.194984 ./jakeserver: C150StreamSocket::read: successful read with len=1 |M|
+04/14/2022 15:20:13.195003 ./jakeserver: C150StreamSocket::read: successful read with len=1 |T|
+04/14/2022 15:20:13.195022 ./jakeserver: C150StreamSocket::read: successful read with len=1 |(|
+04/14/2022 15:20:13.195041 ./jakeserver: C150StreamSocket::read: successful read with len=1 |-|
+04/14/2022 15:20:13.195059 ./jakeserver: C150StreamSocket::read: successful read with len=1 |1|
+04/14/2022 15:20:13.195078 ./jakeserver: C150StreamSocket::read: successful read with len=1 |)|
+04/14/2022 15:20:13.195097 ./jakeserver: C150StreamSocket::read: successful read with len=1 |,|
+04/14/2022 15:20:13.195116 ./jakeserver: C150StreamSocket::read: successful read with len=1 |.|
+04/14/2022 15:20:13.195134 ./jakeserver: C150StreamSocket::read: successful read with len=1 |.|
+04/14/2022 15:20:13.195153 ./jakeserver: C150StreamSocket::read: successful read with len=1 |.|
+04/14/2022 15:20:13.195172 ./jakeserver: C150StreamSocket::read: successful read with len=1 |.|
+04/14/2022 15:20:13.195250 ./jakeserver: C150StreamSocket::write: attempting to send packet with len=5 |0....|
+04/14/2022 15:20:13.195290 ./jakeserver: C150StreamSocket::write: Success writing packet with len=5 |0....|
+04/14/2022 15:20:13.199186 ./jakeserver: Client signaled EOF before calling function
+04/14/2022 15:20:13.199205 ./jakeserver: rpcserver.cpp: EOF signaled on input
+04/14/2022 15:20:13.199224 ./jakeserver: Calling C150StreamSocket::close
+04/14/2022 15:20:13.199272 ./jakeserver: rpcserver.cpp:calling C150StreamSocket::accept

@@ -1,4 +1,10 @@
-
+//
+// structwitharray.proxy.cpp
+//
+// C++ file created by rpcgenerate.
+//
+// Meta-authors: John Little and Isabella Urdahl
+//
 
 // !! Serializer Package requirements !!
 
@@ -22,6 +28,7 @@ union FloatInt {
 
 #include "rpcproxyhelper.h"
 #include "c150debug.h"
+#include "c150grading.h"
 #define STD_READ_SIZE 20
 using namespace C150NETWORK;
 
@@ -103,29 +110,22 @@ s deserialize_s(string x);
 // !! Network Formatter Package forward declarations !!
 
 
+// Class to handle all network formatting of data. See definitions below
+// for more detail comments.
 class NetworkFormatter {
   public:
     NetworkFormatter();
     NetworkFormatter(std::string offTheWire);
     ~NetworkFormatter();
-
     void setFunctionName(std::string name);
     std::string getFunctionName();
-
     void setFunctionRetType(std::string type, int typeSize);
     std::tuple<std::string, int> getFunctionRetType();
-
     void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
     std::tuple<std::string, int, std::string> getArgAtIndex(int index);
     int getNumArgs();
-
     std::string getFunctionSignature();
-
-
-
     std::string networkForm();
-
-
   private:
     std::vector<std::tuple<std::string, int, std::string>> args;
     std::string functionName;
@@ -138,6 +138,7 @@ class NetworkFormatter {
 
 
 int area(rectangle r) {
+  *GRADING << "[area] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -145,17 +146,21 @@ int area(rectangle r) {
     f.setFunctionRetType("int", sizeof(int));
     f.appendArg("rectangle", -1, serialize_rectangle(r));
     string data = f.networkForm();
+    *GRADING << "[area] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[area] Server indicated bad function call." << endl;
         throw C150Exception("int area(rectangle r): call not recognized by the server.");
     }
+    *GRADING << "[area] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
 }
 
 int fake(int arr[10][10]) {
+  *GRADING << "[fake] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -163,17 +168,21 @@ int fake(int arr[10][10]) {
     f.setFunctionRetType("int", sizeof(int));
     f.appendArg("Array_int_10_10", -1, serialize_Array_int_10_10(arr));
     string data = f.networkForm();
+    *GRADING << "[fake] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[fake] Server indicated bad function call." << endl;
         throw C150Exception("int fake(int arr[10][10]): call not recognized by the server.");
     }
+    *GRADING << "[fake] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
 }
 
 Person findOtherPerson(StructWithArrays x) {
+  *GRADING << "[findOtherPerson] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -181,11 +190,14 @@ Person findOtherPerson(StructWithArrays x) {
     f.setFunctionRetType("Person", -1);
     f.appendArg("StructWithArrays", -1, serialize_StructWithArrays(x));
     string data = f.networkForm();
+    *GRADING << "[findOtherPerson] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[findOtherPerson] Server indicated bad function call." << endl;
         throw C150Exception("Person findOtherPerson(StructWithArrays x): call not recognized by the server.");
     }
+    *GRADING << "[findOtherPerson] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string lenStr(readBuffer, sizeof(int));
     int len = deserialize_int(lenStr);
@@ -197,6 +209,7 @@ Person findOtherPerson(StructWithArrays x) {
 }
 
 Person findPerson(ThreePeople tp) {
+  *GRADING << "[findPerson] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -204,11 +217,14 @@ Person findPerson(ThreePeople tp) {
     f.setFunctionRetType("Person", -1);
     f.appendArg("ThreePeople", -1, serialize_ThreePeople(tp));
     string data = f.networkForm();
+    *GRADING << "[findPerson] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[findPerson] Server indicated bad function call." << endl;
         throw C150Exception("Person findPerson(ThreePeople tp): call not recognized by the server.");
     }
+    *GRADING << "[findPerson] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string lenStr(readBuffer, sizeof(int));
     int len = deserialize_int(lenStr);
@@ -220,6 +236,7 @@ Person findPerson(ThreePeople tp) {
 }
 
 int getValueAt(int arr[10][10], int i, int j) {
+  *GRADING << "[getValueAt] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -229,17 +246,21 @@ int getValueAt(int arr[10][10], int i, int j) {
     f.appendArg("int", sizeof(int), serialize_int(i));
     f.appendArg("int", sizeof(int), serialize_int(j));
     string data = f.networkForm();
+    *GRADING << "[getValueAt] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[getValueAt] Server indicated bad function call." << endl;
         throw C150Exception("int getValueAt(int arr[10][10], int i, int j): call not recognized by the server.");
     }
+    *GRADING << "[getValueAt] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
 }
 
 Person nonVoidFuncThatTakesALot(int x, float y, Person z) {
+  *GRADING << "[nonVoidFuncThatTakesALot] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -249,11 +270,14 @@ Person nonVoidFuncThatTakesALot(int x, float y, Person z) {
     f.appendArg("float", sizeof(float), serialize_float(y));
     f.appendArg("Person", -1, serialize_Person(z));
     string data = f.networkForm();
+    *GRADING << "[nonVoidFuncThatTakesALot] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[nonVoidFuncThatTakesALot] Server indicated bad function call." << endl;
         throw C150Exception("Person nonVoidFuncThatTakesALot(int x, float y, Person z): call not recognized by the server.");
     }
+    *GRADING << "[nonVoidFuncThatTakesALot] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string lenStr(readBuffer, sizeof(int));
     int len = deserialize_int(lenStr);
@@ -265,6 +289,7 @@ Person nonVoidFuncThatTakesALot(int x, float y, Person z) {
 }
 
 int tough(int arr[1][2][3][4][5][6][7][8]) {
+  *GRADING << "[tough] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -272,17 +297,21 @@ int tough(int arr[1][2][3][4][5][6][7][8]) {
     f.setFunctionRetType("int", sizeof(int));
     f.appendArg("Array_int_1_2_3_4_5_6_7_8", -1, serialize_Array_int_1_2_3_4_5_6_7_8(arr));
     string data = f.networkForm();
+    *GRADING << "[tough] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[tough] Server indicated bad function call." << endl;
         throw C150Exception("int tough(int arr[1][2][3][4][5][6][7][8]): call not recognized by the server.");
     }
+    *GRADING << "[tough] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
 }
 
 void voidFuncThatTakesALot(int x, float y, Person z) {
+  *GRADING << "[voidFuncThatTakesALot] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -292,11 +321,14 @@ void voidFuncThatTakesALot(int x, float y, Person z) {
     f.appendArg("float", sizeof(float), serialize_float(y));
     f.appendArg("Person", -1, serialize_Person(z));
     string data = f.networkForm();
+    *GRADING << "[voidFuncThatTakesALot] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[voidFuncThatTakesALot] Server indicated bad function call." << endl;
         throw C150Exception("void voidFuncThatTakesALot(int x, float y, Person z): call not recognized by the server.");
     }
+    *GRADING << "[voidFuncThatTakesALot] Reading response from server." << endl;
    return;
 }
 

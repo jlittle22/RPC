@@ -51,7 +51,7 @@ main(int argc, char *argv[]) {
 
        ThreePeople test;
        Person jake;
-       jake.firstname = "J(ake";
+       jake.firstname = "jake";
        jake.lastname = "Little";
        jake.age = 22;
        Person bella;

@@ -1,0 +1,10 @@
+1. For any XXX.idl file you need to have:
+    a. XXX.cpp -- that definines func declared in the XXX.idl
+    b. XXXclient.cpp -- that CALLS funcs declared in XXX.idl (see simplefunctionclient.cpp)
+
+2. Run:
+
+    make XXXserver
+    make XXXclient
+
+3. Run ./XXXserver on one VM and ./XXXclient <OTHER_VM> on the other.

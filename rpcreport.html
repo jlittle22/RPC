@@ -135,7 +135,18 @@ Put an X in the space next to your choice:
 
 <li class="q">Briefly explain the protocol you use over TCP to request function calls and return the results.</li>
 <li class="a">
-@JAKE
+Function calls are sent over TCP in the following format:<br><br>
+<em>[numBytes][functionName],[returnType]([size]){,[argType]([size]),[argData]} ...</em><br><br>
+Where the <em>{,[argType]([size]),[argData]}</em> component is repeated for each argument in the function call. If the size of an argument or return type is unknown (e.g. a string or a struct containing strings), then the <em>[size]</em> of the object is denoted as -1. In the case where an object is denoted with -1 size, it is <b>required</b> that the first four bytes of the <em>[argData]</em> representing the object represent the number of bytes in the rest of the object's data string:<br><br>
+XXXXYYYYYYYYYYYYYYYYY --> 21 bytes of data total<br><br>
+<em>Example: format of a serialized argument consisting of 17 bytes of data</em><br><br>
+Then, we expect that when deserialized as an integer, the bytes XXXX would contain the number 21 - 4 = 17. Similarly, the same strategy is used to indicate the size of the incoming function call to the server. In the format above, the <em>[numBytes]</em> component must be four bytes representing the number of remaining bytes to read in the function call.<br><br>
+When the results of a function call are sent back to the client, the first byte of the reponse is required to be the <em>character</em> '0' which indicates that the server successfully matched a function to call. The remainder of the response is simply a stream of bytes representing the serialized version of the result. Since the client knows the <em>[returnType]</em> of the function it called, it is is responsible for choosing how to deserialize the data. However, the server is responsible for following the rule above: if the <em>[returnType]</em> has an unknown / variable size (<em>[size]</em> == -1), then the first four bytes of the data must be a machine integer representing the number of bytes following in the stream:<br><br>
+
+'0'XXXXYYYYYYYYYYYYYY...
+<br><br><em>Example: format of a successful function call response</em><br><br>
+See the comments in the <em>NetworkFormatter</em> C++ class implementation for more details.
+
 </li>
 
 <li class="q">Did you get help from anyone other than your teammate? If "yes", then briefly explain who helped you and how.</li>
@@ -147,7 +158,9 @@ No.
 
 <li class="q">(optional) Do you have any other comments on this assignment (e.g. was it worthwhile, what did you learn from it, do you have suggestions for improvment if the course is offered again)?</li>
 <li class="a">
-...your answer here...
+This assignment was very much worthwhile. Much like FileCopy, it was an excellent opportunity to explore concepts that we don't traditionally get to play around with at Tufts. For example, metaprogramming is a concept that students become familiar with in courses like CS105, but don't really have a chance to implement. This assignment is such a great way to see how powerful metaprogramming can actually be.<br><br>
+It was also super cool to see how ergonomical using RPCs can actually be once you have the entire system built. Just provided declarations, definitions, and a client program and you're done!<br><br>
+My only feedback for improvement is that it feels like we glossed over TCP a bit whereas we got a more flushed out sense of how UDP works in practice. I'm planning on exploring TCP applications more in my free time, but maybe it would be interesting to offer a <em>small</em> CS117 assignment that encourages students to become more comfortable with using TCP. Then again, this isn't a network programming course.
 </li>
 
 </ol>
@@ -156,13 +169,13 @@ No.
 <!--         ADDITIONAL INFORMATION            -->
 <!-- * * * * * * * * * * * * * * * * * * * * * -->
 
-<h2 id="reportbody">ADDITIONAL iNFORMATION</h2>
+<h2 id="reportbody">ADDITIONAL INFORMATION</h2>
 
 <!-- Delete the entire paragraph below 
      and replace it with your report. (Do NOT
      keep the color:grey styling on your report! :-) -->
 
-<p>...put any additional information here, with a brief indication that no additional explanation is needed...</p>
+<p>Our Python <em>rpcgenerate</em> lives in the RPC/ subdirectory, but we have a simple script also named <em>rpcgenerate</em> in the top-level directory of the project which runs the Python <em>rpcgenerate</em> program.</p>
 
 </div>
 </div>

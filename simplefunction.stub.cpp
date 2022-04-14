@@ -1,4 +1,10 @@
-
+//
+// simplefunction.stub.cpp
+//
+// C++ file created by rpcgenerate.
+//
+// Meta-authors: John Little and Isabella Urdahl
+//
 
 // !! Serializer Package requirements !!
 
@@ -22,7 +28,7 @@ union FloatInt {
 
 #include "rpcstubhelper.h"
 #include "c150debug.h"
-#define FUNC_CALL_BUFFER_SIZE 50000
+#include "c150grading.h"
 using namespace C150NETWORK;
 
 
@@ -60,29 +66,22 @@ float deserialize_float(string x);
 // !! Network Formatter Package forward declarations !!
 
 
+// Class to handle all network formatting of data. See definitions below
+// for more detail comments.
 class NetworkFormatter {
   public:
     NetworkFormatter();
     NetworkFormatter(std::string offTheWire);
     ~NetworkFormatter();
-
     void setFunctionName(std::string name);
     std::string getFunctionName();
-
     void setFunctionRetType(std::string type, int typeSize);
     std::tuple<std::string, int> getFunctionRetType();
-
     void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
     std::tuple<std::string, int, std::string> getArgAtIndex(int index);
     int getNumArgs();
-
     std::string getFunctionSignature();
-
-
-
     std::string networkForm();
-
-
   private:
     std::vector<std::tuple<std::string, int, std::string>> args;
     std::string functionName;
@@ -93,16 +92,22 @@ class NetworkFormatter {
 
 // !! Stub Package functions !!
 
+
 void __badFunction() {
+    // Any good function call must result in '0' in the first
+    // byte of the response... so send 'I' for Isabella.
     char buf[2] = "I";
     RPCSTUBSOCKET->write(buf, 1);
 }
+
 int getNumBytesInIncomingFunctionCall(char *buffer) {
   unsigned int i;
   char *bufp;
   ssize_t readlen;
   unsigned int numBytes;
   bufp = buffer;
+
+  // Read the first four bytes of the stream...
   for (i = 0; i < sizeof(numBytes); i++) {
     readlen = RPCSTUBSOCKET-> read(bufp, 1);
     if (readlen == 0) {
@@ -110,26 +115,39 @@ int getNumBytesInIncomingFunctionCall(char *buffer) {
     }
     bufp++;
   }
+
+  // Error handle in the event that the stream dies.
   if (readlen == 0) {
     if (RPCSTUBSOCKET->eof()) {
+      *GRADING << "[getNumBytesInIncomingFunctionCall] Client signaled EOF before calling a function." << endl;
       c150debug->printf(C150RPCDEBUG, "Client signaled EOF before calling function");
       return 0;
     } else {
-      throw C150Exception("arithmetic.stub: unexpected zero length read without eof");
+      throw C150Exception("unexpected zero length read without eof");
     }
   }
+
+  // Convert the first four bytes into a string...
   string numBytesStr(buffer, sizeof(numBytes));
+
+  // Deserialize as an int (representing the number of bytes to come)
   numBytes = deserialize_int(numBytesStr);
   return numBytes;
 }
+
+// Adapted from Noah's getFunctionName function!
 int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   unsigned int i;
   char *bufp;
   ssize_t readlen;
   unsigned int numBytes;
+
+ // We already read four bytes and don't want to overwrite them.
   bufp = buffer + sizeof(numBytes);
   string numBytesStr(buffer, sizeof(numBytes));
   numBytes = deserialize_int(numBytesStr);
+
+ // Read until we have read enough bytes OR our buffer is full.
   for (i = 0; i < bufSize && i < numBytes; i++) {
     readlen = RPCSTUBSOCKET-> read(bufp, 1);
     if (readlen == 0) {
@@ -137,51 +155,74 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
     }
     bufp++;
   }
+
+ // Error handle in the event that the stream dies.
   if (readlen == 0) {
-    c150debug->printf(C150RPCDEBUG,"arithmetic.stub: read zero length message, checking EOF");
+    c150debug->printf(C150RPCDEBUG,"read zero length message, checking EOF");
     if (RPCSTUBSOCKET-> eof()) {
-      c150debug->printf(C150RPCDEBUG,"arithmetic.stub: EOF signaled on input");
+      *GRADING << "[getFunctionCallFromStream] Client signaled EOF before calling a function." << endl;
+      c150debug->printf(C150RPCDEBUG,"EOF signaled on input");
     } else {
-      throw C150Exception("arithmetic.stub: unexpected zero length read without eof");
+      throw C150Exception("unexpected zero length read without eof");
     }
   }
+
+ // If our buffer filled up without reading all bytes...
   if (i < numBytes && i >= bufSize) {
-    throw C150Exception("arithmetic.stub: Incoming message was larger than bufSize");
+    throw C150Exception("Incoming message was larger than bufSize");
   }
   return numBytes;
 }
 
 void __func1() {
+  *GRADING << "[func1] Entering stub function." << endl;
     string forTheWire = "0";
     func1();
+   *GRADING << "[func1] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __func2() {
+  *GRADING << "[func2] Entering stub function." << endl;
     string forTheWire = "0";
     func2();
+   *GRADING << "[func2] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __func3() {
+  *GRADING << "[func3] Entering stub function." << endl;
     string forTheWire = "0";
     func3();
+   *GRADING << "[func3] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void dispatchFunction() {
   char numBytesBuf[sizeof(int)];
+
+  // Read the number of incoming bytes from the stream...
   int numBytesIncoming = sizeof(numBytesBuf) + getNumBytesInIncomingFunctionCall(numBytesBuf);
   if (numBytesIncoming == sizeof(numBytesBuf)) return;
- char functionCallBuffer[numBytesIncoming];
+  *GRADING << "[dispatchFunction] Preparing to read " << numBytesIncoming << " bytes from stream." << endl;
+
+  // Create an appropriately sized buffer for the data...
+  char functionCallBuffer[numBytesIncoming];
+
+  // Copy over the first few bytes that we already read into the new buffer...
   for (size_t i = 0; i < sizeof(numBytesBuf); i++) {
     functionCallBuffer[i] = numBytesBuf[i];
   }
+
+  // Read the remaining bytes of data.
   int numBytesRead = getFunctionCallFromStream(functionCallBuffer,sizeof(functionCallBuffer));
   if (numBytesRead == 0) return;
   string offTheWire(functionCallBuffer, sizeof(int) + numBytesRead);
   NetworkFormatter f = NetworkFormatter(offTheWire);
   if (!RPCSTUBSOCKET-> eof()) {
+    *GRADING << "[dispatchFunction] Looking for function with matching signature: " << f.getFunctionSignature() << endl;
+
+    // Identify the appropriate function and call it...
     if (f.getFunctionSignature() == "func1,void(-1)") {
       __func1();
     } else if (f.getFunctionSignature() == "func2,void(-1)") {
@@ -189,6 +230,7 @@ void dispatchFunction() {
     } else if (f.getFunctionSignature() == "func3,void(-1)") {
       __func3();
     } else {
+        *GRADING << "[dispatchFunction] No matching signature. Bad function." << endl;
         __badFunction();
     }
   }

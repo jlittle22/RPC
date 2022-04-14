@@ -1,0 +1,3 @@
+struct MT {};
+
+MT useless(MT x);

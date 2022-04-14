@@ -9,6 +9,9 @@ using namespace std;
 
 
 Person findPerson(ThreePeople tp) {
+	for (size_t i = 0; i < tp.p1.firstname.length(); i++){
+		tp.p1.firstname[i] = (char)((int)tp.p1.firstname[i] - 32);
+	}
     return tp.p1;
 }
 

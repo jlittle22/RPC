@@ -1,4 +1,10 @@
-
+//
+// structs.proxy.cpp
+//
+// C++ file created by rpcgenerate.
+//
+// Meta-authors: John Little and Isabella Urdahl
+//
 
 // !! Serializer Package requirements !!
 
@@ -22,6 +28,7 @@ union FloatInt {
 
 #include "rpcproxyhelper.h"
 #include "c150debug.h"
+#include "c150grading.h"
 #define STD_READ_SIZE 20
 using namespace C150NETWORK;
 
@@ -66,29 +73,22 @@ rectangle deserialize_rectangle(string x);
 // !! Network Formatter Package forward declarations !!
 
 
+// Class to handle all network formatting of data. See definitions below
+// for more detail comments.
 class NetworkFormatter {
   public:
     NetworkFormatter();
     NetworkFormatter(std::string offTheWire);
     ~NetworkFormatter();
-
     void setFunctionName(std::string name);
     std::string getFunctionName();
-
     void setFunctionRetType(std::string type, int typeSize);
     std::tuple<std::string, int> getFunctionRetType();
-
     void appendArg(std::string argTypeName, int argTypeSize, std::string argData);
     std::tuple<std::string, int, std::string> getArgAtIndex(int index);
     int getNumArgs();
-
     std::string getFunctionSignature();
-
-
-
     std::string networkForm();
-
-
   private:
     std::vector<std::tuple<std::string, int, std::string>> args;
     std::string functionName;
@@ -101,6 +101,7 @@ class NetworkFormatter {
 
 
 int area(rectangle r) {
+  *GRADING << "[area] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -108,17 +109,21 @@ int area(rectangle r) {
     f.setFunctionRetType("int", sizeof(int));
     f.appendArg("rectangle", -1, serialize_rectangle(r));
     string data = f.networkForm();
+    *GRADING << "[area] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[area] Server indicated bad function call." << endl;
         throw C150Exception("int area(rectangle r): call not recognized by the server.");
     }
+    *GRADING << "[area] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
 }
 
 Person findOtherPerson(StructWithArrays x) {
+  *GRADING << "[findOtherPerson] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -126,11 +131,14 @@ Person findOtherPerson(StructWithArrays x) {
     f.setFunctionRetType("Person", -1);
     f.appendArg("StructWithArrays", -1, serialize_StructWithArrays(x));
     string data = f.networkForm();
+    *GRADING << "[findOtherPerson] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[findOtherPerson] Server indicated bad function call." << endl;
         throw C150Exception("Person findOtherPerson(StructWithArrays x): call not recognized by the server.");
     }
+    *GRADING << "[findOtherPerson] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string lenStr(readBuffer, sizeof(int));
     int len = deserialize_int(lenStr);
@@ -142,6 +150,7 @@ Person findOtherPerson(StructWithArrays x) {
 }
 
 Person findPerson(ThreePeople tp) {
+  *GRADING << "[findPerson] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -149,11 +158,14 @@ Person findPerson(ThreePeople tp) {
     f.setFunctionRetType("Person", -1);
     f.appendArg("ThreePeople", -1, serialize_ThreePeople(tp));
     string data = f.networkForm();
+    *GRADING << "[findPerson] Sending function call to server." << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[findPerson] Server indicated bad function call." << endl;
         throw C150Exception("Person findPerson(ThreePeople tp): call not recognized by the server.");
     }
+    *GRADING << "[findPerson] Reading response from server." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string lenStr(readBuffer, sizeof(int));
     int len = deserialize_int(lenStr);

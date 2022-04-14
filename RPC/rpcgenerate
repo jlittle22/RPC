@@ -7,7 +7,7 @@ import re
 import bisect 
 from functools import reduce
 
-STD_READ_SIZE = 20
+STD_READ_SIZE = 20  # standard buffer size to read function calls
 
 built_in_types = [ "void", "int", "string", "float" ]
 static_size_types = [ "int", "float" ]
@@ -139,7 +139,8 @@ def create_non_array_deserialize(type_name, idl_types_data):
     function = f"\n{type_name} deserialize_{type_name}(string x) {{\n"
     signature = function[:-3] + ';';
     function += f"    {type_name} new_item;\n"
-    function += "    int len = sizeof(int);\n"
+    if len(idl_types_data[type_name]["members"]) != 0:
+        function += "    int len = sizeof(int);\n"
 
     # For each member of the struct...
     for member in idl_types_data[type_name]["members"]:
@@ -1078,7 +1079,7 @@ std::string NetworkFormatter::getFunctionSignature() {
 //
 // NETWORK FORM:
 //
-//    <functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
+//    <numBytes><functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
 //
 // Example:
 //
@@ -1086,11 +1087,13 @@ std::string NetworkFormatter::getFunctionSignature() {
 //
 //        ==
 //
-//    foo,int(4),float(4),xxxx,myStruct(10),yyyyyyyyyy
+//    foo,int(4),float(4),xxxx,myStruct(-1),yyyyyyyyyy
 //
 // Glossary & Other Hints:
 //
 // { ... } -- content between curly brackets is OPTIONAL and can be REPEATED. 
+//
+// <numBytes> -- four bytes representng a machine integer containing length of the function call in bytes.
 //
 // <functionName> -- a string of any length representing the name of the function being called.
 // 

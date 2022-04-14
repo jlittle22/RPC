@@ -5,6 +5,7 @@
 //
 // Meta-authors: John Little and Isabella Urdahl
 //
+
 // !! Serializer Package requirements !!
 
 #include <string>
@@ -27,6 +28,7 @@ union FloatInt {
 
 #include "rpcstubhelper.h"
 #include "c150debug.h"
+#include "c150grading.h"
 using namespace C150NETWORK;
 
 
@@ -164,6 +166,7 @@ int getNumBytesInIncomingFunctionCall(char *buffer) {
   // Error handle in the event that the stream dies.
   if (readlen == 0) {
     if (RPCSTUBSOCKET->eof()) {
+      *GRADING << "[getNumBytesInIncomingFunctionCall] Client signaled EOF before calling a function." << endl;
       c150debug->printf(C150RPCDEBUG, "Client signaled EOF before calling function");
       return 0;
     } else {
@@ -204,6 +207,7 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   if (readlen == 0) {
     c150debug->printf(C150RPCDEBUG,"read zero length message, checking EOF");
     if (RPCSTUBSOCKET-> eof()) {
+      *GRADING << "[getFunctionCallFromStream] Client signaled EOF before calling a function." << endl;
       c150debug->printf(C150RPCDEBUG,"EOF signaled on input");
     } else {
       throw C150Exception("unexpected zero length read without eof");
@@ -218,50 +222,66 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
 }
 
 void __area(rectangle r) {
+  *GRADING << "[area] Entering stub function." << endl;
     int result = area(r);
     string forTheWire = '0' + serialize_int(result);
+   *GRADING << "[area] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __fake(int arr[10][10]) {
+  *GRADING << "[fake] Entering stub function." << endl;
     int result = fake(arr);
     string forTheWire = '0' + serialize_int(result);
+   *GRADING << "[fake] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __findOtherPerson(StructWithArrays x) {
+  *GRADING << "[findOtherPerson] Entering stub function." << endl;
     Person result = findOtherPerson(x);
     string forTheWire = '0' + serialize_Person(result);
+   *GRADING << "[findOtherPerson] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __findPerson(ThreePeople tp) {
+  *GRADING << "[findPerson] Entering stub function." << endl;
     Person result = findPerson(tp);
     string forTheWire = '0' + serialize_Person(result);
+   *GRADING << "[findPerson] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __getValueAt(int arr[10][10], int i, int j) {
+  *GRADING << "[getValueAt] Entering stub function." << endl;
     int result = getValueAt(arr, i, j);
     string forTheWire = '0' + serialize_int(result);
+   *GRADING << "[getValueAt] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __nonVoidFuncThatTakesALot(int x, float y, Person z) {
+  *GRADING << "[nonVoidFuncThatTakesALot] Entering stub function." << endl;
     Person result = nonVoidFuncThatTakesALot(x, y, z);
     string forTheWire = '0' + serialize_Person(result);
+   *GRADING << "[nonVoidFuncThatTakesALot] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __tough(int arr[1][2][3][4][5][6][7][8]) {
+  *GRADING << "[tough] Entering stub function." << endl;
     int result = tough(arr);
     string forTheWire = '0' + serialize_int(result);
+   *GRADING << "[tough] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __voidFuncThatTakesALot(int x, float y, Person z) {
+  *GRADING << "[voidFuncThatTakesALot] Entering stub function." << endl;
     string forTheWire = "0";
     voidFuncThatTakesALot(x, y, z);
+   *GRADING << "[voidFuncThatTakesALot] Result acquired. Writing to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
@@ -271,6 +291,7 @@ void dispatchFunction() {
   // Read the number of incoming bytes from the stream...
   int numBytesIncoming = sizeof(numBytesBuf) + getNumBytesInIncomingFunctionCall(numBytesBuf);
   if (numBytesIncoming == sizeof(numBytesBuf)) return;
+  *GRADING << "[dispatchFunction] Preparing to read " << numBytesIncoming << " bytes from stream." << endl;
 
   // Create an appropriately sized buffer for the data...
   char functionCallBuffer[numBytesIncoming];
@@ -286,8 +307,9 @@ void dispatchFunction() {
   string offTheWire(functionCallBuffer, sizeof(int) + numBytesRead);
   NetworkFormatter f = NetworkFormatter(offTheWire);
   if (!RPCSTUBSOCKET-> eof()) {
+    *GRADING << "[dispatchFunction] Looking for function with matching signature: " << f.getFunctionSignature() << endl;
 
-      // Identify the appropriate function and call it...
+    // Identify the appropriate function and call it...
     if (f.getFunctionSignature() == "area,int(4),rectangle(-1)") {
       rectangle r = deserialize_rectangle(get<2>(f.getArgAtIndex(0)));
       __area(r);
@@ -322,6 +344,7 @@ void dispatchFunction() {
       Person z = deserialize_Person(get<2>(f.getArgAtIndex(2)));
       __voidFuncThatTakesALot(x, y, z);
     } else {
+        *GRADING << "[dispatchFunction] No matching signature. Bad function." << endl;
         __badFunction();
     }
   }
