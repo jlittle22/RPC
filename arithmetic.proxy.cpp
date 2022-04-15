@@ -5,6 +5,7 @@
 //
 // Meta-authors: John Little and Isabella Urdahl
 //
+
 // !! Serializer Package requirements !!
 
 #include <string>
@@ -27,6 +28,7 @@ union FloatInt {
 
 #include "rpcproxyhelper.h"
 #include "c150debug.h"
+#include "c150grading.h"
 #define STD_READ_SIZE 20
 using namespace C150NETWORK;
 
@@ -90,6 +92,7 @@ class NetworkFormatter {
 
 
 int add(int x, int y) {
+  *GRADING << "[add (proxy)] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -98,17 +101,23 @@ int add(int x, int y) {
     f.appendArg("int", sizeof(int), serialize_int(x));
     f.appendArg("int", sizeof(int), serialize_int(y));
     string data = f.networkForm();
+    *GRADING << "[add (proxy)] Sending function call (" << data.length() << " bytes) to server." << endl;
+    *GRADING << "[add (proxy)] Function call signature: " << f.getFunctionSignature() << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[add (proxy)] Server indicated bad function call." << endl;
         throw C150Exception("int add(int x, int y): call not recognized by the server.");
     }
+    *GRADING << "[add (proxy)] Server recognized call. Preparing to read response from server." << endl;
+    *GRADING << "[add (proxy)] Server response size: " << sizeof(int) + 1 << " bytes." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
 }
 
 int divide(int x, int y) {
+  *GRADING << "[divide (proxy)] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -117,17 +126,23 @@ int divide(int x, int y) {
     f.appendArg("int", sizeof(int), serialize_int(x));
     f.appendArg("int", sizeof(int), serialize_int(y));
     string data = f.networkForm();
+    *GRADING << "[divide (proxy)] Sending function call (" << data.length() << " bytes) to server." << endl;
+    *GRADING << "[divide (proxy)] Function call signature: " << f.getFunctionSignature() << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[divide (proxy)] Server indicated bad function call." << endl;
         throw C150Exception("int divide(int x, int y): call not recognized by the server.");
     }
+    *GRADING << "[divide (proxy)] Server recognized call. Preparing to read response from server." << endl;
+    *GRADING << "[divide (proxy)] Server response size: " << sizeof(int) + 1 << " bytes." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
 }
 
 int multiply(int x, int y) {
+  *GRADING << "[multiply (proxy)] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -136,17 +151,23 @@ int multiply(int x, int y) {
     f.appendArg("int", sizeof(int), serialize_int(x));
     f.appendArg("int", sizeof(int), serialize_int(y));
     string data = f.networkForm();
+    *GRADING << "[multiply (proxy)] Sending function call (" << data.length() << " bytes) to server." << endl;
+    *GRADING << "[multiply (proxy)] Function call signature: " << f.getFunctionSignature() << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[multiply (proxy)] Server indicated bad function call." << endl;
         throw C150Exception("int multiply(int x, int y): call not recognized by the server.");
     }
+    *GRADING << "[multiply (proxy)] Server recognized call. Preparing to read response from server." << endl;
+    *GRADING << "[multiply (proxy)] Server response size: " << sizeof(int) + 1 << " bytes." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
 }
 
 int subtract(int x, int y) {
+  *GRADING << "[subtract (proxy)] Called proxy function." << endl;
     char readBuffer[STD_READ_SIZE];
     readBuffer[0] = 'J';  // sanity check
     NetworkFormatter f = NetworkFormatter();
@@ -155,11 +176,16 @@ int subtract(int x, int y) {
     f.appendArg("int", sizeof(int), serialize_int(x));
     f.appendArg("int", sizeof(int), serialize_int(y));
     string data = f.networkForm();
+    *GRADING << "[subtract (proxy)] Sending function call (" << data.length() << " bytes) to server." << endl;
+    *GRADING << "[subtract (proxy)] Function call signature: " << f.getFunctionSignature() << endl;
     RPCPROXYSOCKET->write(data.c_str(), data.length());
     RPCPROXYSOCKET->read(readBuffer, 1);
     if (readBuffer[0] != '0') {
+        *GRADING << "[subtract (proxy)] Server indicated bad function call." << endl;
         throw C150Exception("int subtract(int x, int y): call not recognized by the server.");
     }
+    *GRADING << "[subtract (proxy)] Server recognized call. Preparing to read response from server." << endl;
+    *GRADING << "[subtract (proxy)] Server response size: " << sizeof(int) + 1 << " bytes." << endl;
     RPCPROXYSOCKET->read(readBuffer, sizeof(int));
     string resultStr(readBuffer, sizeof(int));
     return deserialize_int(resultStr);
@@ -343,7 +369,7 @@ std::string NetworkFormatter::getFunctionSignature() {
 //
 // NETWORK FORM:
 //
-//    <functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
+//    <numBytes><functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
 //
 // Example:
 //
@@ -351,11 +377,13 @@ std::string NetworkFormatter::getFunctionSignature() {
 //
 //        ==
 //
-//    foo,int(4),float(4),xxxx,myStruct(10),yyyyyyyyyy
+//    foo,int(4),float(4),xxxx,myStruct(-1),yyyyyyyyyy
 //
 // Glossary & Other Hints:
 //
 // { ... } -- content between curly brackets is OPTIONAL and can be REPEATED. 
+//
+// <numBytes> -- four bytes representng a machine integer containing length of the function call in bytes.
 //
 // <functionName> -- a string of any length representing the name of the function being called.
 // 

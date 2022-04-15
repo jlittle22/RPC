@@ -1,3 +1,18 @@
 struct MT {};
 
 MT useless(MT x);
+
+struct StupidWeird {};
+
+struct Person {
+    StupidWeird x;
+};
+
+struct StupidWeird {
+    MT arr[5];
+    Person arr2[10];	
+};
+
+float nothelpful(StupidWeird x);
+
+float reallynothelpful(StupidWeird x[10]);

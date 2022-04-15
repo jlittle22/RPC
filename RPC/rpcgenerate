@@ -487,7 +487,7 @@ def create_proxy_function(name, idl_data):
 
     function = f"\n{ret_ty} {name}({args[2:]}) {{\n"
     sig = function[1:-3] + ';\n'
-    function += f'  *GRADING << "[{name}] Called proxy function." << endl;\n'
+    function += f'  *GRADING << "[{name} (proxy)] Called proxy function." << endl;\n'
 
     function += "    char readBuffer[STD_READ_SIZE];\n"
     function += "    readBuffer[0] = 'J';  // sanity check\n"
@@ -523,26 +523,29 @@ def create_proxy_function(name, idl_data):
         function += f'    f.appendArg("{arg_type}", {arg_size_str}, serialize_{arg_type}({arg_name}));\n'
     
     function += "    string data = f.networkForm();\n"
-    function += f'    *GRADING << "[{name}] Sending function call to server." << endl;\n'
+    function += f'    *GRADING << "[{name} (proxy)] Sending function call (" << data.length() << " bytes) to server." << endl;\n'
+    function += f'    *GRADING << "[{name} (proxy)] Function call signature: " << f.getFunctionSignature() << endl;\n'
     function += "    RPCPROXYSOCKET->write(data.c_str(), data.length());\n"
     function += "    RPCPROXYSOCKET->read(readBuffer, 1);\n"
 
     # The first byte of *any* successful function call response must be '0'.
     function += "    if (readBuffer[0] != '0') {\n"
-    function += f'        *GRADING << "[{name}] Server indicated bad function call." << endl;\n'
+    function += f'        *GRADING << "[{name} (proxy)] Server indicated bad function call." << endl;\n'
     function += f'        throw C150Exception("{sig[:-2]}: call not recognized by the server.");\n'
     function += '    }\n'
-    function += f'    *GRADING << "[{name}] Reading response from server." << endl;\n'
+    function += f'    *GRADING << "[{name} (proxy)] Server recognized call. Preparing to read response from server." << endl;\n'
 
     # If the return type is static size...
     if ret_ty in static_size_types:
         # Just read the appropriate size directly from the socket and deserialize.
+        function += f'    *GRADING << "[{name} (proxy)] Server response size: " << sizeof({ret_ty}) + 1 << " bytes." << endl;\n'
         function += f"    RPCPROXYSOCKET->read(readBuffer, sizeof({ret_ty}));\n"
         function += f"    string resultStr(readBuffer, sizeof({ret_ty}));\n"
         function += f"    return deserialize_{ret_ty}(resultStr);\n"
     elif ret_ty == "void":
         # If the function is void, just return! No reading necessary.
-        function += '   return;\n'   
+        function += f'    *GRADING << "[{name} (proxy)] Server confirmed call with no return value (i.e. this is a void function)." << endl;\n'
+        function += '    return;\n'   
     else:
         # Otherwise, we have a variable number of bytes coming back.
         # Read the first four bytes...
@@ -551,6 +554,7 @@ def create_proxy_function(name, idl_data):
 
         # Decode those bytes as an int representing then number of bytes following...
         function += "    int len = deserialize_int(lenStr);\n"
+        function += f'    *GRADING << "[{name} (proxy)] Server response size: " << len + 5 << " bytes." << endl;\n'
         function += "    char dataBuffer[len];\n"
 
         # Read the rest of the incoming bytes...
@@ -687,6 +691,7 @@ def create_dispatch_function(idl_data):
                 function += f"    if (f.getFunctionSignature() == \"{s}\") {{\n"
             else:
                 function += f"    }} else if (f.getFunctionSignature() == \"{s}\") {{\n"
+            function += '      *GRADING << "[dispatchFunction] Signature match found!" << endl;\n'
 
             arg_names = []
             j = 0
@@ -764,18 +769,18 @@ def create_stub_function(fname, idl_data):
 
     function = f"\nvoid __{fname}({args}) {{\n"
     signature = function[:-3] + ';'
-    function += f'  *GRADING << "[{fname}] Entering stub function." << endl;\n'
+    function += f'  *GRADING << "[{fname} (stub)] Entering stub function." << endl;\n'
     if ret_ty != "void":
         # If the return type isn't void, we have to actually send a result.
-        function += f'    {ret_ty} result = {fname}({call_args});\n'
-        function += f'    string forTheWire = \'0\' + serialize_{ret_ty}(result);\n'
+        function += f'  {ret_ty} result = {fname}({call_args});\n'
+        function += f'  string forTheWire = \'0\' + serialize_{ret_ty}(result);\n'
     else:
         # Otherwise, we can just send back the '0' success character.
-        function += '    string forTheWire = "0";\n'
-        function += f'    {fname}({call_args});\n'
-    function += f'   *GRADING << "[{fname}] Result acquired. Writing to client." << endl;\n'
+        function += '  string forTheWire = "0";\n'
+        function += f'  {fname}({call_args});\n'
+    function += f'  *GRADING << "[{fname} (stub)] Result acquired. Writing " << forTheWire.length() << " bytes to client." << endl;\n'
 
-    function += '    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());\n}\n'
+    function += '  RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());\n}\n'
 
     return (signature, function)
 

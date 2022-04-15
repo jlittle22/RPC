@@ -5,6 +5,7 @@
 //
 // Meta-authors: John Little and Isabella Urdahl
 //
+
 // !! Serializer Package requirements !!
 
 #include <string>
@@ -27,6 +28,7 @@ union FloatInt {
 
 #include "rpcstubhelper.h"
 #include "c150debug.h"
+#include "c150grading.h"
 using namespace C150NETWORK;
 
 
@@ -118,6 +120,7 @@ int getNumBytesInIncomingFunctionCall(char *buffer) {
   // Error handle in the event that the stream dies.
   if (readlen == 0) {
     if (RPCSTUBSOCKET->eof()) {
+      *GRADING << "[getNumBytesInIncomingFunctionCall] Client signaled EOF before calling a function." << endl;
       c150debug->printf(C150RPCDEBUG, "Client signaled EOF before calling function");
       return 0;
     } else {
@@ -158,6 +161,7 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   if (readlen == 0) {
     c150debug->printf(C150RPCDEBUG,"read zero length message, checking EOF");
     if (RPCSTUBSOCKET-> eof()) {
+      *GRADING << "[getFunctionCallFromStream] Client signaled EOF before calling a function." << endl;
       c150debug->printf(C150RPCDEBUG,"EOF signaled on input");
     } else {
       throw C150Exception("unexpected zero length read without eof");
@@ -172,27 +176,35 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
 }
 
 void __add(int x, int y) {
-    int result = add(x, y);
-    string forTheWire = '0' + serialize_int(result);
-    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+  *GRADING << "[add (stub)] Entering stub function." << endl;
+  int result = add(x, y);
+  string forTheWire = '0' + serialize_int(result);
+  *GRADING << "[add (stub)] Result acquired. Writing " << forTheWire.length() << " bytes to client." << endl;
+  RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __divide(int x, int y) {
-    int result = divide(x, y);
-    string forTheWire = '0' + serialize_int(result);
-    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+  *GRADING << "[divide (stub)] Entering stub function." << endl;
+  int result = divide(x, y);
+  string forTheWire = '0' + serialize_int(result);
+  *GRADING << "[divide (stub)] Result acquired. Writing " << forTheWire.length() << " bytes to client." << endl;
+  RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __multiply(int x, int y) {
-    int result = multiply(x, y);
-    string forTheWire = '0' + serialize_int(result);
-    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+  *GRADING << "[multiply (stub)] Entering stub function." << endl;
+  int result = multiply(x, y);
+  string forTheWire = '0' + serialize_int(result);
+  *GRADING << "[multiply (stub)] Result acquired. Writing " << forTheWire.length() << " bytes to client." << endl;
+  RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void __subtract(int x, int y) {
-    int result = subtract(x, y);
-    string forTheWire = '0' + serialize_int(result);
-    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+  *GRADING << "[subtract (stub)] Entering stub function." << endl;
+  int result = subtract(x, y);
+  string forTheWire = '0' + serialize_int(result);
+  *GRADING << "[subtract (stub)] Result acquired. Writing " << forTheWire.length() << " bytes to client." << endl;
+  RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
 void dispatchFunction() {
@@ -201,6 +213,7 @@ void dispatchFunction() {
   // Read the number of incoming bytes from the stream...
   int numBytesIncoming = sizeof(numBytesBuf) + getNumBytesInIncomingFunctionCall(numBytesBuf);
   if (numBytesIncoming == sizeof(numBytesBuf)) return;
+  *GRADING << "[dispatchFunction] Preparing to read " << numBytesIncoming << " bytes from stream." << endl;
 
   // Create an appropriately sized buffer for the data...
   char functionCallBuffer[numBytesIncoming];
@@ -216,25 +229,31 @@ void dispatchFunction() {
   string offTheWire(functionCallBuffer, sizeof(int) + numBytesRead);
   NetworkFormatter f = NetworkFormatter(offTheWire);
   if (!RPCSTUBSOCKET-> eof()) {
+    *GRADING << "[dispatchFunction] Looking for function with matching signature: " << f.getFunctionSignature() << endl;
 
-      // Identify the appropriate function and call it...
+    // Identify the appropriate function and call it...
     if (f.getFunctionSignature() == "add,int(4),int(4),int(4)") {
+      *GRADING << "[dispatchFunction] Signature match found!" << endl;
       int x = deserialize_int(get<2>(f.getArgAtIndex(0)));
       int y = deserialize_int(get<2>(f.getArgAtIndex(1)));
       __add(x, y);
     } else if (f.getFunctionSignature() == "divide,int(4),int(4),int(4)") {
+      *GRADING << "[dispatchFunction] Signature match found!" << endl;
       int x = deserialize_int(get<2>(f.getArgAtIndex(0)));
       int y = deserialize_int(get<2>(f.getArgAtIndex(1)));
       __divide(x, y);
     } else if (f.getFunctionSignature() == "multiply,int(4),int(4),int(4)") {
+      *GRADING << "[dispatchFunction] Signature match found!" << endl;
       int x = deserialize_int(get<2>(f.getArgAtIndex(0)));
       int y = deserialize_int(get<2>(f.getArgAtIndex(1)));
       __multiply(x, y);
     } else if (f.getFunctionSignature() == "subtract,int(4),int(4),int(4)") {
+      *GRADING << "[dispatchFunction] Signature match found!" << endl;
       int x = deserialize_int(get<2>(f.getArgAtIndex(0)));
       int y = deserialize_int(get<2>(f.getArgAtIndex(1)));
       __subtract(x, y);
     } else {
+        *GRADING << "[dispatchFunction] No matching signature. Bad function." << endl;
         __badFunction();
     }
   }
@@ -418,7 +437,7 @@ std::string NetworkFormatter::getFunctionSignature() {
 //
 // NETWORK FORM:
 //
-//    <functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
+//    <numBytes><functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
 //
 // Example:
 //
@@ -426,11 +445,13 @@ std::string NetworkFormatter::getFunctionSignature() {
 //
 //        ==
 //
-//    foo,int(4),float(4),xxxx,myStruct(10),yyyyyyyyyy
+//    foo,int(4),float(4),xxxx,myStruct(-1),yyyyyyyyyy
 //
 // Glossary & Other Hints:
 //
 // { ... } -- content between curly brackets is OPTIONAL and can be REPEATED. 
+//
+// <numBytes> -- four bytes representng a machine integer containing length of the function call in bytes.
 //
 // <functionName> -- a string of any length representing the name of the function being called.
 // 

@@ -62,7 +62,7 @@ jlittl04
 Isabella Urdahl
 <br>
 <span class="label">UTLN: </span>
-iurda01
+iurdah01
 <br>
 
 <span class="label">E-mail: </span>
@@ -135,6 +135,8 @@ Put an X in the space next to your choice:
 
 <li class="q">Briefly explain the protocol you use over TCP to request function calls and return the results.</li>
 <li class="a">
+<br><b>The KEY Invariant:</b> A sequence of bytes representing a data type is either of predictable length and can be deserialized as such OR is preceded by exactly four bytes which are a machine integer representing how many of the following bytes are associated with that object.<br><br>
+<b>Making Function Calls over TCP</b><br><br>
 Function calls are sent over TCP in the following format:<br><br>
 <em>[numBytes][functionName],[returnType]([size]){,[argType]([size]),[argData]} ...</em><br><br>
 Where the <em>{,[argType]([size]),[argData]}</em> component is repeated for each argument in the function call. If the size of an argument or return type is unknown (e.g. a string or a struct containing strings), then the <em>[size]</em> of the object is denoted as -1. In the case where an object is denoted with -1 size, it is <b>required</b> that the first four bytes of the <em>[argData]</em> representing the object represent the number of bytes in the rest of the object's data string:<br><br>
@@ -145,7 +147,10 @@ When the results of a function call are sent back to the client, the first byte 
 
 '0'XXXXYYYYYYYYYYYYYY...
 <br><br><em>Example: format of a successful function call response</em><br><br>
-See the comments in the <em>NetworkFormatter</em> C++ class implementation for more details.
+See the comments in the <em>NetworkFormatter</em> C++ class implementation for more details.<br><br>
+<b>Serialization and Deserialization</b><br><br>
+Next, we very briefly wanted to describe how we handled the serialization and deserialization of data types. Our thinking on this issue was that if we could devise a method(s) to reliably serialize and deserialize all of the atomic types found in any IDL file ('atomic' in the sense that they cannot be decomposed into smaller types), then we could use those serializers as the bases cases for recursively handling more complex cases. With that in mind, the first thing we did was implement serializer / deserializer functions for the <em>int</em>, <em>float</em>, and <em>string</em> types. These functions are hard-coded into our <em>rpcgenerate</em> program as boilerplate code.<br><br>
+From there, we programmatically create a serializer / deserializer pair for each type listed in the parsed IDL file. The protocol for serializing / deserializing arrays and structs were slightly different, but the core concept was the same: for each element (member) in the array (struct), (de)serialize it and use the results to (de)serialize the parent object. Since we make a serializer and deserializer for <em>every</em> type in the IDL file, this simple approach proved to be extremely powerful and easy to program.
 
 </li>
 
@@ -175,7 +180,7 @@ My only feedback for improvement is that it feels like we glossed over TCP a bit
      and replace it with your report. (Do NOT
      keep the color:grey styling on your report! :-) -->
 
-<p>Our Python <em>rpcgenerate</em> lives in the RPC/ subdirectory, but we have a simple script also named <em>rpcgenerate</em> in the top-level directory of the project which runs the Python <em>rpcgenerate</em> program.</p>
+<p>Our Python <em>rpcgenerate</em> lives in the RPC/ subdirectory, but we have a simple script also named <em>rpcgenerate</em> in the top-level directory of the project which runs the Python <em>rpcgenerate</em> program. You can use that in the same exact way that you would use the Python <em>rpcgenerate</em>.</p>
 
 </div>
 </div>

@@ -1,21 +1,3 @@
-# Makefile for COMP 117 RPC Samples
-#
-#    Copyright 2012 - Noah Mendelsohn
-#
-#
-# Useful targets:
-#
-#
-#    pingstreamclient  - demonstration message ping client using TCP streams
-#    pingstreamserver  - demonstration message ping server
-#    simplefunctionclient - sample RPC client
-#    simplefunctionserver - sample RPC server
-#    idldeclarationtst      - demonstrates the IDL parsing framework
-#
-#    clean       - clean out all compiled object and executable files
-#    all         - (default target) make sure everything's compiled
-#
-
 # Once the rules that call rpcgenerate are uncommented, this will keep 
 # make from deleting *.proxy.cpp and *.stub.cpp that are generated as intermediates
 # on the way to building .o files
@@ -38,110 +20,10 @@ C150IDSRPC = $(COMP117)/files/RPC.framework/
 C150IDSRPCAR = $(C150IDSRPC)c150idsrpc.a
 
 CPPFLAGS = -g -Wall -std=c++17 -I$(C150IDSRPC) -I$(C150LIB)
-# CPPFLAGS = -g -Wall -Werror  -I$(C150LIB)
 
-UTILITY_PATH = ./RPC/
+INCLUDES = $(C150LIB)c150streamsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h $(C150LIB)c150grading.h $(C150IDSRPC)IDLToken.h $(C150IDSRPC)tokenizeddeclarations.h  $(C150IDSRPC)tokenizeddeclaration.h $(C150IDSRPC)declarations.h $(C150IDSRPC)declaration.h $(C150IDSRPC)functiondeclaration.h $(C150IDSRPC)typedeclaration.h $(C150IDSRPC)arg_or_member_declaration.h rpcproxyhelper.h rpcstubhelper.h
 
-LDFLAGS = 
-INCLUDES = $(C150LIB)c150streamsocket.h $(C150LIB)c150network.h $(C150LIB)c150exceptions.h $(C150LIB)c150debug.h $(C150LIB)c150utility.h $(C150LIB)c150grading.h $(C150IDSRPC)IDLToken.h $(C150IDSRPC)tokenizeddeclarations.h  $(C150IDSRPC)tokenizeddeclaration.h $(C150IDSRPC)declarations.h $(C150IDSRPC)declaration.h $(C150IDSRPC)functiondeclaration.h $(C150IDSRPC)typedeclaration.h $(C150IDSRPC)arg_or_member_declaration.h rpcproxyhelper.h rpcstubhelper.h simplefunction.idl arithmetic.idl floatarithmetic.idl structs.idl
-
-all: pingstreamclient pingstreamserver idldeclarationtst idl_to_json
-
-########################################################################
-#
-#     Adaptations of pingclient and pingserver to illustrate
-#     use of COMP 150-IDS dgmstreamsocket class (which supports
-#     TCP streams as opposed to UDP datagrams)
-#
-########################################################################
-
-# utility:
-# 	$(CPP) -c $(UTILITY_PATH)utility.cpp serialize.o
-
-pingstreamclient: pingstreamclient.o  $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
-	$(CPP) -o pingstreamclient pingstreamclient.o $(C150AR) $(C150IDSRPCAR) 
-
-
-pingstreamserver: pingstreamserver.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o pingstreamserver pingstreamserver.o $(C150AR) $(C150IDSRPCAR) 
-
-
-########################################################################
-#
-#          Sample RPC client and server applications
-#
-#     THESE RULES ARE TO BE USED UNTIL RPCGENERATE IS AVAILABLE
-#     AFTER THAT, COMMENT THEM
-#
-#     Demonstrating remote calls to functions as declared in simplefunctions.idl
-#
-#     The proxies and stubs used here are hand generated, but eventually
-#     your rpcgenerate program will (should) generate them automatically
-#     from any idl
-#
-########################################################################
-
-# structsclient: structsclient.o rpcproxyhelper.o structs.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-# 	$(CPP) -o structsclient structsclient.o rpcproxyhelper.o structs.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
-
-# structsserver: structs.stub.o rpcserver.o rpcstubhelper.o structs.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-# 	$(CPP) -o structsserver rpcserver.o structs.stub.o structs.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
-
-# arithmeticclient: arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-# 	$(CPP) -o arithmeticclient arithmeticclient.o rpcproxyhelper.o arithmetic.proxy.o utility.o serialize.o  $(C150AR) $(C150IDSRPCAR) 
-
-# arithmeticserver: arithmetic.stub.o rpcserver.o rpcstubhelper.o arithmetic.o utility.o serialize.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-# 	$(CPP) -o arithmeticserver rpcserver.o arithmetic.stub.o arithmetic.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
-
-# floatarithmeticclient: floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-# 	$(CPP) -o floatarithmeticclient floatarithmeticclient.o rpcproxyhelper.o floatarithmetic.proxy.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
-
-# floatarithmeticserver: floatarithmetic.stub.o rpcserver.o rpcstubhelper.o floatarithmetic.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-# 	$(CPP) -o floatarithmeticserver rpcserver.o floatarithmetic.stub.o floatarithmetic.o rpcstubhelper.o utility.o serialize.o $(C150AR) $(C150IDSRPCAR) 
-
-# simplefunctionclient: simplefunctionclient.o rpcproxyhelper.o simplefunction.proxy.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-# 	$(CPP) -o simplefunctionclient simplefunctionclient.o rpcproxyhelper.o simplefunction.proxy.o  $(C150AR) $(C150IDSRPCAR) 
-
-# The following is NOT a mistake. The main program for any of the rpc servers
-# is rpcserver.o.  This way, we can make a different one for each set 
-# of functions, by linking the right specific stugs (in this case
-# simplefunction.stub.o)
-simplefunctionserver: simplefunction.stub.o rpcserver.o rpcstubhelper.o simplefunction.o  $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
-	$(CPP) -o simplefunctionserver rpcserver.o simplefunction.stub.o simplefunction.o rpcstubhelper.o $(C150AR) $(C150IDSRPCAR) 
-
-
-########################################################################
-#
-#          Compile the rpcgenerate program
-#
-#    COMMENT THIS RULE IF YOU ARE USING PYTHON OR RUBY TO
-#    IMPLEMENT YOUR rpcgenerate program.
-#
-########################################################################
-
-# Compile the rpcgenerate program
-# rpcgenerate: Makefile rpcgenerate.o $(C150AR) $(C150IDSRPCAR) $(INCLUDES)
-# 	$(CPP) -o rpcgenerate rpcgenerate.o $(C150AR) $(C150IDSRPCAR)
-
-########################################################################
-#
-#          General rules for building any client and server
-#
-#     Given any xxx.idl, these rules will build xxxclient and xxxserver
-#
-#     THESE RULES ARE SUPPLIED COMMENTED BECAUSE THEY WILL BREAK
-#     IF USED BEFORE rpcgenerate IS AVAILABLE.
-#
-#     WHEN YOUR RPCGENERATE IS WORKING, DO THE FOLLOWING
-#
-#       1) Uncomment the rules below
-#
-#       2) Add to each of the dependency lists and the g++ invocations
-#          any .o files that you need to link into clients and servers
-#          respectively.
-#
-#
-########################################################################
+all: idldeclarationtst idl_to_json
 
 # Compile / link any client executable: 
 %client: %.o %.proxy.o rpcserver.o rpcproxyhelper.o %client.o
@@ -150,8 +32,6 @@ simplefunctionserver: simplefunction.stub.o rpcserver.o rpcstubhelper.o simplefu
 # Compile / link any server executable:
 %server: %.o %.stub.o rpcserver.o rpcstubhelper.o %.stub.o
 	$(CPP) -o $@ rpcserver.o $*.stub.o $*.o rpcstubhelper.o $(C150AR) $(C150IDSRPCAR) 
-
-
 
 ########################################################################
 #
@@ -168,11 +48,9 @@ simplefunctionserver: simplefunction.stub.o rpcserver.o rpcstubhelper.o simplefu
 #
 #     WARNING! this may cause your rpcgenerate program to attempt to
 #     rebuild supplied samples like simplefunction.proxy.cpp and 
-#     simplefunction.stub.cpp. You may want to save backups for comparison.
-#
-########################################################################
+#     simplefunction.stub.cpp. You may want to save backups for com
 
- %.proxy.cpp %.stub.cpp:%.idl $(RPCGEN) idl_to_json ./RPC/rpcgenerate
+ %.proxy.cpp %.stub.cpp:%.idl $(RPCGEN) idl_to_json
 	$(RPCGEN) $<
 
 ########################################################################
@@ -238,11 +116,9 @@ idl_to_json: idl_to_json.o $(C150AR) $(C150IDSRPCAR)  $(INCLUDES)
 %.o:%.cpp  $(INCLUDES)
 	$(CPP) -c  $(CPPFLAGS) $< 
 
-
-
 # clean up everything we build dynamically (probably missing .cpps from .idl)
 clean:
-	 rm -f pingstreamclient pingstreamserver idldeclarationtst idl_to_json simplefunctionclient simplefunctionserver *.o *.json *.pyc
+	 rm -fr __pycache__  idldeclarationtst idl_to_json *.o *.json *.pyc
 
 logs-go-away:
 	rm -f GRADELOG*.txt

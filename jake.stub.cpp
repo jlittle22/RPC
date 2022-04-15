@@ -48,6 +48,8 @@ using namespace C150NETWORK;
 void __badFunction();
 int getNumBytesInIncomingFunctionCall(char *buffer);
 int getFunctionCallFromStream(char *buffer, unsigned int bufSize);
+void __nothelpful(StupidWeird x);
+void __reallynothelpful(StupidWeird x[10]);
 void __useless(MT x);
 void dispatchFunction();
 
@@ -62,6 +64,18 @@ string serialize_float(float x);
 float deserialize_float(string x);
 string serialize_MT(MT x);
 MT deserialize_MT(string x);
+string serialize_Person(Person x);
+Person deserialize_Person(string x);
+string serialize_StupidWeird(StupidWeird x);
+StupidWeird deserialize_StupidWeird(string x);
+string serialize_Array_MT_5(MT x[5]);
+void deserialize_Array_MT_5(string x, MT* dest);
+string serialize_Array_Person_10(Person x[10]);
+void deserialize_Array_Person_10(string x, Person* dest);
+string serialize_Array_StupidWeird_10(StupidWeird x[10]);
+void deserialize_Array_StupidWeird_10(string x, StupidWeird* dest);
+string serialize_Array_float_20(float x[20]);
+void deserialize_Array_float_20(string x, float* dest);
 
 // !! Network Formatter Package forward declarations !!
 
@@ -174,11 +188,27 @@ int getFunctionCallFromStream(char *buffer, unsigned int bufSize) {
   return numBytes;
 }
 
+void __nothelpful(StupidWeird x) {
+  *GRADING << "[nothelpful (stub)] Entering stub function." << endl;
+    float result = nothelpful(x);
+    string forTheWire = '0' + serialize_float(result);
+   *GRADING << "[nothelpful (stub)] Result acquired. Writing " << forTheWire.length() << " bytes to client." << endl;
+    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+}
+
+void __reallynothelpful(StupidWeird x[10]) {
+  *GRADING << "[reallynothelpful (stub)] Entering stub function." << endl;
+    float result = reallynothelpful(x);
+    string forTheWire = '0' + serialize_float(result);
+   *GRADING << "[reallynothelpful (stub)] Result acquired. Writing " << forTheWire.length() << " bytes to client." << endl;
+    RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
+}
+
 void __useless(MT x) {
-  *GRADING << "[useless] Entering stub function." << endl;
+  *GRADING << "[useless (stub)] Entering stub function." << endl;
     MT result = useless(x);
     string forTheWire = '0' + serialize_MT(result);
-   *GRADING << "[useless] Result acquired. Writing to client." << endl;
+   *GRADING << "[useless (stub)] Result acquired. Writing " << forTheWire.length() << " bytes to client." << endl;
     RPCSTUBSOCKET->write(forTheWire.c_str(), forTheWire.length());
 }
 
@@ -207,7 +237,17 @@ void dispatchFunction() {
     *GRADING << "[dispatchFunction] Looking for function with matching signature: " << f.getFunctionSignature() << endl;
 
     // Identify the appropriate function and call it...
-    if (f.getFunctionSignature() == "useless,MT(-1),MT(-1)") {
+    if (f.getFunctionSignature() == "nothelpful,float(4),StupidWeird(-1)") {
+      *GRADING << "[dispatchFunction] Signature match found!" << endl;
+      StupidWeird x = deserialize_StupidWeird(get<2>(f.getArgAtIndex(0)));
+      __nothelpful(x);
+    } else if (f.getFunctionSignature() == "reallynothelpful,float(4),Array_StupidWeird_10(-1)") {
+      *GRADING << "[dispatchFunction] Signature match found!" << endl;
+      StupidWeird x[10];
+      deserialize_Array_StupidWeird_10(get<2>(f.getArgAtIndex(0)), (StupidWeird*)x);
+      __reallynothelpful(x);
+    } else if (f.getFunctionSignature() == "useless,MT(-1),MT(-1)") {
+      *GRADING << "[dispatchFunction] Signature match found!" << endl;
       MT x = deserialize_MT(get<2>(f.getArgAtIndex(0)));
       __useless(x);
     } else {
@@ -267,6 +307,126 @@ MT deserialize_MT(string x) {
     MT new_item;
 
     return new_item;
+}
+
+string serialize_Person(Person x) {
+    string data = "";
+    data += serialize_string(x.name);
+    data += serialize_Array_float_20(x.array);
+    return serialize_int((int)data.length()) + data;
+}
+
+Person deserialize_Person(string x) {
+    Person new_item;
+    int len = sizeof(int);
+
+    x = x.substr(len);
+    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+    new_item.name = deserialize_string(x.substr(0, len));
+
+    x = x.substr(len);
+    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+    deserialize_Array_float_20(x.substr(0, len), (float*)new_item.array);
+
+    return new_item;
+}
+
+string serialize_StupidWeird(StupidWeird x) {
+    string data = "";
+    data += serialize_Array_MT_5(x.arr);
+    data += serialize_Array_Person_10(x.arr2);
+    return serialize_int((int)data.length()) + data;
+}
+
+StupidWeird deserialize_StupidWeird(string x) {
+    StupidWeird new_item;
+    int len = sizeof(int);
+
+    x = x.substr(len);
+    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+    deserialize_Array_MT_5(x.substr(0, len), (MT*)new_item.arr);
+
+    x = x.substr(len);
+    len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+    deserialize_Array_Person_10(x.substr(0, len), (Person*)new_item.arr2);
+
+    return new_item;
+}
+
+string serialize_Array_MT_5(MT x[5]) {
+    string data = "";
+    for (int i = 0; i < 5; i++) {
+        data += serialize_MT(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_MT_5(string x, MT* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 5; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        dest[i] = deserialize_MT(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_Person_10(Person x[10]) {
+    string data = "";
+    for (int i = 0; i < 10; i++) {
+        data += serialize_Person(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_Person_10(string x, Person* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 10; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        dest[i] = deserialize_Person(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_StupidWeird_10(StupidWeird x[10]) {
+    string data = "";
+    for (int i = 0; i < 10; i++) {
+        data += serialize_StupidWeird(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_StupidWeird_10(string x, StupidWeird* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 10; i++) {
+        len = sizeof(int) + deserialize_int(x.substr(0, sizeof(int)));
+        dest[i] = deserialize_StupidWeird(x.substr(0, len));
+        x = x.substr(len);
+    }
+}
+
+string serialize_Array_float_20(float x[20]) {
+    string data = "";
+    for (int i = 0; i < 20; i++) {
+        data += serialize_float(x[i]);
+    }
+    return serialize_int((int)data.length()) + data;
+}
+
+void deserialize_Array_float_20(string x, float* dest) {
+    int len = sizeof(int);
+    x = x.substr(len);
+
+    for (int i = 0; i < 20; i++) {
+        len = sizeof(float);
+        dest[i] = deserialize_float(x.substr(0, len));
+        x = x.substr(len);
+    }
 }
 
 
@@ -406,7 +566,7 @@ std::string NetworkFormatter::getFunctionSignature() {
 //
 // NETWORK FORM:
 //
-//    <functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
+//    <numBytes><functionName>,<returnType>(<size>){,<argType>(<size>),<argData>} ...
 //
 // Example:
 //
@@ -414,11 +574,13 @@ std::string NetworkFormatter::getFunctionSignature() {
 //
 //        ==
 //
-//    foo,int(4),float(4),xxxx,myStruct(10),yyyyyyyyyy
+//    foo,int(4),float(4),xxxx,myStruct(-1),yyyyyyyyyy
 //
 // Glossary & Other Hints:
 //
 // { ... } -- content between curly brackets is OPTIONAL and can be REPEATED. 
+//
+// <numBytes> -- four bytes representng a machine integer containing length of the function call in bytes.
 //
 // <functionName> -- a string of any length representing the name of the function being called.
 // 

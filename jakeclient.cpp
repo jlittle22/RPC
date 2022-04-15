@@ -1,5 +1,10 @@
+#include <string>
+using namespace std;
 
+#ifndef JAKE_IDL
+#define JAKE_IDL
 #include "jake.idl"
+#endif
 
 #include "rpcproxyhelper.h"
 
@@ -7,7 +12,6 @@
 #include "c150grading.h"
 #include <fstream>
 
-using namespace std;          // for C++ std library
 using namespace C150NETWORK;  // for all the comp150 utilities 
 
 // forward declarations
@@ -68,6 +72,21 @@ main(int argc, char *argv[]) {
        MT x;
        useless(x);
        printf("Done...\n");
+ 
+       Person y;
+       y.name = "bella";
+       y.array[10] = 3.1415;
+       StupidWeird z;
+       z.arr2[5] = y;
+
+       cout << "float: " << nothelpful(z) << endl;
+
+       StupidWeird arr[10];
+       arr[5] = z;
+
+       cout << "other float: " << reallynothelpful(arr) << endl;
+
+
      }
 
      //
